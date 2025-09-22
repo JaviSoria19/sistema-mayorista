@@ -11,7 +11,7 @@ class EmpleadoValidation extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,7 @@ class EmpleadoValidation extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'nombreEmpleado' => ['required', 'string', 'min:3', 'max:255', 'unique:empleados'],
         ];
     }
 }

@@ -1,12 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1 class="text-center text-info fw-bold"><i class="fa fa-user-tie"></i> {{ $headTitle }}</h1>
+    <h1 class="text-center text-info fw-bold"><i class="fa-solid fa-duotone  fa-user-tie"></i> {{ $headTitle }}</h1>
 
     <button type="button" class="btn btn-success mb-3 btn-crear" data-bs-toggle="modal" data-bs-target="#modalCreateOrEdit">
-        <i class="fa fa-plus"></i> Crear usuario</button>
+        <i class="fa-solid fa-duotone fa-plus"></i> Crear usuario</button>
 
     <h2 class="text-info fw-bold">Lista de usuarios</h2>
+
+    <p>Nota: para que un usuario pueda ser registrado, previamente se le debe crear un empleado, si desea hacerlo haga clic <a
+            href="{{ route('empleados.index') }}">aquí.</a></p>
 
     <div class="card p-3 mb-3">
         <p>Seleccione una opción para <i class="fa-solid fa-duotone fa-file-export"></i> exportar o <i
@@ -29,13 +32,15 @@
         </thead>
     </table>
 
+    <div class="mb-3"></div>
+
     <!-- Modal para crear y editar usuarios -->
     <div class="modal fade" id="modalCreateOrEdit" tabindex="-1" aria-labelledby="modalCreateOrEdit_Title"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalCreateOrEdit_Title"><i class="fa fa-plus"></i> CREAR USUARIO</h1>
+                    <h1 class="modal-title fs-5" id="modalCreateOrEdit_Title"><i class="fa-solid fa-duotone fa-plus"></i> CREAR USUARIO</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -67,7 +72,7 @@
                                 <input type="password" class="form-control" id="contrasenha" name="contrasenha" required>
                                 <button class="btn btn-outline-secondary toggle-password" type="button"
                                     data-target="contrasenha">
-                                    <i class="fa fa-eye"></i>
+                                    <i class="fa-solid fa-duotone fa-eye"></i>
                                 </button>
                             </div>
                         </div>
@@ -80,7 +85,7 @@
                                     required>
                                 <button class="btn btn-outline-secondary toggle-password" type="button"
                                     data-target="recontrasenha">
-                                    <i class="fa fa-eye"></i>
+                                    <i class="fa-solid fa-duotone fa-eye"></i>
                                 </button>
                             </div>
                         </div>
@@ -88,8 +93,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
-                            class="fa fa-close"></i>Cerrar</button>
-                    <button type="button" id="btnGuardar" class="btn btn-primary"><i class="fa fa-save"></i>
+                            class="fa-solid fa-duotone fa-close"></i>Cerrar</button>
+                    <button type="button" id="btnGuardar" class="btn btn-primary"><i class="fa-solid fa-duotone fa-save"></i>
                         Guardar</button>
                 </div>
             </div>
@@ -189,7 +194,7 @@
                 $('#formCreateOrEdit input[name="recontrasenha"]').val('');
 
                 const titleElement = document.getElementById('modalCreateOrEdit_Title');
-                titleElement.innerHTML = '<i class="fa fa-plus"></i> CREAR USUARIO';
+                titleElement.innerHTML = '<i class="fa-solid fa-duotone fa-plus"></i> CREAR USUARIO';
                 $('#modalCreateOrEdit').modal('show');
             });
 
@@ -208,7 +213,7 @@
                     $('#formCreateOrEdit input[name="recontrasenha"]').val('');
 
                     const titleElement = document.getElementById('modalCreateOrEdit_Title');
-                    titleElement.innerHTML = '<i class="fa fa-edit"></i> EDITAR USUARIO';
+                    titleElement.innerHTML = '<i class="fa-solid fa-duotone fa-edit"></i> EDITAR USUARIO';
                     $('#modalCreateOrEdit').modal('show');
                 });
             });

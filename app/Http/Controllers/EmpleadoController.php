@@ -2,101 +2,79 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EmpleadoValidation;
 use App\Models\Empleado;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class EmpleadoController extends Controller
 {
-    public function index()
+    public function view_index()
     {
-        return view('Empleado.index', ['headTitle' => 'Gestión de Empleados']);
-    }
-    
-    public function getData(Request $request)
-    {
-        $empleados = Empleado::all()->with('modificadoPorNombre');
-        return response()->json(['data' => $empleados]);
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nombreEmpleado' => 'required|string|max:255'
-        ]);
-
-        try {
-            $empleado = Empleado::create([
-                'nombreEmpleado' => $request->nombreEmpleado,
-                'estado' => $request->estado ?? 1,
-                'modificadoPor' => Auth::id() ?? 0
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Empleado creado exitosamente',
-                'data' => $empleado
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al crear el empleado: ' . $e->getMessage()
-            ], 500);
+        if (!session('tieneAcceso')) {
+            return redirect()->route('login');
         }
+
+        return view('empleados.index', [
+            'headTitle' => 'GESTIÓN DE EMPLEADOS'
+        ]);
     }
 
-    public function show(Empleado $empleado)
+    public function listarEmpleados()
     {
+        if (!session('tieneAcceso')) {
+            return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
+        }
+
+        $empleados = (new Empleado())->getAllEmpleados();
         return response()->json([
-            'success' => true,
+            'data' => $empleados
+        ]);
+    }
+
+    public function mostrarEmpleado(Request $request)
+    {
+        if (!session('tieneAcceso')) {
+            return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
+        }
+
+        $empleado = (new Empleado())->getEmpleado($request->empleado);
+        return response()->json([
             'data' => $empleado
         ]);
     }
 
-    public function update(Request $request, Empleado $empleado)
+    public function create(EmpleadoValidation $request)
     {
-        $request->validate([
-            'nombreEmpleado' => 'required|string|max:255'
-        ]);
-
-        try {
-            $empleado->update([
-                'nombreEmpleado' => $request->nombreEmpleado,
-                'estado' => $request->estado ?? 1,
-                'modificadoPor' => Auth::id() ?? 0
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Empleado actualizado exitosamente',
-                'data' => $empleado
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al actualizar el empleado: ' . $e->getMessage()
-            ], 500);
+        if (!session('tieneAcceso')) {
+            return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
         }
+
+        $empleado = new Empleado();
+        $empleado->nombreEmpleado = strtoupper($request->nombreEmpleado);
+        $empleado->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuario creado correctamente',
+            'empleado' => $empleado
+        ]);
     }
 
-    public function destroy(Empleado $empleado)
+    public function update(EmpleadoValidation $request, $idEmpleado)
     {
-        try {
-            
-            $empleado->update([
-                'estado' => $empleado->estado == 1 ? 0 : 1,
-                'modificadoPor' => Auth::id() ?? 0
-            ]);
-            
-            return response()->json([
-                'success' => true,
-                'message' => 'Empleado desactivado exitosamente'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al desactivar el empleado: ' . $e->getMessage()
-            ], 500);
+        if (!session('tieneAcceso')) {
+            return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
         }
+
+        $empleado = (new Empleado())->getEmpleado($idEmpleado);
+        $empleado->nombreEmpleado = strtoupper($request->nombreEmpleado);
+        $empleado->modificadoPor = session('idUsuario');
+        $empleado->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuario actualizado correctamente',
+            'empleado' => $empleado
+        ]);
     }
 }

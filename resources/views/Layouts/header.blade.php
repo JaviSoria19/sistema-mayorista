@@ -7,22 +7,22 @@
                 <ul class="nav nav-pills">
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('panel') ? 'active' : '' }}" aria-current="page"
-                            href="{{ route('dashboard') }}"><i class="fa fa-home"></i>
+                            href="{{ route('dashboard') }}"><i class="fa-solid fa-duotone  fa-home"></i>
                             Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('usuarios') ? 'active' : '' }}" aria-current="page"
-                            href="{{ route('usuarios.index') }}"><i class="fa fa-user-tie"></i>
-                            Usuarios</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link {{ request()->is('empleados') ? 'active' : '' }}" aria-current="page"
-                            href="{{ route('usuarios.index') }}"><i class="fa fa-user-tag"></i>
+                            href="{{ route('empleados.index') }}"><i class="fa-solid fa-duotone fa-user-tag"></i>
                             Empleados</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {{ request()->is('usuarios') ? 'active' : '' }}" aria-current="page"
+                            href="{{ route('usuarios.index') }}"><i class="fa-solid fa-duotone fa-user-tie"></i>
+                            Usuarios</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {{ request()->is('clientes') ? 'active' : '' }}" aria-current="page"
-                            href="{{ route('usuarios.index') }}"><i class="fa fa-address-card"></i>
+                            href="{{ route('usuarios.index') }}"><i class="fa-solid fa-duotone fa-address-card"></i>
                             Clientes</a>
                     </li>
                 </ul>
@@ -32,15 +32,15 @@
                     aria-expanded="false"> <img src="https://github.com/JaviSoria19.png" alt="mdo" width="32"
                         height="32" class="rounded-circle"> </a>
                 <ul class="dropdown-menu text-small" style="">
-                    <li><a class="dropdown-item" href="#"><i class="fa fa-gear"></i> Ajustes</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="fa fa-user"></i> Perfil</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-duotone fa-sliders"></i> Parámetros</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-duotone fa-alien"></i> Mi perfil</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
                     </li>
                     <li><button type="button" class="dropdown-item" data-bs-toggle="modal"
                             data-bs-target="#modalSignOut">
-                            <i class="fa fa-sign-out"></i> Cerrar sesión</button>
+                            <i class="fa-solid fa-duotone  fa-sign-out"></i> Cerrar sesión</button>
                     </li>
                 </ul>
             </div>
