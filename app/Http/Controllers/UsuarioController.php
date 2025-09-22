@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UsuarioValidation;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use App\Models\Empleado;
 
 class UsuarioController extends Controller
 {
@@ -11,7 +13,7 @@ class UsuarioController extends Controller
     {
         return view('login');
     }
-    
+
     public function view_dashboard()
     {
         /*Si no tiene acceso, se redirige a la ventana de inicio de sesión.*/
@@ -24,7 +26,7 @@ class UsuarioController extends Controller
             session(['tieneAcceso' => false]);
         }
 
-        return view('Panel.admin', [
+        return view('panel.admin', [
             'headTitle' => 'PANEL DE ADMINISTRACIÓN',
         ]);
     }
@@ -35,15 +37,18 @@ class UsuarioController extends Controller
             return redirect()->route('login');
         }
 
+        $empleados = (new Empleado())->getAllEmpleados();
+
         return view('usuarios.index', [
             'headTitle' => 'GESTIÓN DE USUARIOS',
+            'empleados' => $empleados,
         ]);
     }
 
     public function listarUsuarios()
     {
         if (!session('tieneAcceso')) {
-            return redirect()->route('login');
+            return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
         }
 
         $usuarios = (new Usuario())->getAllUsuarios();
@@ -55,68 +60,87 @@ class UsuarioController extends Controller
     public function mostrarUsuario(Request $request)
     {
         if (!session('tieneAcceso')) {
-            return redirect()->route('login');
+            return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
         }
 
-        $usuario = (new Usuario())->getUsuario($request->idUsuario);
+        $usuario = (new Usuario())->getUsuario($request->usuario);
         return response()->json([
             'data' => $usuario
         ]);
     }
 
-    public function create(Request $request)
+    public function create(UsuarioValidation $request)
     {
         if (!session('tieneAcceso')) {
-            return redirect()->route('login');
+            return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
         }
+
         $request->validate([
-            'idEmpleado' => ['required', 'numeric', 'integer', 'unique:usuarios'],
-            'nombreUsuario' => ['required', 'string', 'max:50', 'unique:usuarios'],
+            'idEmpleado' => ['unique:usuarios'],
             'contrasenha' => ['required', 'string', 'min:8', 'max:100'],
+            'recontrasenha' => ['required', 'string', 'min:8', 'max:100', 'same:contrasenha'],
         ]);
+
         $usuario = new Usuario();
         $usuario->idEmpleado = $request->idEmpleado;
-        $usuario->nombreUsuario = $request->nombreUsuario;
+        $usuario->nombreUsuario = strtoupper($request->nombreUsuario);
         $usuario->contrasenha = helper_encrypt($request->contrasenha);
         $usuario->save();
-        return $usuario;
+
+        $empleado = (new Empleado())->getEmpleado($request->idEmpleado);
+        $empleado->estado = 2;
+        $empleado->modificadoPor = session('idUsuario');
+        $empleado->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuario creado correctamente',
+            'usuario' => $usuario
+        ]);
     }
-    
-    public function update(Request $request, $idUsuario)
+
+    public function update(UsuarioValidation $request, $idUsuario)
     {
         if (!session('tieneAcceso')) {
-            return redirect()->route('login');
+            return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
         }
-        $request->validate([
-            'idEmpleado' => ['required', 'numeric', 'integer', 'unique:usuarios,idEmpleado,' . $idUsuario . ',idUsuario'],
-            'nombreUsuario' => ['required', 'string', 'max:50', 'unique:usuarios,nombreUsuario,' . $idUsuario . ',idUsuario'],
-            'contrasenha' => ['nullable', 'string', 'min:8', 'max:100'],
-        ]);
+
         $usuario = (new Usuario())->getUsuario($idUsuario);
-        $usuario->idEmpleado = $request->idEmpleado;
-        $usuario->nombreUsuario = $request->nombreUsuario;
+        $usuario->nombreUsuario = strtoupper($request->nombreUsuario);
         if ($request->contrasenha) {
             $usuario->contrasenha = helper_encrypt($request->contrasenha);
         }
+        $usuario->modificadoPor = session('idUsuario');
         $usuario->save();
-        return $usuario;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuario actualizado correctamente',
+            'usuario' => $usuario
+        ]);
     }
 
-    /**Método que permite ELIMINAR (soft delete) o RESTAURAR un registro de la tabla 'Usuarios' y retorna el objeto de la clase Usuario con el atributo 'estado' actualizado.*/
     public function deleteOrRestore(Request $request)
     {
         if (!session('tieneAcceso')) {
-            return redirect()->route('login');
+            return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
         }
 
         $request->validate([
             'idUsuario' => ['required', 'numeric', 'integer']
         ]);
+
         $usuario = (new Usuario())->getUsuario($request->idUsuario);
         $usuario->estado = $usuario->estado == '1' ? '0' : '1';
+        $usuario->modificadoPor = session('idUsuario');
         $usuario->save();
-        return redirect()->route('usuarios.index');
+        return response()->json([
+            'success' => true,
+            'message' => $usuario->estado == '1' ? 'El usuario fue habilitado con éxito' : 'El usuario fue deshabilitado con éxito' ,
+            'usuario' => $usuario
+        ]);
     }
+
 
     public function verificar(Request $request)
     {

@@ -11,13 +11,13 @@
     <!-- Token para formularios -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    @include('Layouts.dependenciesCSS')
+    @include('layouts.dependenciesCSS')
 
 </head>
 
 <body data-bs-theme="dark" class="d-flex flex-column min-vh-100">
 
-    @include('Layouts.header')
+    @include('layouts.header')
 
     <main class="flex-grow-1">
         <div class="container">
@@ -25,11 +25,11 @@
         </div>
     </main>
     
-    @include('Layouts.modalSignOut')
+    @include('layouts.modalSignOut')
 
-    @include('Layouts.footer')
+    @include('layouts.footer')
 
-    @include('Layouts.dependenciesJS')
+    @include('layouts.dependenciesJS')
 
     @yield('scripts')
 </body>

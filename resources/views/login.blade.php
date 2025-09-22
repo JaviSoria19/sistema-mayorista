@@ -8,7 +8,7 @@
 
     <!-- Icono -->
     <link rel="icon" type="image/x-icon" href="{{ URL::to('/') }}/public/favicon.ico">
-    @include('Layouts.dependenciesCSS')
+    @include('layouts.dependenciesCSS')
 </head>
 
 <body data-bs-theme="dark">
@@ -79,7 +79,7 @@
             this.querySelector('i').classList.toggle('fa-eye-slash');
         });
     </script>
-    @include('Layouts.dependenciesJS')
+    @include('layouts.dependenciesJS')
 </body>
 
 </html>

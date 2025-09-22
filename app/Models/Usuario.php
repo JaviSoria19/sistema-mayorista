@@ -35,13 +35,13 @@ class Usuario extends Authenticatable
     /**Función que retorna un objeto del modelo Usuario.*/
     public function getUsuario($idUsuario)
     {
-        return self::with('empleado')->find($idUsuario);
+        return Usuario::with('empleado')->find($idUsuario);
     }
 
     /**Función utilizada para verificar y crear la sesión del Usuario.*/
     public function login($nombreUsuario)
     {
-        return self::where('nombreUsuario', $nombreUsuario)->first();
+        return Usuario::where('nombreUsuario', $nombreUsuario)->first();
     }
 
     /**Función para destruir y cerrar la sesión.*/

@@ -33,8 +33,8 @@ Route::controller(UsuarioController::class)->group(function(){
     /* Rutas para gestionar los registros de la tabla 'Usuarios' */
     Route::get('usuarios','view_index')->name('usuarios.index');
     Route::get('usuarios/listar','listarUsuarios')->name('usuarios.listar');
-    Route::get('usuarios/listar/{usuario}','mostrarUsuario')->name('usuarios.mostrar');
-    Route::post('usuarios/crear','create')->name('usuarios.create');
-    Route::put('usuarios/editar','update')->name('usuarios.update');
-    Route::put('usuarios/eliminarORestaurar','deleteOrRestore')->name('usuarios.deleteOrRestore');
+    Route::get('usuarios/{usuario}','mostrarUsuario')->name('usuarios.mostrar');
+    Route::post('usuarios','create')->name('usuarios.create');
+    Route::put('usuarios/{usuario}','update')->name('usuarios.update');
+    Route::patch('usuarios/{usuario}','deleteOrRestore')->name('usuarios.deleteOrRestore');
 });
