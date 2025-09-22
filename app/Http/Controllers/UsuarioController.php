@@ -35,76 +35,35 @@ class UsuarioController extends Controller
             return redirect()->route('login');
         }
 
-        $usuarios = (new Usuario())->getAllUsuarios();
-
-        return view('Usuario.inicio', [
-            'headTitle' => 'USUARIOS',
-            'usuarios' => $usuarios,
+        return view('usuarios.index', [
+            'headTitle' => 'GESTIÓN DE USUARIOS',
         ]);
     }
 
-    public function view_edit(Request $request)
+    public function listarUsuarios()
     {
         if (!session('tieneAcceso')) {
             return redirect()->route('login');
         }
 
-        $empleados = (new \App\Models\Empleado())->all();
-
-        $usuario = null;
-        if ($request->has('idUsuario')) {
-            $usuario = (new Usuario())->getUsuario($request->idUsuario);
-            if (!$usuario) {
-                return redirect()->route('usuarios.index');
-            }
-        }
-
-        return;
-    }
-
-    public function verificar(Request $request)
-    {
-        $Usuario = (new Usuario())->login(
-            trim(strtoupper($request->nombreUsuario))
-        );
-
-        if (!$Usuario) {
-            return redirect()->route('login')->with([
-                'mensaje' => 'EL USUARIO NO EXISTE.',
-                'loginNombreUsuario' => $request->nombreUsuario,
-                'loginContrasenha' => $request->contrasenha,
-            ]);
-        }
-        if ($Usuario->estado == '0') {
-            return redirect()->route('login')->with([
-                'mensaje' => 'EL USUARIO NO TIENE ACCESO AL SISTEMA.',
-                'loginNombreUsuario' => $request->nombreUsuario,
-                'loginContrasenha' => $request->contrasenha,
-            ]);
-        }
-        if ($request->contrasenha != helper_decrypt($Usuario->contrasenha)) {
-            return redirect()->route('login')->with([
-                'mensaje' => 'LA CONTRASEÑA ES INCORRECTA.',
-                'loginNombreUsuario' => $request->nombreUsuario,
-                'loginContrasenha' => $request->contrasenha,
-            ]);
-        }
-        //Si el usuario y la contraseña son correctos, se crea la sesión y se redirige al panel de administración.
-        session([
-            'tieneAcceso' => true,
-            'idUsuario' => $Usuario->idUsuario,
-            'idEmpleado' => $Usuario->idEmpleado,
-            'nombreUsuario' => $Usuario->nombreUsuario,
+        $usuarios = (new Usuario())->getAllUsuarios();
+        return response()->json([
+            'data' => $usuarios
         ]);
-        return redirect()->route('dashboard');
     }
 
-    public function cerrar_sesion()
+    public function mostrarUsuario(Request $request)
     {
-        (new Usuario())->logout();
-        return redirect()->route('login');
+        if (!session('tieneAcceso')) {
+            return redirect()->route('login');
+        }
+
+        $usuario = (new Usuario())->getUsuario($request->idUsuario);
+        return response()->json([
+            'data' => $usuario
+        ]);
     }
-    
+
     public function create(Request $request)
     {
         if (!session('tieneAcceso')) {
@@ -159,15 +118,46 @@ class UsuarioController extends Controller
         return redirect()->route('usuarios.index');
     }
 
-    public function listarUsuarios()
+    public function verificar(Request $request)
     {
-        if (!session('tieneAcceso')) {
-            return redirect()->route('login');
-        }
+        $Usuario = (new Usuario())->login(
+            trim(strtoupper($request->nombreUsuario))
+        );
 
-        $usuarios = (new Usuario())->getAllUsuarios();
-        return response()->json([
-            'data' => $usuarios
+        if (!$Usuario) {
+            return redirect()->route('login')->with([
+                'mensaje' => 'EL USUARIO NO EXISTE.',
+                'loginNombreUsuario' => $request->nombreUsuario,
+                'loginContrasenha' => $request->contrasenha,
+            ]);
+        }
+        if ($Usuario->estado == '0') {
+            return redirect()->route('login')->with([
+                'mensaje' => 'EL USUARIO NO TIENE ACCESO AL SISTEMA.',
+                'loginNombreUsuario' => $request->nombreUsuario,
+                'loginContrasenha' => $request->contrasenha,
+            ]);
+        }
+        if ($request->contrasenha != helper_decrypt($Usuario->contrasenha)) {
+            return redirect()->route('login')->with([
+                'mensaje' => 'LA CONTRASEÑA ES INCORRECTA.',
+                'loginNombreUsuario' => $request->nombreUsuario,
+                'loginContrasenha' => $request->contrasenha,
+            ]);
+        }
+        //Si el usuario y la contraseña son correctos, se crea la sesión y se redirige al panel de administración.
+        session([
+            'tieneAcceso' => true,
+            'idUsuario' => $Usuario->idUsuario,
+            'idEmpleado' => $Usuario->idEmpleado,
+            'nombreUsuario' => $Usuario->nombreUsuario,
         ]);
+        return redirect()->route('dashboard');
+    }
+
+    public function cerrar_sesion()
+    {
+        (new Usuario())->logout();
+        return redirect()->route('login');
     }
 }

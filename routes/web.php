@@ -33,18 +33,8 @@ Route::controller(UsuarioController::class)->group(function(){
     /* Rutas para gestionar los registros de la tabla 'Usuarios' */
     Route::get('usuarios','view_index')->name('usuarios.index');
     Route::get('usuarios/listar','listarUsuarios')->name('usuarios.listar');
-    Route::get('usuarios/{usuario}','view_show')->name('usuarios.detalles');
-    Route::get('usuarios/{usuario}/editar','view_edit')->name('usuarios.editar');
-    Route::post('usuarios/guardar','create')->name('usuarios.create');
-
-    Route::put('usuarios','deleteOrRestore')->name('usuarios.delete');
-});
-
-Route::prefix('empleados')->name('empleados.')->group(function () {
-    Route::get('/', [EmpleadoController::class, 'index'])->name('index');
-    Route::get('/data', [EmpleadoController::class, 'getData'])->name('data');
-    Route::post('/', [EmpleadoController::class, 'store'])->name('store');
-    Route::get('/{empleado}', [EmpleadoController::class, 'show'])->name('show');
-    Route::put('/{empleado}', [EmpleadoController::class, 'update'])->name('update');
-    Route::delete('/{empleado}', [EmpleadoController::class, 'destroy'])->name('destroy');
+    Route::get('usuarios/listar/{usuario}','mostrarUsuario')->name('usuarios.mostrar');
+    Route::post('usuarios/crear','create')->name('usuarios.create');
+    Route::put('usuarios/editar','update')->name('usuarios.update');
+    Route::put('usuarios/eliminarORestaurar','deleteOrRestore')->name('usuarios.deleteOrRestore');
 });

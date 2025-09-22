@@ -24,6 +24,8 @@
             @yield('content')
         </div>
     </main>
+    
+    @include('Layouts.modalSignOut')
 
     @include('Layouts.footer')
 

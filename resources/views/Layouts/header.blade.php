@@ -2,20 +2,30 @@
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start fw-bold">
             <i class="fa-duotone fa-solid fa-user-alien fa-lg"></i> {{ session('nombreUsuario') }}
+            &nbsp;
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="#" class="nav-link active"><i class="fa fa-dashboard"></i> Panel</a></li>
-                <li><a href="#" class="nav-link px-2 link-body-emphasis"><i class="fa fa-user-tie"></i>
-                        Empleados</a></li>
-                <li><a href="#" class="nav-link px-2 link-body-emphasis"><i class="fa fa-user"></i>
-                        Usuarios</a></li>
-                <li><a href="#" class="nav-link px-2 link-body-emphasis"><i class="fa fa-users"></i>
-                        Clientes</a></li>
-                <li><a href="#" class="nav-link px-2 link-body-emphasis"><i class="fa fa-tags"></i>
-                        Marcas</a></li>
-                <li><a href="#" class="nav-link px-2 link-body-emphasis"><i class="fa fa-building"></i>
-                        Empresas</a></li>
-                <li><a href="#" class="nav-link px-2 link-body-emphasis"><i class="fa fa-cart-shopping"></i>
-                        Ventas</a></li>
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('panel') ? 'active' : '' }}" aria-current="page"
+                            href="{{ route('dashboard') }}"><i class="fa fa-home"></i>
+                            Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('usuarios') ? 'active' : '' }}" aria-current="page"
+                            href="{{ route('usuarios.index') }}"><i class="fa fa-user-tie"></i>
+                            Usuarios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('empleados') ? 'active' : '' }}" aria-current="page"
+                            href="{{ route('usuarios.index') }}"><i class="fa fa-user-tag"></i>
+                            Empleados</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('clientes') ? 'active' : '' }}" aria-current="page"
+                            href="{{ route('usuarios.index') }}"><i class="fa fa-address-card"></i>
+                            Clientes</a>
+                    </li>
+                </ul>
             </ul>
             <div class="dropdown text-end"> <a href="#"
                     class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
@@ -27,7 +37,10 @@
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item" href="#"><i class="fa fa-sign-out"></i> Cerrar sesión</a>
+                    </li>
+                    <li><button type="button" class="dropdown-item" data-bs-toggle="modal"
+                            data-bs-target="#modalSignOut">
+                            <i class="fa fa-sign-out"></i> Cerrar sesión</button>
                     </li>
                 </ul>
             </div>
