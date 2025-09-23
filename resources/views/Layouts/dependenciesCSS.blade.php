@@ -6,3 +6,5 @@
 <link href="{{ asset('/public/dependencies/datatables-net/datatables.min.css') }}" rel="stylesheet">
 <!-- Select2 CSS -->
 <link href="{{ asset('/public/dependencies/select2/css/select2.min.css') }}" rel="stylesheet">
+<!-- Custom CSS -->
+<link href="{{ asset('/public/custom.css') }}" rel="stylesheet">

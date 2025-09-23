@@ -8,7 +8,7 @@
 
     <h2 class="text-info fw-bold">Lista de empleados</h2>
 
-    <p>Nota: para que un empleado acceda al manejo del sistema se le debe crear un usuario, si desea hacerlo haga clic <a
+    <p>Nota: para que un empleado acceda al manejo del sistema se le debe crear un <b>usuario</b>, si desea hacerlo haga clic <a
             href="{{ route('usuarios.index') }}">aquí.</a></p>
 
     <div class="card p-3 mb-3">

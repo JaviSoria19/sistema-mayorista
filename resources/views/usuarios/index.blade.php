@@ -8,7 +8,7 @@
 
     <h2 class="text-info fw-bold">Lista de usuarios</h2>
 
-    <p>Nota: para que un usuario pueda ser registrado, previamente se le debe crear un empleado, si desea hacerlo haga clic <a
+    <p>Nota: para que un usuario pueda ser registrado, previamente se le debe crear un <b>empleado</b>, si desea hacerlo haga clic <a
             href="{{ route('empleados.index') }}">aquí.</a></p>
 
     <div class="card p-3 mb-3">

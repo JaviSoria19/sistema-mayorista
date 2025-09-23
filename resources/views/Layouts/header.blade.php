@@ -7,8 +7,8 @@
                 <ul class="nav nav-pills">
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('panel') ? 'active' : '' }}" aria-current="page"
-                            href="{{ route('dashboard') }}"><i class="fa-solid fa-duotone  fa-home"></i>
-                            Inicio</a>
+                            href="{{ route('dashboard') }}"><i class="fa-solid fa-duotone fa-dashboard"></i>
+                            Panel</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('empleados') ? 'active' : '' }}" aria-current="page"
