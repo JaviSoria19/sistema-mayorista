@@ -277,8 +277,16 @@
                         }
                     },
                     error: function(xhr) {
-                        console.error(xhr.responseText);
-                        Swal.fire('Error', 'Ocurrió un error al intentar la acción', 'error');
+                        //console.error(xhr.responseText);
+                        //console.error(JSON.parse(xhr.responseText));
+
+                        const erroresConcatenados = Object.values(JSON.parse(xhr.responseText)
+                                .errors)
+                            .flatMap(errores => errores)
+                            .join('<br>');
+                            
+                        Swal.fire('Error', 'Ocurrió un error al intentar la acción: <br>' +
+                            erroresConcatenados, 'error');
                     }
                 });
             });
@@ -330,8 +338,8 @@
         $(document).ready(function() {
             $('#empleado').select2({
                 language: "es",
-                dropdownCssClass: "{{ session('temaPreferido') == 'dark' ? bg - dark : '' }}",
-                selectionCssClass: "{{ session('temaPreferido') == 'dark' ? bg - dark : '' }}",
+                dropdownCssClass: "{{ session('temaPreferido') == 'dark' ? 'bg-dark' : '' }}",
+                selectionCssClass: "{{ session('temaPreferido') == 'dark' ? 'bg-dark' : '' }}",
                 dropdownParent: $('#modalCreateOrEdit')
             });
             document.querySelectorAll('.toggle-password').forEach(btn => {
