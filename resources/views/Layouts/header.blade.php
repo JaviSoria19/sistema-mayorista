@@ -32,8 +32,14 @@
                     aria-expanded="false"> <img src="https://github.com/JaviSoria19.png" alt="mdo" width="32"
                         height="32" class="rounded-circle"> </a>
                 <ul class="dropdown-menu text-small" style="">
-                    <li><a class="dropdown-item" href="{{ route('parametros.index') }}"><i class="fa-solid fa-duotone fa-sliders"></i> Parámetros</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-duotone fa-alien"></i> Mi perfil</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-duotone fa-alien"></i>
+                            {{ session('nombreUsuario') }}</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item {{ request()->is('parametros') ? 'active' : '' }}"
+                            href="{{ route('parametros.index') }}"><i class="fa-solid fa-duotone fa-sliders"></i>
+                            Parámetros</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
