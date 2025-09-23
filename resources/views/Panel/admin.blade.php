@@ -63,7 +63,7 @@
                 </div>
 
                 <div class="col d-flex justify-content-center">
-                    <a class="btn btn-sq-lg btn-secondary" href="#">
+                    <a class="btn btn-sq-lg btn-secondary" href="{{ route('parametros.index') }}">
                         <div>
                             <i class="fa-solid fa-duotone fa-sliders fa-2xl"></i><br />Parámetros
                         </div>

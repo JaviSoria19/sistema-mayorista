@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EmpleadoValidation;
 use App\Models\Empleado;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class EmpleadoController extends Controller
 {

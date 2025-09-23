@@ -2,8 +2,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\EmpleadoController;
-
-
+use App\Http\Controllers\ParametroController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,10 +37,16 @@ Route::controller(UsuarioController::class)->group(function(){
     Route::put('usuarios/{usuario}','update')->name('usuarios.update');
     Route::patch('usuarios/{usuario}','deleteOrRestore')->name('usuarios.deleteOrRestore');
 });
+
 Route::controller(EmpleadoController::class)->group(function(){
     Route::get('empleados','view_index')->name('empleados.index');
     Route::get('empleados/listar','listarEmpleados')->name('empleados.listar');
     Route::get('empleados/{empleado}','mostrarEmpleado')->name('empleados.mostrar');
     Route::post('empleados','create')->name('empleados.create');
     Route::put('empleados/{empleado}','update')->name('empleados.update');
+});
+
+Route::controller(ParametroController::class)->group(function(){
+    Route::get('parametros','view_index')->name('parametros.index');
+    Route::put('parametros/{parametro}','update')->name('parametros.update');
 });

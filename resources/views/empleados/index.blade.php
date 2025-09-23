@@ -8,8 +8,8 @@
 
     <h2 class="text-info fw-bold">Lista de empleados</h2>
 
-    <p>Nota: para que un empleado acceda al manejo del sistema se le debe crear un <b>usuario</b>, si desea hacerlo haga clic <a
-            href="{{ route('usuarios.index') }}">aquí.</a></p>
+    <p>Nota: para que un empleado acceda al manejo del sistema se le debe crear un <b>usuario</b>, si desea hacerlo haga
+        clic <a href="{{ route('usuarios.index') }}">aquí.</a></p>
 
     <div class="card p-3 mb-3">
         <p>Seleccione una opción para <i class="fa-solid fa-duotone fa-file-export"></i> exportar o <i
@@ -39,7 +39,8 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalCreateOrEdit_Title"><i class="fa-solid fa-duotone fa-plus"></i> CREAR EMPLEADO</h1>
+                    <h1 class="modal-title fs-5" id="modalCreateOrEdit_Title"><i class="fa-solid fa-duotone fa-plus"></i>
+                        CREAR EMPLEADO</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -57,7 +58,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
                             class="fa-solid fa-duotone fa-close"></i>Cerrar</button>
-                    <button type="button" id="btnGuardar" class="btn btn-primary"><i class="fa-solid fa-duotone fa-save"></i>
+                    <button type="button" id="btnGuardar" class="btn btn-primary"><i
+                            class="fa-solid fa-duotone fa-save"></i>
                         Guardar</button>
                 </div>
             </div>
@@ -160,7 +162,8 @@
                     $('#formCreateOrEdit input[name="nombreEmpleado"]').val(empleado.data
                         .nombreEmpleado);
                     const titleElement = document.getElementById('modalCreateOrEdit_Title');
-                    titleElement.innerHTML = '<i class="fa-solid fa-duotone fa-edit"></i> EDITAR EMPLEADO';
+                    titleElement.innerHTML =
+                        '<i class="fa-solid fa-duotone fa-edit"></i> EDITAR EMPLEADO';
                     $('#modalCreateOrEdit').modal('show');
                 });
             });
@@ -192,8 +195,16 @@
                         }
                     },
                     error: function(xhr) {
-                        console.error(xhr.responseText);
-                        Swal.fire('Error', 'Ocurrió un error al intentar la acción', 'error');
+                        //console.error(xhr.responseText);
+                        //console.error(JSON.parse(xhr.responseText));
+
+                        const erroresConcatenados = Object.values(JSON.parse(xhr.responseText)
+                                .errors)
+                            .flatMap(errores => errores)
+                            .join('<br>');
+
+                        Swal.fire('Error', 'Ocurrió un error al intentar la acción: <br>' +
+                            erroresConcatenados, 'error');
                     }
                 });
             });
