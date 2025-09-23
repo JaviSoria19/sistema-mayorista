@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1 class="text-center text-info fw-bold"><i class="fa-solid fa-duotone fa-dashboard"></i> {{ $headTitle }}</h1>
+    <h1 class="text-center text-info fw-bold"><i class="fa-solid fa-duotone fa-dashboard mx-2"></i>{{ $headTitle }}</h1>
 
-    <h2 class="text-center"><i class="fa-solid fa-duotone fa-door-open"></i> Bienvenido, <span
+    <h2 class="text-center"><i class="fa-solid fa-duotone fa-door-open mx-2"></i>Bienvenido, <span
             class="text-info fw-bold">{{ session('nombreUsuario') }}</span></h2>
 
     <div class="card">

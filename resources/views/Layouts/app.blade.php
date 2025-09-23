@@ -15,7 +15,7 @@
 
 </head>
 
-<body data-bs-theme="dark" class="d-flex flex-column min-vh-100">
+<body data-bs-theme="{{ session('temaPreferido') ? session('temaPreferido') : 'dark' }}" class="d-flex flex-column min-vh-100">
 
     @include('layouts.header')
 

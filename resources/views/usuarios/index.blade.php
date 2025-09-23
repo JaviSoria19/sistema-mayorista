@@ -8,8 +8,8 @@
 
     <h2 class="text-info fw-bold">Lista de usuarios</h2>
 
-    <p>Nota: para que un usuario pueda ser registrado, previamente se le debe crear un <b>empleado</b>, si desea hacerlo haga clic <a
-            href="{{ route('empleados.index') }}">aquí.</a></p>
+    <p>Nota: para que un usuario pueda ser registrado, previamente se le debe crear un <b>empleado</b>, si desea hacerlo
+        haga clic <a href="{{ route('empleados.index') }}">aquí.</a></p>
 
     <div class="card p-3 mb-3">
         <p>Seleccione una opción para <i class="fa-solid fa-duotone fa-file-export"></i> exportar o <i
@@ -24,6 +24,7 @@
                 <th>Nombre Usuario</th>
                 <th>Empleado</th>
                 <th>Estado</th>
+                <th>Tema</th>
                 <th>F. Registro</th>
                 <th>F. Actualización</th>
                 <th>Modificado Por</th>
@@ -40,7 +41,8 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalCreateOrEdit_Title"><i class="fa-solid fa-duotone fa-plus"></i> CREAR USUARIO</h1>
+                    <h1 class="modal-title fs-5" id="modalCreateOrEdit_Title"><i class="fa-solid fa-duotone fa-plus"></i>
+                        CREAR USUARIO</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -62,6 +64,16 @@
                                     <option value="{{ $empleado->idEmpleado }}">{{ $empleado->nombreEmpleado }}
                                         {{ $empleado->estado == '2' ? '(Ya tiene usuario)' : '(Sin usuario)' }}</option>
                                 @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="temaPreferido" class="form-label">Tema preferido <span
+                                    class="text-danger">*</span></label><br>
+                            <select style="width: 100%" class="form-select" id="temaPreferido" name="temaPreferido"
+                                required>
+                                <option value="light" selected>CLARO</option>
+                                <option value="dark">OSCURO</option>
                             </select>
                         </div>
 
@@ -94,7 +106,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
                             class="fa-solid fa-duotone fa-close"></i>Cerrar</button>
-                    <button type="button" id="btnGuardar" class="btn btn-primary"><i class="fa-solid fa-duotone fa-save"></i>
+                    <button type="button" id="btnGuardar" class="btn btn-primary"><i
+                            class="fa-solid fa-duotone fa-save"></i>
                         Guardar</button>
                 </div>
             </div>
@@ -136,6 +149,19 @@
                                 return '<span class="badge bg-success">Activo</span>';
                             } else {
                                 return '<span class="badge bg-danger">Inactivo</span>';
+                            }
+                        }
+                    },
+                    {
+                        data: "temaPreferido",
+                        render: function(data, type, row) {
+                            switch (data) {
+                                case 'dark':
+                                    return 'OSCURO';
+                                case 'light':
+                                    return 'CLARO';
+                                default:
+                                    return data;
                             }
                         }
                     },
@@ -190,6 +216,8 @@
                 $('#formCreateOrEdit input[name="nombreUsuario"]').val('');
                 $('#formCreateOrEdit select[name="idEmpleado"]').val('')
                     .trigger('change');
+                $('#formCreateOrEdit select[name="temaPreferido"]').val('light')
+                    .trigger('change');
                 $('#formCreateOrEdit input[name="contrasenha"]').val('');
                 $('#formCreateOrEdit input[name="recontrasenha"]').val('');
 
@@ -209,11 +237,15 @@
                         .nombreUsuario);
                     $('#formCreateOrEdit select[name="idEmpleado"]').val(usuario.data.idEmpleado)
                         .trigger('change');
+                    $('#formCreateOrEdit select[name="temaPreferido"]').val(usuario.data
+                            .temaPreferido)
+                        .trigger('change');
                     $('#formCreateOrEdit input[name="contrasenha"]').val(''); // opcional, vacío
                     $('#formCreateOrEdit input[name="recontrasenha"]').val('');
 
                     const titleElement = document.getElementById('modalCreateOrEdit_Title');
-                    titleElement.innerHTML = '<i class="fa-solid fa-duotone fa-edit"></i> EDITAR USUARIO';
+                    titleElement.innerHTML =
+                        '<i class="fa-solid fa-duotone fa-edit"></i> EDITAR USUARIO';
                     $('#modalCreateOrEdit').modal('show');
                 });
             });
@@ -298,8 +330,8 @@
         $(document).ready(function() {
             $('#empleado').select2({
                 language: "es",
-                dropdownCssClass: 'bg-dark',
-                selectionCssClass: 'bg-dark',
+                dropdownCssClass: "{{ session('temaPreferido') == 'dark' ? bg - dark : '' }}",
+                selectionCssClass: "{{ session('temaPreferido') == 'dark' ? bg - dark : '' }}",
                 dropdownParent: $('#modalCreateOrEdit')
             });
             document.querySelectorAll('.toggle-password').forEach(btn => {

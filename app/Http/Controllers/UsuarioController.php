@@ -85,6 +85,7 @@ class UsuarioController extends Controller
         $usuario->idEmpleado = $request->idEmpleado;
         $usuario->nombreUsuario = strtoupper($request->nombreUsuario);
         $usuario->contrasenha = helper_encrypt($request->contrasenha);
+        $usuario->temaPreferido = $request->temaPreferido;
         $usuario->save();
 
         $empleado = (new Empleado())->getEmpleado($request->idEmpleado);
@@ -110,6 +111,7 @@ class UsuarioController extends Controller
         if ($request->contrasenha) {
             $usuario->contrasenha = helper_encrypt($request->contrasenha);
         }
+        $usuario->temaPreferido = $request->temaPreferido;
         $usuario->modificadoPor = session('idUsuario');
         $usuario->save();
 
@@ -144,25 +146,25 @@ class UsuarioController extends Controller
 
     public function verificar(Request $request)
     {
-        $Usuario = (new Usuario())->login(
+        $usuario = (new Usuario())->login(
             trim(strtoupper($request->nombreUsuario))
         );
 
-        if (!$Usuario) {
+        if (!$usuario) {
             return redirect()->route('login')->with([
                 'mensaje' => 'EL USUARIO NO EXISTE.',
                 'loginNombreUsuario' => $request->nombreUsuario,
                 'loginContrasenha' => $request->contrasenha,
             ]);
         }
-        if ($Usuario->estado == '0') {
+        if ($usuario->estado == '0') {
             return redirect()->route('login')->with([
                 'mensaje' => 'EL USUARIO NO TIENE ACCESO AL SISTEMA.',
                 'loginNombreUsuario' => $request->nombreUsuario,
                 'loginContrasenha' => $request->contrasenha,
             ]);
         }
-        if ($request->contrasenha != helper_decrypt($Usuario->contrasenha)) {
+        if ($request->contrasenha != helper_decrypt($usuario->contrasenha)) {
             return redirect()->route('login')->with([
                 'mensaje' => 'LA CONTRASEÑA ES INCORRECTA.',
                 'loginNombreUsuario' => $request->nombreUsuario,
@@ -172,9 +174,10 @@ class UsuarioController extends Controller
         //Si el usuario y la contraseña son correctos, se crea la sesión y se redirige al panel de administración.
         session([
             'tieneAcceso' => true,
-            'idUsuario' => $Usuario->idUsuario,
-            'idEmpleado' => $Usuario->idEmpleado,
-            'nombreUsuario' => $Usuario->nombreUsuario,
+            'idUsuario' => $usuario->idUsuario,
+            'idEmpleado' => $usuario->idEmpleado,
+            'nombreUsuario' => $usuario->nombreUsuario,
+            'temaPreferido' => $usuario->temaPreferido,
         ]);
         return redirect()->route('dashboard');
     }
