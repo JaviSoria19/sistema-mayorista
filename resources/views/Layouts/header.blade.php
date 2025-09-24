@@ -23,7 +23,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('clientes') ? 'active' : '' }}" aria-current="page"
-                            href="#"><i class="fa-solid fa-duotone fa-address-card"></i>
+                            href="{{ route('clientes.index') }}"><i class="fa-solid fa-duotone fa-address-card"></i>
                             Clientes</a>
                     </li>
                 </ul>

@@ -15,17 +15,16 @@ class Empleado extends Model
     const CREATED_AT = 'fechaRegistro';
     const UPDATED_AT = 'fechaActualizacion';
     
+    /** Relación con atributo de auditoría */
     public function editor(){
         return $this->belongsTo(Usuario::class, 'modificadoPor', 'idUsuario');
     }
-
-    /**Función que retorna todos los registros de la tabla 'empleados'.*/
+    
     public function getAllEmpleados()
     {
         return Empleado::with('editor')->orderBy('idEmpleado','ASC')->get();
     }
-
-    /**Función que retorna un objeto del modelo Empleado.*/
+    
     public function getEmpleado($idEmpleado)
     {
         return Empleado::with('editor')->find($idEmpleado);

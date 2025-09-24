@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MarcaValidation;
-use App\Models\Empleado;
 use App\Models\Marca;
 use Illuminate\Http\Request;
 
@@ -75,7 +74,7 @@ class MarcaController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Usuario actualizado correctamente',
+            'message' => 'Marca actualizada correctamente',
             'marca' => $marca
         ]);
     }

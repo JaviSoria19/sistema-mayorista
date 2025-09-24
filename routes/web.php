@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ClienteController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\EmpleadoController;
@@ -60,4 +61,13 @@ Route::controller(MarcaController::class)->group(function () {
     Route::post('marcas', 'create')->name('marcas.create');
     Route::put('marcas/{marca}', 'update')->name('marcas.update');
     Route::patch('marcas/{marca}', 'deleteOrRestore')->name('marcas.deleteOrRestore');
+});
+
+Route::controller(ClienteController::class)->group(function () {
+    Route::get('clientes', 'view_index')->name('clientes.index');
+    Route::get('clientes/listar', 'listarClientes')->name('clientes.listar');
+    Route::get('clientes/{cliente}', 'mostrarCliente')->name('clientes.mostrar');
+    Route::post('clientes', 'create')->name('clientes.create');
+    Route::put('clientes/{cliente}', 'update')->name('clientes.update');
+    Route::patch('clientes/{cliente}', 'deleteOrRestore')->name('clientes.deleteOrRestore');
 });

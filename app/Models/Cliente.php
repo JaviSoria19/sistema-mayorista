@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Marca extends Model
+class Cliente extends Model
 {
     use HasFactory;
 
-    protected $table = 'marcas';
-    protected $primaryKey = 'idMarca';
+    protected $table = 'clientes';
+    protected $primaryKey = 'idCliente';
 
     const CREATED_AT = 'fechaRegistro';
     const UPDATED_AT = 'fechaActualizacion';
@@ -19,14 +19,14 @@ class Marca extends Model
     public function editor(){
         return $this->belongsTo(Usuario::class, 'modificadoPor', 'idUsuario');
     }
-
-    public function getAllMarcas()
+    
+    public function getAllClientes()
     {
-        return Marca::with('editor')->orderBy('idMarca','ASC')->get();
+        return Cliente::with('editor')->orderBy('idCliente','ASC')->get();
     }
     
-    public function getMarca($idMarca)
+    public function getCliente($idCliente)
     {
-        return Marca::with('editor')->find($idMarca);
+        return Cliente::with('editor')->find($idCliente);
     }
 }

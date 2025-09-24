@@ -15,11 +15,11 @@ class Parametro extends Model
     const CREATED_AT = null;
     const UPDATED_AT = null;
 
+    /** Relación con atributo de auditoría */
     public function editor(){
         return $this->belongsTo(Usuario::class, 'modificadoPor', 'idUsuario');
     }
-
-    /**Función que retorna el objeto del modelo Parametro.*/
+    
     public function getParametro()
     {
         return Parametro::with('editor')->find(1);

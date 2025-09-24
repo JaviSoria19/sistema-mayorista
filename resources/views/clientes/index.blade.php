@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1 class="text-center text-info fw-bold"><i class="fa-solid fa-duotone fa-industry"></i> {{ $headTitle }}</h1>
+    <h1 class="text-center text-info fw-bold"><i class="fa-solid fa-duotone fa-address-card"></i> {{ $headTitle }}</h1>
 
     <button type="button" class="btn btn-success mb-3 btn-crear" data-bs-toggle="modal" data-bs-target="#modalCreateOrEdit">
-        <i class="fa-solid fa-duotone fa-plus"></i> Crear marca</button>
+        <i class="fa-solid fa-duotone fa-plus"></i> Crear cliente</button>
 
-    <h2 class="text-info fw-bold">Lista de marcas</h2>
+    <h2 class="text-info fw-bold">Lista de clientes</h2>
 
     <div class="card p-3 mb-3">
         <p>Seleccione una opción para <i class="fa-solid fa-duotone fa-file-export"></i> exportar o <i
@@ -18,8 +18,10 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th>Marca</th>
-                <th>Bono (%)</th>
+                <th>Cliente</th>
+                <th>Celular</th>
+                <th>C.I.</th>
+                <th>Procedencia</th>
                 <th>Estado</th>
                 <th>F. Registro</th>
                 <th>F. Actualización</th>
@@ -31,32 +33,43 @@
 
     <div class="mb-3"></div>
 
-    <!-- Modal para crear y editar marcas -->
+    <!-- Modal para crear y editar clientes -->
     <div class="modal fade" id="modalCreateOrEdit" tabindex="-1" aria-labelledby="modalCreateOrEdit_Title"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="modalCreateOrEdit_Title"><i class="fa-solid fa-duotone fa-plus"></i>
-                        CREAR MARCA</h1>
+                        CREAR CLIENTE</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="formCreateOrEdit">
-                        <!-- input de idMarca en caso de editar -->
-                        <input type="hidden" name="idMarca" value="0">
+                        <!-- input de idCliente en caso de editar -->
+                        <input type="hidden" name="idCliente" value="0">
 
                         <div class="mb-3">
-                            <label for="nombreMarca" class="form-label">Nombre de marca <span
+                            <label for="nombreCliente" class="form-label">Nombre de cliente <span
                                     class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="nombreMarca" name="nombreMarca" required>
+                            <input type="text" class="form-control" id="nombreCliente" name="nombreCliente" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="bonoMarcaPorcentaje" class="form-label">Bono (%) <span
+                            <label for="celular" class="form-label">Celular <span
                                     class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="bonoMarcaPorcentaje" name="bonoMarcaPorcentaje"
-                                required>
+                            <input type="number" class="form-control" id="celular" name="celular" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="cedulaIdentidad" class="form-label">Cédula de Identidad <span
+                                    class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="cedulaIdentidad" name="cedulaIdentidad" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="procedencia" class="form-label">Procedencia <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="procedencia" name="procedencia" required>
                         </div>
                     </form>
                 </div>
@@ -78,7 +91,7 @@
             $("#dataTable").DataTable({
                 processing: true,
                 ajax: {
-                    url: "{{ route('marcas.listar') }}", // Ruta de Laravel
+                    url: "{{ route('clientes.listar') }}", // Ruta de Laravel
                     type: "GET",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -94,10 +107,16 @@
                         }
                     },
                     {
-                        data: "nombreMarca",
+                        data: "nombreCliente",
                     },
                     {
-                        data: "bonoMarcaPorcentaje",
+                        data: "celular",
+                    },
+                    {
+                        data: "cedulaIdentidad",
+                    },
+                    {
+                        data: "procedencia",
                     },
                     {
                         data: "estado",
@@ -135,11 +154,11 @@
                             return `
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-warning btn-sm btn-editar" 
-                                data-id="${row.idMarca}" data-toggle="tooltip" title="Editar">
+                                data-id="${row.idCliente}" data-toggle="tooltip" title="Editar">
                             <i class="fa-duotone fa-solid fa-edit"></i>
                         </button>
                         <button type="button" class="btn btn-${row.estado == 1 ? 'danger' : 'success'} btn-sm btn-cambiar-estado" 
-                                data-id="${row.idMarca}" data-estado="${row.estado}" data-nombre="${row.nombreMarca}" 
+                                data-id="${row.idCliente}" data-estado="${row.estado}" data-nombre="${row.nombreCliente}" 
                                 data-toggle="tooltip" title="${row.estado == 1 ? 'Deshabilitar' : 'Habilitar'}">
                             <i class="fa-duotone fa-solid fa-toggle-${row.estado == 1 ? 'off' : 'on'}"></i>
                         </button>
@@ -155,12 +174,14 @@
 
 
             $(document).on('click', '.btn-crear', function() {
-                $('#formCreateOrEdit input[name="idMarca"]').val(0);
-                $('#formCreateOrEdit input[name="nombreMarca"]').val('');
-                $('#formCreateOrEdit input[name="bonoMarcaPorcentaje"]').val('0');
-
+                $('#formCreateOrEdit input[name="idCliente"]').val(0);
+                $('#formCreateOrEdit input[name="nombreCliente"]').val('');
+                $('#formCreateOrEdit input[name="celular"]').val('');
+                $('#formCreateOrEdit input[name="cedulaIdentidad"]').val('');
+                $('#formCreateOrEdit input[name="procedencia"]').val('');
+                
                 const titleElement = document.getElementById('modalCreateOrEdit_Title');
-                titleElement.innerHTML = '<i class="fa-solid fa-duotone fa-plus"></i> CREAR MARCA';
+                titleElement.innerHTML = '<i class="fa-solid fa-duotone fa-plus"></i> CREAR CLIENTE';
                 $('#modalCreateOrEdit').modal('show');
             });
 
@@ -169,27 +190,29 @@
             $(document).on('click', '.btn-editar', function() {
                 const id = $(this).data('id');
 
-                $.get("{{ route('marcas.index') . '/' }}" + id, function(marca) {
-                    $('#formCreateOrEdit input[name="idMarca"]').val(marca.data.idMarca);
-                    $('#formCreateOrEdit input[name="nombreMarca"]').val(marca.data.nombreMarca);
-                    $('#formCreateOrEdit input[name="bonoMarcaPorcentaje"]').val(marca.data
-                        .bonoMarcaPorcentaje);
+                $.get("{{ route('clientes.index') . '/' }}" + id, function(cliente) {
+                    $('#formCreateOrEdit input[name="idCliente"]').val(cliente.data.idCliente);
+                    $('#formCreateOrEdit input[name="nombreCliente"]').val(cliente.data.nombreCliente);
+                    $('#formCreateOrEdit input[name="celular"]').val(cliente.data.celular);
+                    $('#formCreateOrEdit input[name="cedulaIdentidad"]').val(cliente.data.cedulaIdentidad);
+                    $('#formCreateOrEdit input[name="procedencia"]').val(cliente.data.procedencia);
+
                     const titleElement = document.getElementById('modalCreateOrEdit_Title');
                     titleElement.innerHTML =
-                        '<i class="fa-solid fa-duotone fa-edit"></i> EDITAR MARCA';
+                        '<i class="fa-solid fa-duotone fa-edit"></i> EDITAR CLIENTE';
                     $('#modalCreateOrEdit').modal('show');
                 });
             });
 
 
             $(document).on('click', '#btnGuardar', function() {
-                const idMarca = $('#formCreateOrEdit input[name="idMarca"]').val();
-                const url = idMarca == 0 ?
-                    "{{ route('marcas.create') }}" // POST -> crear
+                const idCliente = $('#formCreateOrEdit input[name="idCliente"]').val();
+                const url = idCliente == 0 ?
+                    "{{ route('clientes.create') }}" // POST -> crear
                     :
-                    "{{ route('marcas.index') . '/' }}" + idMarca; // PUT -> actualizar
+                    "{{ route('clientes.index') . '/' }}" + idCliente; // PUT -> actualizar
 
-                const type = idMarca == 0 ? 'POST' : 'PUT';
+                const type = idCliente == 0 ? 'POST' : 'PUT';
 
                 $.ajax({
                     url: url,
@@ -231,7 +254,7 @@
 
                 Swal.fire({
                     title: `¡ATENCIÓN!`,
-                    text: `¿Estás seguro de ${accion} la marca ${nombre}?`,
+                    text: `¿Estás seguro de ${accion} el/la cliente ${nombre}?`,
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -241,13 +264,13 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: "{{ route('marcas.index') . '/' }}" + id,
+                            url: "{{ route('clientes.index') . '/' }}" + id,
                             type: "PATCH",
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                             },
                             data: {
-                                idMarca: id
+                                idCliente: id
                             },
                             success: function(response) {
                                 Swal.fire('Actualizado', response.message, 'success');
@@ -255,7 +278,7 @@
                             },
                             error: function(xhr) {
                                 console.error(xhr.responseText);
-                                Swal.fire('Error', `No se pudo ${accion} la marca`,
+                                Swal.fire('Error', `No se pudo ${accion} el/la cliente`,
                                     'error');
                             }
                         });
