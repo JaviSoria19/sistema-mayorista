@@ -26,11 +26,21 @@
                             href="{{ route('clientes.index') }}"><i class="fa-solid fa-duotone fa-address-card"></i>
                             Clientes</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('marcas') ? 'active' : '' }}" aria-current="page"
+                            href="{{ route('marcas.index') }}"><i class="fa-solid fa-duotone fa-industry"></i>
+                            Marcas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('empresas') ? 'active' : '' }}" aria-current="page"
+                            href="{{ route('empresas.index') }}"><i class="fa-solid fa-duotone fa-building"></i>
+                            Empresas</a>
+                    </li>
                 </ul>
             </ul>
             <div class="dropdown text-end"> <a href="#"
                     class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
-                    aria-expanded="false"> <img src="https://github.com/JaviSoria19.png" alt="mdo" width="32"
+                    aria-expanded="false"> <img src="{{ URL::to('/') }}/public/img/user.jpeg" alt="mdo" width="32"
                         height="32" class="rounded-circle"> </a>
                 <ul class="dropdown-menu text-small" style="">
                     <li><a class="dropdown-item" href="#"><i class="fa-solid fa-duotone fa-alien"></i>

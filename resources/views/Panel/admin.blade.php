@@ -97,7 +97,7 @@
                 </div>
 
                 <div class="col d-flex justify-content-center">
-                    <a class="btn btn-sq-lg btn-info" href="#">
+                    <a class="btn btn-sq-lg btn-info" href="{{ route('empresas.index') }}">
                         <div>
                             <i class="fa-solid fa-duotone fa-building fa-2xl"></i><br />Empresas
                         </div>
