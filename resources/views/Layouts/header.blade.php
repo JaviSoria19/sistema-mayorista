@@ -10,6 +10,7 @@
                             href="{{ route('dashboard') }}"><i class="fa-solid fa-duotone fa-dashboard"></i>
                             Panel</a>
                     </li>
+                    
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('empleados') ? 'active' : '' }}" aria-current="page"
                             href="{{ route('empleados.index') }}"><i class="fa-solid fa-duotone fa-user-tag"></i>
@@ -22,7 +23,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('clientes') ? 'active' : '' }}" aria-current="page"
-                            href="{{ route('usuarios.index') }}"><i class="fa-solid fa-duotone fa-address-card"></i>
+                            href="#"><i class="fa-solid fa-duotone fa-address-card"></i>
                             Clientes</a>
                     </li>
                 </ul>

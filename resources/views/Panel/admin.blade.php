@@ -55,7 +55,7 @@
                 </div>
 
                 <div class="col d-flex justify-content-center">
-                    <a class="btn btn-sq-lg btn-info" href="#">
+                    <a class="btn btn-sq-lg btn-info" href="{{ route('marcas.index') }}">
                         <div>
                             <i class="fa-solid fa-duotone fa-industry fa-2xl"></i><br />Marcas
                         </div>
@@ -70,7 +70,8 @@
                     </a>
                 </div>
             </div>
-            <div class="row mb-3">
+            
+            <div class="row">
                 <div class="col d-flex justify-content-center">
                     <a class="btn btn-sq-lg btn-info" href="{{ route('empleados.index') }}">
                         <div>
