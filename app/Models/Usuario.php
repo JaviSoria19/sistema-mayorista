@@ -17,7 +17,7 @@ class Usuario extends Authenticatable
     const CREATED_AT = 'fechaRegistro';
     const UPDATED_AT = 'fechaActualizacion';
 
-    /** Relación con empleados */
+    /** Relación FK con empleados */
     public function empleado()
     {
         return $this->belongsTo(Empleado::class, 'idEmpleado', 'idEmpleado');

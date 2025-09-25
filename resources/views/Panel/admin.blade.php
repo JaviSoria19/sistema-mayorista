@@ -55,14 +55,6 @@
                 </div>
 
                 <div class="col d-flex justify-content-center">
-                    <a class="btn btn-sq-lg btn-info" href="{{ route('marcas.index') }}">
-                        <div>
-                            <i class="fa-solid fa-duotone fa-industry fa-2xl"></i><br />Marcas
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col d-flex justify-content-center">
                     <a class="btn btn-sq-lg btn-secondary" href="{{ route('parametros.index') }}">
                         <div>
                             <i class="fa-solid fa-duotone fa-sliders fa-2xl"></i><br />Parámetros
@@ -71,22 +63,8 @@
                 </div>
             </div>
             
-            <div class="row">
-                <div class="col d-flex justify-content-center">
-                    <a class="btn btn-sq-lg btn-info" href="{{ route('empleados.index') }}">
-                        <div>
-                            <i class="fa-solid fa-duotone fa-user-tag fa-2xl"></i><br />Empleados
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col d-flex justify-content-center">
-                    <a class="btn btn-sq-lg btn-info" href="{{ route('usuarios.index') }}">
-                        <div>
-                            <i class="fa-solid fa-duotone fa-user-tie fa-2xl"></i><br />Usuarios
-                        </div>
-                    </a>
-                </div>
+            <div class="row mb-3">
+                
 
                 <div class="col d-flex justify-content-center">
                     <a class="btn btn-sq-lg btn-info" href="{{ route('clientes.index') }}">
@@ -105,6 +83,22 @@
                 </div>
 
                 <div class="col d-flex justify-content-center">
+                    <a class="btn btn-sq-lg btn-info" href="{{ route('saldos-empresas.index') }}">
+                        <div>
+                            <i class="fa-solid fa-duotone fa-money-check-dollar-pen fa-2xl"></i><br />Saldos de empresas
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col d-flex justify-content-center">
+                    <a class="btn btn-sq-lg btn-info" href="{{ route('marcas.index') }}">
+                        <div>
+                            <i class="fa-solid fa-duotone fa-industry fa-2xl"></i><br />Marcas
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col d-flex justify-content-center">
                     <a class="btn btn-sq-lg btn-info" href="#">
                         <div>
                             <i class="fa-solid fa-duotone fa-file-pen fa-2xl"></i><br />Pedidos
@@ -115,20 +109,44 @@
                 <div class="col d-flex justify-content-center">
                     <a class="btn btn-sq-lg btn-info" href="#">
                         <div>
+                            <i class="fa-solid fa-duotone fa-chart-user fa-2xl"></i><br />Reportes varios
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="row align-left">
+                <div class="col-2 d-flex justify-content-center">
+                    <a class="btn btn-sq-lg btn-info" href="{{ route('empleados.index') }}">
+                        <div>
+                            <i class="fa-solid fa-duotone fa-user-tag fa-2xl"></i><br />Empleados
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-2 d-flex justify-content-center">
+                    <a class="btn btn-sq-lg btn-info" href="{{ route('usuarios.index') }}">
+                        <div>
+                            <i class="fa-solid fa-duotone fa-user-tie fa-2xl"></i><br />Usuarios
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-2 d-flex justify-content-center">
+                    <a class="btn btn-sq-lg btn-info" href="#">
+                        <div>
                             <i class="fa-solid fa-duotone fa-cart-flatbed-boxes fa-2xl"></i><br />Abastecimientos
                         </div>
                     </a>
                 </div>
 
-                <div class="col d-flex justify-content-center">
+                <div class="col-2 d-flex justify-content-center">
                     <a class="btn btn-sq-lg btn-info" href="#">
                         <div>
                             <i class="fa-solid fa-duotone fa-boxes-stacked fa-2xl"></i><br />Productos
                         </div>
                     </a>
                 </div>
-
-                
             </div>
         </div>
 

@@ -36,6 +36,11 @@
                             href="{{ route('empresas.index') }}"><i class="fa-solid fa-duotone fa-building"></i>
                             Empresas</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('saldos-empresas') ? 'active' : '' }}" aria-current="page"
+                            href="{{ route('saldos-empresas.index') }}"><i class="fa-solid fa-duotone fa-money-check-dollar-pen"></i>
+                            Saldos de empresas</a>
+                    </li>
                 </ul>
             </ul>
             <div class="dropdown text-end"> <a href="#"

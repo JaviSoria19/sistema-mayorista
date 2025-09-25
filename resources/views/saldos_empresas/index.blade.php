@@ -1,15 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1 class="text-center text-info fw-bold"><i class="fa-solid fa-duotone fa-user-tie"></i> {{ $headTitle }}</h1>
+    <h1 class="text-center text-info fw-bold"><i class="fa-solid fa-duotone fa-money-check-dollar-pen"></i>
+        {{ $headTitle }}</h1>
 
     <button type="button" class="btn btn-success mb-3 btn-crear" data-bs-toggle="modal" data-bs-target="#modalCreateOrEdit">
-        <i class="fa-solid fa-duotone fa-plus"></i> Crear usuario</button>
+        <i class="fa-solid fa-duotone fa-plus"></i> Crear saldo de empresa</button>
 
-    <h2 class="text-info fw-bold">Lista de usuarios</h2>
-
-    <p>Nota: para que un usuario pueda ser registrado, previamente se le debe crear un <b>empleado</b>, si desea hacerlo
-        haga clic <a href="{{ route('empleados.index') }}">aquí.</a></p>
+    <h2 class="text-info fw-bold">Lista de saldos de empresas</h2>
 
     <div class="card p-3 mb-3">
         <p>Seleccione una opción para <i class="fa-solid fa-duotone fa-file-export"></i> exportar o <i
@@ -21,9 +19,10 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th>Nombre Usuario</th>
-                <th>Empleado</th>
-                <th>Tema</th>
+                <th>Empresa</th>
+                <th>Monto (USD)</th>
+                <th>Pago (USD)</th>
+                <th>Saldo (USD)</th>
                 <th>Estado</th>
                 <th>F. Registro</th>
                 <th>F. Actualización</th>
@@ -35,7 +34,7 @@
 
     <div class="mb-3"></div>
 
-    <!-- Modal para crear y editar usuarios -->
+    <!-- Modal para crear y editar saldos-empresas -->
     <div class="modal fade" id="modalCreateOrEdit" tabindex="-1" aria-labelledby="modalCreateOrEdit_Title"
         aria-hidden="true">
         <div class="modal-dialog">
@@ -47,59 +46,27 @@
                 </div>
                 <div class="modal-body">
                     <form id="formCreateOrEdit">
-                        <!-- input de idUsuario en caso de editar -->
-                        <input type="hidden" name="idUsuario" value="0">
+                        <!-- input de idSaldoEmpresa en caso de editar -->
+                        <input type="hidden" name="idSaldoEmpresa" value="0">
 
                         <div class="mb-3">
-                            <label for="nombreUsuario" class="form-label">Nombre de usuario <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="nombreUsuario" name="nombreUsuario" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="empleado" class="form-label">Empleado <span class="text-danger">*</span></label><br>
-                            <select style="width: 100%" class="form-select" id="empleado" name="idEmpleado" required>
-                                <option value="" disabled selected>Seleccione un empleado</option>
-                                @foreach ($empleados as $empleado)
-                                    <option value="{{ $empleado->idEmpleado }}">{{ $empleado->nombreEmpleado }}
-                                        {{ $empleado->estado == '2' ? '(Ya tiene usuario)' : '(Sin usuario)' }}</option>
+                            <label for="empresa" class="form-label">Empresa <span class="text-danger">*</span></label><br>
+                            <select style="width: 100%" class="form-select" id="empresa" name="idEmpresa" required>
+                                <option value="" disabled selected>Seleccione un empresa</option>
+                                @foreach ($empresas as $empresa)
+                                    <option value="{{ $empresa->idEmpresa }}">{{ $empresa->nombreEmpresa }}</option>
                                 @endforeach
                             </select>
                         </div>
 
                         <div class="mb-3">
-                            <label for="temaPreferido" class="form-label">Tema preferido <span
-                                    class="text-danger">*</span></label><br>
-                            <select style="width: 100%" class="form-select" id="temaPreferido" name="temaPreferido"
-                                required>
-                                <option value="light" selected>CLARO</option>
-                                <option value="dark">OSCURO</option>
-                            </select>
+                            <label for="montoUSD" class="form-label">Monto (USD) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="montoUSD" name="montoUSD" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="contrasenha" class="form-label">Contraseña <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <input type="password" class="form-control" id="contrasenha" name="contrasenha" required>
-                                <button class="btn btn-outline-secondary toggle-password" type="button"
-                                    data-target="contrasenha">
-                                    <i class="fa-solid fa-duotone fa-eye"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="recontrasenha" class="form-label">Repita contraseña <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <input type="password" class="form-control" id="recontrasenha" name="recontrasenha"
-                                    required>
-                                <button class="btn btn-outline-secondary toggle-password" type="button"
-                                    data-target="recontrasenha">
-                                    <i class="fa-solid fa-duotone fa-eye"></i>
-                                </button>
-                            </div>
+                            <label for="pagoUSD" class="form-label">Pago (USD) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="pagoUSD" name="pagoUSD" required>
                         </div>
                     </form>
                 </div>
@@ -121,7 +88,7 @@
             $("#dataTable").DataTable({
                 processing: true,
                 ajax: {
-                    url: "{{ route('usuarios.listar') }}", // Ruta de Laravel
+                    url: "{{ route('saldos-empresas.listar') }}", // Ruta de Laravel
                     type: "GET",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -137,22 +104,19 @@
                         }
                     },
                     {
-                        data: "nombreUsuario",
+                        data: "empresa.nombreEmpresa",
                     },
                     {
-                        data: "empleado.nombreEmpleado",
+                        data: "montoUSD",
                     },
                     {
-                        data: "temaPreferido",
+                        data: "pagoUSD",
+                    },
+                    {
+                        data: null,
                         render: function(data, type, row) {
-                            switch (data) {
-                                case 'dark':
-                                    return 'OSCURO';
-                                case 'light':
-                                    return 'CLARO';
-                                default:
-                                    return data;
-                            }
+                            var saldoUSD = (row.montoUSD - row.pagoUSD).toFixed(2);
+                            return saldoUSD;
                         }
                     },
                     {
@@ -161,7 +125,7 @@
                             if (data == 1) {
                                 return '<span class="badge bg-success">Activo</span>';
                             } else {
-                                return '<span class="badge bg-danger">Inactivo</span>';
+                                return '<span class="badge bg-danger">Archivado</span>';
                             }
                         }
                     },
@@ -178,7 +142,7 @@
                         }
                     },
                     {
-                        data: "modificadoPor",
+                        data: "editor.nombreUsuario",
                         render: function(data, type, row) {
                             return data ? data : '-';
                         }
@@ -191,11 +155,11 @@
                             return `
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-warning btn-sm btn-editar" 
-                                data-id="${row.idUsuario}" data-toggle="tooltip" title="Editar">
+                                data-id="${row.idSaldoEmpresa}" data-toggle="tooltip" title="Editar">
                             <i class="fa-duotone fa-solid fa-edit"></i>
                         </button>
                         <button type="button" class="btn btn-${row.estado == 1 ? 'danger' : 'success'} btn-sm btn-cambiar-estado" 
-                                data-id="${row.idUsuario}" data-estado="${row.estado}" data-nombre="${row.nombreUsuario}" 
+                                data-id="${row.idSaldoEmpresa}" data-estado="${row.estado}" data-nombre="${row.empresa.nombreEmpresa}" 
                                 data-toggle="tooltip" title="${row.estado == 1 ? 'Deshabilitar' : 'Habilitar'}">
                             <i class="fa-duotone fa-solid fa-toggle-${row.estado == 1 ? 'off' : 'on'}"></i>
                         </button>
@@ -204,25 +168,54 @@
                         }
                     }
                 ],
-                @include('datatables.dataTablesGlobalProperties')
+                responsive: true,
+                lengthChange: true,
+                autoWidth: true,
+                colReorder: true,
+                order: [
+                    [0, 'desc']
+                ],
+                pageLength: 10,
+                dom: 'Blfrtip',
+                buttons: [{
+                        extend: 'copy',
+                        className: 'btn btn-secondary'
+                    },
+                    {
+                        extend: 'csv',
+                        className: 'btn btn-success'
+                    },
+                    {
+                        extend: 'excel',
+                        className: 'btn btn-success'
+                    },
+                    {
+                        extend: 'pdf',
+                        className: 'btn btn-danger'
+                    },
+                    {
+                        extend: 'colvis',
+                        className: 'btn btn-info'
+                    },
+                    {
+                        extend: 'searchBuilder',
+                        className: 'btn btn-warning'
+                    },
+                ],
                 @include('datatables.dataTablesLanguageProperty')
             }).buttons().container().appendTo('#dataTableExportButtonsContainer');
 
-
-
             $(document).on('click', '.btn-crear', function() {
                 const id = 0;
-                $('#formCreateOrEdit input[name="idUsuario"]').val(0);
-                $('#formCreateOrEdit input[name="nombreUsuario"]').val('');
-                $('#formCreateOrEdit select[name="idEmpleado"]').val('')
+                $('#formCreateOrEdit input[name="idSaldoEmpresa"]').val(0);
+                $('#formCreateOrEdit select[name="idEmpresa"]').val('')
                     .trigger('change');
-                $('#formCreateOrEdit select[name="temaPreferido"]').val('light')
-                    .trigger('change');
-                $('#formCreateOrEdit input[name="contrasenha"]').val('');
-                $('#formCreateOrEdit input[name="recontrasenha"]').val('');
+                $('#formCreateOrEdit input[name="montoUSD"]').val(0);
+                $('#formCreateOrEdit input[name="pagoUSD"]').val(0);
 
                 const titleElement = document.getElementById('modalCreateOrEdit_Title');
-                titleElement.innerHTML = '<i class="fa-solid fa-duotone fa-plus"></i> CREAR USUARIO';
+                titleElement.innerHTML =
+                    '<i class="fa-solid fa-duotone fa-plus"></i> CREAR SALDO DE EMPRESA';
                 $('#modalCreateOrEdit').modal('show');
             });
 
@@ -231,34 +224,30 @@
             $(document).on('click', '.btn-editar', function() {
                 const id = $(this).data('id');
 
-                $.get("{{ route('usuarios.index') . '/' }}" + id, function(usuario) {
-                    $('#formCreateOrEdit input[name="idUsuario"]').val(usuario.data.idUsuario);
-                    $('#formCreateOrEdit input[name="nombreUsuario"]').val(usuario.data
-                        .nombreUsuario);
-                    $('#formCreateOrEdit select[name="idEmpleado"]').val(usuario.data.idEmpleado)
+                $.get("{{ route('saldos-empresas.index') . '/' }}" + id, function(saldo_empresa) {
+                    console.log(saldo_empresa);
+                    $('#formCreateOrEdit input[name="idSaldoEmpresa"]').val(saldo_empresa.data.idSaldoEmpresa);
+                    $('#formCreateOrEdit select[name="idEmpresa"]').val(saldo_empresa.data.idEmpresa)
                         .trigger('change');
-                    $('#formCreateOrEdit select[name="temaPreferido"]').val(usuario.data
-                            .temaPreferido)
-                        .trigger('change');
-                    $('#formCreateOrEdit input[name="contrasenha"]').val(''); // opcional, vacío
-                    $('#formCreateOrEdit input[name="recontrasenha"]').val('');
+                    $('#formCreateOrEdit input[name="montoUSD"]').val(saldo_empresa.data.montoUSD);
+                    $('#formCreateOrEdit input[name="pagoUSD"]').val(saldo_empresa.data.pagoUSD);
 
                     const titleElement = document.getElementById('modalCreateOrEdit_Title');
                     titleElement.innerHTML =
-                        '<i class="fa-solid fa-duotone fa-edit"></i> EDITAR USUARIO';
+                        '<i class="fa-solid fa-duotone fa-edit"></i> EDITAR SALDO DE EMPRESA';
                     $('#modalCreateOrEdit').modal('show');
                 });
             });
 
 
             $(document).on('click', '#btnGuardar', function() {
-                const idUsuario = $('#formCreateOrEdit input[name="idUsuario"]').val();
-                const url = idUsuario == 0 ?
-                    "{{ route('usuarios.create') }}" // POST -> crear
+                const idSaldoEmpresa = $('#formCreateOrEdit input[name="idSaldoEmpresa"]').val();
+                const url = idSaldoEmpresa == 0 ?
+                    "{{ route('saldos-empresas.create') }}" // POST -> crear
                     :
-                    "{{ route('usuarios.index') . '/' }}" + idUsuario; // PUT -> actualizar
+                    "{{ route('saldos-empresas.index') . '/' }}" + idSaldoEmpresa; // PUT -> actualizar
 
-                const type = idUsuario == 0 ? 'POST' : 'PUT';
+                const type = idSaldoEmpresa == 0 ? 'POST' : 'PUT';
 
                 $.ajax({
                     url: url,
@@ -284,7 +273,7 @@
                                 .errors)
                             .flatMap(errores => errores)
                             .join('<br>');
-                            
+
                         Swal.fire('Error', 'Ocurrió un error al intentar la acción: <br>' +
                             erroresConcatenados, 'error');
                     }
@@ -298,11 +287,11 @@
                 const estadoActual = $(this).data('estado');
                 const nuevoEstado = estadoActual == 1 ? 0 : 1;
                 const nombre = $(this).data('nombre');
-                const accion = nuevoEstado == 1 ? 'habilitar' : 'deshabilitar';
+                const accion = nuevoEstado == 1 ? 'restaurar' : 'archivar';
 
                 Swal.fire({
                     title: `¡ATENCIÓN!`,
-                    text: `¿Estás seguro de ${accion} el usuario ${nombre}?`,
+                    text: `¿Estás seguro de ${accion} el saldo de la empresa ${nombre}?`,
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -312,20 +301,20 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: "{{ route('usuarios.index') . '/' }}" + id,
+                            url: "{{ route('saldos-empresas.index') . '/' }}" + id,
                             type: "PATCH",
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                             },
                             data: {
-                                idUsuario: id
+                                idSaldoEmpresa: id
                             },
                             success: function(response) {
                                 Swal.fire('Actualizado', response.message, 'success');
                                 $('#dataTable').DataTable().ajax.reload();
                             },
                             error: function() {
-                                Swal.fire('Error', `No se pudo ${accion} el usuario`,
+                                Swal.fire('Error', `No se pudo ${accion} el saldo de empresa`,
                                     'error');
                             }
                         });
@@ -336,19 +325,11 @@
         });
 
         $(document).ready(function() {
-            $('#empleado').select2({
+            $('#empresa').select2({
                 language: "es",
                 dropdownCssClass: "{{ session('temaPreferido') == 'dark' ? 'bg-dark' : '' }}",
                 selectionCssClass: "{{ session('temaPreferido') == 'dark' ? 'bg-dark' : '' }}",
                 dropdownParent: $('#modalCreateOrEdit')
-            });
-            document.querySelectorAll('.toggle-password').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const input = document.getElementById(this.dataset.target);
-                    const type = input.type === 'password' ? 'text' : 'password';
-                    input.type = type;
-                    this.querySelector('i').classList.toggle('fa-eye-slash');
-                });
             });
         });
     </script>

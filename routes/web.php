@@ -7,6 +7,7 @@ use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\ParametroController;
+use App\Http\Controllers\SaldoEmpresaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,7 @@ Route::get('/', function () {
 
 /*Estructura de Laravel => Route::get(URL web, método de controlador)->name(nombre para referenciar ruta)*/
 
+/* Tabla con PK FK 'empleados'*/
 Route::controller(UsuarioController::class)->group(function () {
     /* Rutas para gestionar la sesión del usuario y el panel de administración */
     Route::get('panel', 'view_dashboard')->name('dashboard');
@@ -80,4 +82,14 @@ Route::controller(EmpresaController::class)->group(function () {
     Route::post('empresas', 'create')->name('empresas.create');
     Route::put('empresas/{empresa}', 'update')->name('empresas.update');
     Route::patch('empresas/{empresa}', 'deleteOrRestore')->name('empresas.deleteOrRestore');
+});
+
+/* Tabla con PK FK 'empresas'*/
+Route::controller(SaldoEmpresaController::class)->group(function () {
+    Route::get('saldos-empresas', 'view_index')->name('saldos-empresas.index');
+    Route::get('saldos-empresas/listar', 'listarSaldosEmpresas')->name('saldos-empresas.listar');
+    Route::get('saldos-empresas/{saldo_empresa}', 'mostrarSaldoEmpresa')->name('saldos-empresas.mostrar');
+    Route::post('saldos-empresas', 'create')->name('saldos-empresas.create');
+    Route::put('saldos-empresas/{saldo_empresa}', 'update')->name('saldos-empresas.update');
+    Route::patch('saldos-empresas/{saldo_empresa}', 'deleteOrRestore')->name('saldos-empresas.deleteOrRestore');
 });
