@@ -1,13 +1,14 @@
 <?php
 
-use App\Http\Controllers\ClienteController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\ParametroController;
+use App\Http\Controllers\PedidoEmpresaController;
 use App\Http\Controllers\SaldoEmpresaController;
+use App\Http\Controllers\UsuarioController;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,4 +93,14 @@ Route::controller(SaldoEmpresaController::class)->group(function () {
     Route::post('saldos-empresas', 'create')->name('saldos-empresas.create');
     Route::put('saldos-empresas/{saldo_empresa}', 'update')->name('saldos-empresas.update');
     Route::patch('saldos-empresas/{saldo_empresa}', 'deleteOrRestore')->name('saldos-empresas.deleteOrRestore');
+});
+
+/* Tabla con PK FK 'empresas' y relación uno a muchos con detalles_pedidos_empresas*/
+Route::controller(PedidoEmpresaController::class)->group(function () {
+    Route::get('pedidos-empresas', 'view_index')->name('pedidos-empresas.index');
+    Route::get('pedidos-empresas/listar', 'listarPedidosEmpresas')->name('pedidos-empresas.listar');
+    Route::get('pedidos-empresas/{pedido_empresa}', 'mostrarPedidoEmpresa')->name('pedidos-empresas.mostrar');
+    Route::post('pedidos-empresas', 'create')->name('pedidos-empresas.create');
+    Route::put('pedidos-empresas/{pedido_empresa}', 'update')->name('pedidos-empresas.update');
+    Route::patch('pedidos-empresas/{pedido_empresa}', 'deleteOrRestore')->name('pedidos-empresas.deleteOrRestore');
 });

@@ -91,17 +91,17 @@
                 </div>
 
                 <div class="col d-flex justify-content-center">
-                    <a class="btn btn-sq-lg btn-info" href="{{ route('marcas.index') }}">
+                    <a class="btn btn-sq-lg btn-info" href="{{ route('pedidos-empresas.index') }}">
                         <div>
-                            <i class="fa-solid fa-duotone fa-industry fa-2xl"></i><br />Marcas
+                            <i class="fa-solid fa-duotone fa-file-pen fa-2xl"></i><br />Pedidos a empresas
                         </div>
                     </a>
                 </div>
 
                 <div class="col d-flex justify-content-center">
-                    <a class="btn btn-sq-lg btn-info" href="#">
+                    <a class="btn btn-sq-lg btn-info" href="{{ route('marcas.index') }}">
                         <div>
-                            <i class="fa-solid fa-duotone fa-file-pen fa-2xl"></i><br />Pedidos
+                            <i class="fa-solid fa-duotone fa-industry-windows fa-2xl"></i><br />Marcas
                         </div>
                     </a>
                 </div>
