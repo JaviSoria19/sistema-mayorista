@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SaldoEmpresa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Empresa;
 use App\Models\PedidoEmpresa;
+use App\Models\DetallePedidoEmpresa;
 
 class PedidoEmpresaController extends Controller
 {
@@ -53,17 +54,41 @@ class PedidoEmpresaController extends Controller
             return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
         }
 
-        $pedido_empresa = new PedidoEmpresa();
-        $pedido_empresa->idEmpresa = $request->idEmpresa;
-        $pedido_empresa->montoUSD = $request->montoUSD;
-        $pedido_empresa->pagoUSD = $request->pagoUSD;
-        $pedido_empresa->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Saldo de empresa registrado correctamente',
-            'pedido_empresa' => $pedido_empresa
+        $request->validate([
+            'idEmpresa' => 'required|numeric|integer',
+            'detalles' => 'required|array|min:1',
+            'detalles.*.nombreProducto' => 'required|string',
+            'detalles.*.precioUSD' => 'required|numeric|min:0',
+            'detalles.*.cantidad' => 'required|integer|min:1',
         ]);
+
+        DB::beginTransaction();
+        try {
+            $pedido_empresa = new PedidoEmpresa();
+            $pedido_empresa->idEmpresa = $request->idEmpresa;
+            $pedido_empresa->modificadoPor = session('idUsuario');
+            $pedido_empresa->save();
+
+            foreach ($request->detalles as $detalle) {
+                $d = new DetallePedidoEmpresa();
+                $d->idPedidoEmpresa = $pedido_empresa->idPedidoEmpresa;
+                $d->nombreProducto = $detalle['nombreProducto'];
+                $d->precioUSD = $detalle['precioUSD'];
+                $d->cantidad = $detalle['cantidad'];
+                $d->save();
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pedido registrado correctamente',
+                'pedido_empresa' => $pedido_empresa->load('detalles')
+            ]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function update(Request $request, $idPedidoEmpresa)
@@ -72,18 +97,44 @@ class PedidoEmpresaController extends Controller
             return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
         }
 
-        $pedido_empresa = (new PedidoEmpresa())->getPedidoEmpresa($idPedidoEmpresa);
-        $pedido_empresa->idEmpresa = $request->idEmpresa;
-        $pedido_empresa->montoUSD = $request->montoUSD;
-        $pedido_empresa->pagoUSD = $request->pagoUSD;
-        $pedido_empresa->modificadoPor = session('idUsuario');
-        $pedido_empresa->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Saldo de empresa actualizado correctamente',
-            'pedido_empresa' => $pedido_empresa
+        $request->validate([
+            'idEmpresa' => 'required|numeric|integer',
+            'detalles' => 'required|array|min:1',
+            'detalles.*.nombreProducto' => 'required|string',
+            'detalles.*.precioUSD' => 'required|numeric|min:0',
+            'detalles.*.cantidad' => 'required|integer|min:1',
         ]);
+
+        DB::beginTransaction();
+        try {
+            $pedido_empresa = PedidoEmpresa::findOrFail($idPedidoEmpresa);
+            $pedido_empresa->idEmpresa = $request->idEmpresa;
+            $pedido_empresa->modificadoPor = session('idUsuario');
+            $pedido_empresa->save();
+
+            // Elimino los detalles anteriores y re-inserto (más simple)
+            DetallePedidoEmpresa::where('idPedidoEmpresa', $pedido_empresa->idPedidoEmpresa)->delete();
+
+            foreach ($request->detalles as $detalle) {
+                $d = new DetallePedidoEmpresa();
+                $d->idPedidoEmpresa = $pedido_empresa->idPedidoEmpresa;
+                $d->nombreProducto = $detalle['nombreProducto'];
+                $d->precioUSD = $detalle['precioUSD'];
+                $d->cantidad = $detalle['cantidad'];
+                $d->save();
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pedido actualizado correctamente',
+                'pedido_empresa' => $pedido_empresa->load('detalles')
+            ]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function deleteOrRestore(Request $request)
@@ -93,17 +144,18 @@ class PedidoEmpresaController extends Controller
         }
 
         $request->validate([
-            'idSaldoEmpresa' => ['required', 'numeric', 'integer']
+            'idPedidoEmpresa' => ['required', 'numeric', 'integer']
         ]);
 
-        $pedido_empresa = (new SaldoEmpresa())->getSaldoEmpresa($request->idSaldoEmpresa);
+        $pedido_empresa = PedidoEmpresa::findOrFail($request->idPedidoEmpresa);
         $pedido_empresa->estado = $pedido_empresa->estado == '1' ? '0' : '1';
         $pedido_empresa->modificadoPor = session('idUsuario');
         $pedido_empresa->save();
+
         return response()->json([
             'success' => true,
-            'message' => $pedido_empresa->estado == '1' ? 'El saldo de empresa fue restaurado con éxito' : 'El saldo de empresa fue archivado con éxito' ,
-            'pedido_empresa' => $pedido_empresa
+            'message' => $pedido_empresa->estado == '1' ? 'El pedido de empresa fue restaurado con éxito' : 'El pedido de empresa fue archivado con éxito',
+            'pedido_empresa' => $pedido_empresa->load('detalles')
         ]);
     }
 }

@@ -225,7 +225,6 @@
                 const id = $(this).data('id');
 
                 $.get("{{ route('saldos-empresas.index') . '/' }}" + id, function(saldo_empresa) {
-                    console.log(saldo_empresa);
                     $('#formCreateOrEdit input[name="idSaldoEmpresa"]').val(saldo_empresa.data.idSaldoEmpresa);
                     $('#formCreateOrEdit select[name="idEmpresa"]').val(saldo_empresa.data.idEmpresa)
                         .trigger('change');
