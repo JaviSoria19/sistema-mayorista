@@ -10,7 +10,7 @@ class DetallePedidoEmpresa extends Model
     use HasFactory;
 
     protected $table = 'detalles_pedidos_empresas';
-    protected $primaryKey = 'idDetallePedido';
+    protected $primaryKey = 'idDetallePedidoEmpresa';
 
     const CREATED_AT = null;
     const UPDATED_AT = null;

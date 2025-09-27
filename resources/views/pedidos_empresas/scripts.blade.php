@@ -185,7 +185,7 @@
                 let subtotal = precio * cantidad;
 
                 let fila = `
-            <tr data-detalle-id="${detalle.idDetallePedido}">
+            <tr data-detalle-id="${detalle.idDetallePedidoEmpresa}">
                 <td class="numero"></td>
                 <td class="producto" contenteditable="true">${detalle.nombreProducto}</td>
                 <td class="precio" contenteditable="true">${precio.toFixed(2)}</td>
