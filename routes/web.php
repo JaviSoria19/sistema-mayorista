@@ -98,6 +98,7 @@ Route::controller(SaldoEmpresaController::class)->group(function () {
 /* Tabla con PK FK 'empresas' y relación uno a muchos con detalles_pedidos_empresas*/
 Route::controller(PedidoEmpresaController::class)->group(function () {
     Route::get('pedidos-empresas', 'view_index')->name('pedidos-empresas.index');
+    Route::get('pedidos-empresas/{pedido_empresa}/imprimir', 'view_imprimir')->name('pedidos-empresas.imprimir');
     Route::get('pedidos-empresas/listar', 'listarPedidosEmpresas')->name('pedidos-empresas.listar');
     Route::get('pedidos-empresas/{pedido_empresa}', 'mostrarPedidoEmpresa')->name('pedidos-empresas.mostrar');
     Route::post('pedidos-empresas', 'create')->name('pedidos-empresas.create');

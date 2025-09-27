@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Empresa;
 use App\Models\PedidoEmpresa;
 use App\Models\DetallePedidoEmpresa;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PedidoEmpresaController extends Controller
 {
@@ -22,6 +23,22 @@ class PedidoEmpresaController extends Controller
             'headTitle' => 'GESTIÓN DE PEDIDOS A EMPRESAS',
             'empresas' => $empresas,
         ]);
+    }
+
+    public function view_imprimir($pedido_empresa)
+    {
+        if (!session('tieneAcceso')) {
+            return redirect()->route('login');
+        }
+        
+        ini_set('memory_limit', '512M');
+        set_time_limit(300);
+
+        $pedido_empresa = (new PedidoEmpresa())->getPedidoEmpresa($pedido_empresa);
+        $fecha = date('Y-m-d H_i_s');
+
+        $pdf = Pdf::loadView('pedidos_empresas.imprimir', compact('pedido_empresa'));
+        return $pdf->stream('SOLICITUD DE PEDIDO A ' . $pedido_empresa->empresa->nombreEmpresa . ' - ' . $fecha . '.pdf');
     }
 
     public function listarPedidosEmpresas()

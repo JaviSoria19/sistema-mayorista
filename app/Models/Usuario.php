@@ -25,9 +25,7 @@ class Usuario extends Authenticatable
 
     public function getAllUsuarios()
     {
-        return Usuario::with('empleado')->leftJoin('usuarios as u2', 'usuarios.modificadoPor', '=', 'u2.idUsuario')
-            ->select('usuarios.*', 'u2.nombreUsuario as modificadoPor')
-        ->get();
+        return Usuario::with('empleado')->get();
     }
     
     public function getUsuario($idUsuario)

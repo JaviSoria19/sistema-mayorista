@@ -178,6 +178,7 @@ class UsuarioController extends Controller
             'idEmpleado' => $usuario->idEmpleado,
             'nombreUsuario' => $usuario->nombreUsuario,
             'temaPreferido' => $usuario->temaPreferido,
+            'nombreEmpleado' => $usuario->empleado->nombreEmpleado,
         ]);
         return redirect()->route('dashboard');
     }

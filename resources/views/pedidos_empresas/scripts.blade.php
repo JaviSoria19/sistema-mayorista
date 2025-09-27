@@ -91,6 +91,9 @@
                                 data-toggle="tooltip" title="${row.estado == 1 ? 'Deshabilitar' : 'Habilitar'}">
                             <i class="fa-duotone fa-solid fa-toggle-${row.estado == 1 ? 'off' : 'on'}"></i>
                         </button>
+                        <a class="btn {{ session('temaPreferido') == 'dark' ? 'btn-light' : 'btn-dark' }} btn-sm" href="{{ route('pedidos-empresas.index') }}/${row.idPedidoEmpresa}/imprimir" data-toggle="tooltip" title="Imprimir" target="_blank" rel="noopener noreferrer">
+                            <i class="fa-duotone fa-solid fa-print"></i>
+                        </a>
                     </div>
                 `;
                     }
