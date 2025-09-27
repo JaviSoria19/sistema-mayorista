@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Empresa;
 use App\Models\PedidoEmpresa;
 use App\Models\DetallePedidoEmpresa;
+use App\Models\Producto;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class PedidoEmpresaController extends Controller
@@ -18,10 +19,12 @@ class PedidoEmpresaController extends Controller
         }
 
         $empresas = (new Empresa())->getAllEmpresas();
+        $productos = (new Producto())->getAllProductosGroupByNombreProducto();
 
         return view('pedidos_empresas.index', [
             'headTitle' => 'GESTIÓN DE PEDIDOS A EMPRESAS',
             'empresas' => $empresas,
+            'productos' => $productos,
         ]);
     }
 

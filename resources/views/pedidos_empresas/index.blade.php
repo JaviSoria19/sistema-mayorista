@@ -66,9 +66,9 @@
                         </div>
 
                         <datalist id="productos">
-                            <option>SAMSUNG S23 ULTRA 8/256 NEGRO</option>
-                            <option>SAMSUNG A05 4/128 BLANCO</option>
-                            <option>REALME 12 PRO PLUS 12/512 AZUL</option>
+                            @foreach ($productos as $producto)
+                                <option>{{$producto->marca->nombreMarca . ' ' . $producto->nombreProducto }}</option>
+                            @endforeach
                         </datalist>
 
                         <div class="mb-3">

@@ -133,7 +133,7 @@
                 </div>
 
                 <div class="col-2 d-flex justify-content-center">
-                    <a class="btn btn-sq-lg btn-info" href="#">
+                    <a class="btn btn-sq-lg btn-info" href="{{ route('abastecimientos.index') }}">
                         <div>
                             <i class="fa-solid fa-duotone fa-cart-flatbed-boxes fa-2xl"></i><br />Abastecimientos
                         </div>

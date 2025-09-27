@@ -18,6 +18,7 @@
                         <input type="number" class="form-control" id="paramPorcentajeTraspaso"
                             name="paramPorcentajeTraspaso" value="{{ $parametro->paramPorcentajeTraspaso }}" required>
                     </div>
+                    
                     <div class="mb-3">
                         <label for="paramTransporteUSD" class="form-label">Transporte USD: <span
                                 class="text-danger">*</span></label>
@@ -27,7 +28,7 @@
                 </form>
                 <p class="fw-bold">
                     <i class="fa-solid fa-duotone fa-circle-info"></i> Última modificación: <span
-                        class="text-info">{{ $parametro->editor->nombreUsuario ? $parametro->editor->nombreUsuario : '-' }}</span>
+                        class="text-info">{{ $parametro->editor->nombreUsuario != null ? $parametro->editor->nombreUsuario : '-' }}</span>
                 </p>
                 <button type="button" id="btnGuardar" class="btn btn-primary"><i class="fa-solid fa-duotone fa-save"></i>
                     Guardar</button>

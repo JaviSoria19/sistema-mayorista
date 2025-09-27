@@ -1,12 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AbastecimientoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\ParametroController;
 use App\Http\Controllers\PedidoEmpresaController;
+use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\SaldoEmpresaController;
 use App\Http\Controllers\UsuarioController;
 
@@ -104,4 +106,21 @@ Route::controller(PedidoEmpresaController::class)->group(function () {
     Route::post('pedidos-empresas', 'create')->name('pedidos-empresas.create');
     Route::put('pedidos-empresas/{pedido_empresa}', 'update')->name('pedidos-empresas.update');
     Route::patch('pedidos-empresas/{pedido_empresa}', 'deleteOrRestore')->name('pedidos-empresas.deleteOrRestore');
+});
+
+/* Tabla con relación uno a muchos con pedidos*/
+Route::controller(AbastecimientoController::class)->group(function () {
+    Route::get('abastecimientos', 'view_index')->name('abastecimientos.index');
+    Route::get('abastecimientos/listar', 'listarAbastecimientos')->name('abastecimientos.listar');
+    Route::get('abastecimientos/{abastecimiento}', 'mostrarAbastecimiento')->name('abastecimientos.mostrar');
+    Route::post('abastecimientos', 'create')->name('abastecimientos.create');
+});
+
+/* Tabla con PK FK 'empresas' y relación uno a muchos con detalles_pedidos_empresas*/
+Route::controller(ProductoController::class)->group(function () {
+    Route::get('productos', 'view_index')->name('productos.index');
+    Route::get('productos/listar', 'listarProductos')->name('productos.listar');
+    Route::get('productos/{producto}', 'mostrarProducto')->name('productos.mostrar');
+    Route::put('productos/{producto}', 'update')->name('productos.update');
+    Route::patch('productos/{producto}', 'delete')->name('productos.delete');
 });

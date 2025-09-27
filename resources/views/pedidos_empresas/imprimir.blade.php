@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ helper_tituloPagina() }} | PEDIDO A EMPRESA N° {{ $pedido_empresa->idPedidoEmpresa }}</title>
     <!-- Bootstrap CSS -->
-    <link href="{{ asset('/public/bootstrapdompdf.css') }}" rel="stylesheet">
+    <link href="{{ asset('/public/dependencies/bootstrapdompdf.css') }}" rel="stylesheet">
 </head>
 
 <body>

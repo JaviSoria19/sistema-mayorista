@@ -29,7 +29,7 @@
                         }
 
                         return data.map((detalle, index) =>
-                            `${index + 1}. ${detalle.nombreProducto}<br>
+                            `<span class="text-primary fw-bold">${index + 1}</span>. <span class="text-info fw-bold">${detalle.nombreProducto}</span><br>
                                 (${detalle.cantidad} uds. * ${detalle.precioUSD} USD = ${(detalle.cantidad * detalle.precioUSD).toFixed(2)} USD)`
                         ).join("<br>");
                     }
@@ -193,7 +193,7 @@
                 <td class="subTotalUSD">${subtotal.toFixed(2)}</td>
                 <td>
                     <button type="button" class="btn btn-danger btn-sm btn-remover" 
-                        data-toggle="tooltip" title="Remover de la lista">
+                        data-toggle="tooltip" title="Remover de la tabla">
                         <i class="fa-solid fa-duotone fa-trash-can-list"></i>
                     </button>
                 </td>
@@ -239,7 +239,11 @@
             */
 
             if (detalles.length === 0) {
-                alert("Debe agregar al menos un detalle.");
+                Swal.fire({
+                    title: "¡No válido!",
+                    text: "Debe agregar al menos un detalle a la tabla.",
+                    icon: "warning"
+                });
                 return;
             }
 
@@ -262,6 +266,8 @@
 
                         $("#detalles tbody").empty();
                         actualizarTotales();
+                        
+                        window.open(`{{ route('pedidos-empresas.index') }}/${response.pedido_empresa.idPedidoEmpresa}/imprimir`, '_blank', 'noopener,noreferrer');
                     } else {
                         Swal.fire('Error', response.message, 'error');
                     }
@@ -347,7 +353,7 @@
                     <td class="subTotalUSD">${(precio * cantidad).toFixed(2)}</td>
                     <td>
                         <button type="button" class="btn btn-danger btn-sm btn-remover" 
-                            data-toggle="tooltip" title="Remover de la lista">
+                            data-toggle="tooltip" title="Remover de la tabla">
                             <i class="fa-solid fa-duotone fa-trash-can-list"></i>
                         </button>
                     </td>
