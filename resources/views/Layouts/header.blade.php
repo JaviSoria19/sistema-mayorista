@@ -28,7 +28,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('marcas') ? 'active' : '' }}" aria-current="page"
-                            href="{{ route('marcas.index') }}"><i class="fa-solid fa-duotone fa-industry"></i>
+                            href="{{ route('marcas.index') }}"><i class="fa-solid fa-duotone fa-industry-windows"></i>
                             Marcas</a>
                     </li>
                     <li class="nav-item">

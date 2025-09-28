@@ -29,13 +29,13 @@
                     </a>
                 </div>
 
-                <div class="col d-flex justify-content-center">
+                {{-- <div class="col d-flex justify-content-center">
                     <a class="btn btn-sq-lg btn-success" href="#">
                         <div>
                             <i class="fa-solid fa-duotone fa-clock-rotate-left fa-2xl"></i><br />Historial de productos
                         </div>
                     </a>
-                </div>
+                </div> --}}
 
                 <div class="col d-flex justify-content-center">
                     <a class="btn btn-sq-lg btn-success" href="#">
@@ -55,9 +55,17 @@
                 </div>
 
                 <div class="col d-flex justify-content-center">
-                    <a class="btn btn-sq-lg btn-secondary" href="{{ route('parametros.index') }}">
+                    <a class="btn btn-sq-lg btn-info" href="{{ route('productos.index') }}">
                         <div>
-                            <i class="fa-solid fa-duotone fa-sliders fa-2xl"></i><br />Parámetros
+                            <i class="fa-solid fa-duotone fa-boxes-stacked fa-2xl"></i><br />Productos
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col d-flex justify-content-center">
+                    <a class="btn btn-sq-lg btn-info" href="{{ route('abastecimientos.index') }}">
+                        <div>
+                            <i class="fa-solid fa-duotone fa-cart-flatbed-boxes fa-2xl"></i><br />Abastecimientos
                         </div>
                     </a>
                 </div>
@@ -133,17 +141,9 @@
                 </div>
 
                 <div class="col-2 d-flex justify-content-center">
-                    <a class="btn btn-sq-lg btn-info" href="{{ route('abastecimientos.index') }}">
+                    <a class="btn btn-sq-lg btn-secondary" href="{{ route('parametros.index') }}">
                         <div>
-                            <i class="fa-solid fa-duotone fa-cart-flatbed-boxes fa-2xl"></i><br />Abastecimientos
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-2 d-flex justify-content-center">
-                    <a class="btn btn-sq-lg btn-info" href="{{ route('productos.index') }}">
-                        <div>
-                            <i class="fa-solid fa-duotone fa-boxes-stacked fa-2xl"></i><br />Productos
+                            <i class="fa-solid fa-duotone fa-sliders fa-2xl"></i><br />Parámetros
                         </div>
                     </a>
                 </div>

@@ -32,6 +32,8 @@
                 </p>
                 <button type="button" id="btnGuardar" class="btn btn-primary"><i class="fa-solid fa-duotone fa-save"></i>
                     Guardar</button>
+                <a href="{{ route('dashboard') }}" class="btn btn-secondary"><i class="fa-solid fa-duotone fa-dashboard"></i>
+                    Regresar al panel</a>
             </div>
 
             <div class="col-4"></div>
