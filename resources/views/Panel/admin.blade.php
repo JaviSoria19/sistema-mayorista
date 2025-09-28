@@ -24,7 +24,7 @@
                 <div class="col d-flex justify-content-center">
                     <a class="btn btn-sq-lg btn-success" href="#">
                         <div>
-                            <i class="fa-solid fa-duotone fa-chart-mixed-up-circle-dollar fa-2xl"></i><br />Ventas
+                            <i class="fa-solid fa-duotone fa-cart-shopping fa-2xl"></i><br />Ventas
                         </div>
                     </a>
                 </div>

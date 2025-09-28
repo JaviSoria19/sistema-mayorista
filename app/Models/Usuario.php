@@ -23,14 +23,19 @@ class Usuario extends Authenticatable
         return $this->belongsTo(Empleado::class, 'idEmpleado', 'idEmpleado');
     }
 
+    /** Relación con atributo de auditoría */
+    public function editor(){
+        return $this->belongsTo(Usuario::class, 'modificadoPor', 'idUsuario');
+    }
+
     public function getAllUsuarios()
     {
-        return Usuario::with('empleado')->get();
+        return Usuario::with('empleado','editor')->get();
     }
     
     public function getUsuario($idUsuario)
     {
-        return Usuario::with('empleado')->find($idUsuario);
+        return Usuario::with('empleado','editor')->find($idUsuario);
     }
 
     /**Función utilizada para verificar y crear la sesión del Usuario.*/

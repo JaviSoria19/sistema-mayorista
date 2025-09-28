@@ -15,6 +15,17 @@ class Producto extends Model
     const CREATED_AT = 'fechaRegistro';
     const UPDATED_AT = 'fechaActualizacion';
 
+    /** Relación muchos a muchos con ventas */
+    public function ventas()
+    {
+        return $this->belongsToMany(
+            Venta::class,
+            'detalles_ventas',
+            'idProducto',   // FK en la tabla pivote hacia productos
+            'idVenta'       // FK en la tabla pivote hacia ventas
+        )->withPivot('precioUSD');
+    }
+
     /** Relación FK con empresas */
     public function empresa()
     {
@@ -28,18 +39,19 @@ class Producto extends Model
     }
 
     /** Relación con atributo de auditoría */
-    public function editor(){
+    public function editor()
+    {
         return $this->belongsTo(Usuario::class, 'modificadoPor', 'idUsuario');
     }
 
     public function getAllProductos()
     {
-        return Producto::with(['empresa','marca','editor'])->orderBy('idProducto','ASC')->get();
+        return Producto::with(['empresa', 'marca', 'editor'])->orderBy('idProducto', 'ASC')->get();
     }
-    
+
     public function getProducto($idProducto)
     {
-        return Producto::with(['empresa','marca','editor'])->find($idProducto);
+        return Producto::with(['empresa', 'marca', 'editor'])->find($idProducto);
     }
 
     public function getAllProductosGroupByNombreProducto()
