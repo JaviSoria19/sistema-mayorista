@@ -141,7 +141,7 @@
                 </div>
 
                 <div class="col-2 d-flex justify-content-center">
-                    <a class="btn btn-sq-lg btn-info" href="#">
+                    <a class="btn btn-sq-lg btn-info" href="{{ route('productos.index') }}">
                         <div>
                             <i class="fa-solid fa-duotone fa-boxes-stacked fa-2xl"></i><br />Productos
                         </div>
