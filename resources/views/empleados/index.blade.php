@@ -116,7 +116,7 @@
                     {
                         data: "editor.nombreUsuario",
                         render: function(data, type, row) {
-                            return data ? data : '-';
+                            return data || '-';
                         }
                     },
                     {
