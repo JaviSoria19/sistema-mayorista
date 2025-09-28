@@ -22,7 +22,7 @@
                 </div>
 
                 <div class="col d-flex justify-content-center">
-                    <a class="btn btn-sq-lg btn-success" href="#">
+                    <a class="btn btn-sq-lg btn-success" href="{{ route('ventas.index') }}">
                         <div>
                             <i class="fa-solid fa-duotone fa-cart-shopping fa-2xl"></i><br />Ventas
                         </div>

@@ -26,6 +26,12 @@ class Venta extends Model
         )->withPivot('precioUSD');     // Campos extras de la tabla pivote
     }
 
+    /** Relación uno a muchos con detalles_pedidos_empresas */
+    public function pagos()
+    {
+        return $this->hasMany(PagoVenta::class, 'idVenta', 'idVenta');
+    }
+
     /** Relación FK con usuarios */
     public function usuario()
     {
@@ -52,11 +58,11 @@ class Venta extends Model
 
     public function getAllVentas()
     {
-        return Venta::with(['productos','usuario', 'cliente', 'empleado', 'editor'])->orderBy('idVenta', 'ASC')->get();
+        return Venta::with(['productos.marca','pagos','usuario', 'cliente', 'empleado', 'editor'])->orderBy('idVenta', 'ASC')->get();
     }
 
     public function getVenta($idVenta)
     {
-        return Venta::with(['productos','usuario', 'cliente', 'empleado', 'editor'])->find($idVenta);
+        return Venta::with(['productos.marca','pagos','usuario', 'cliente', 'empleado', 'editor'])->find($idVenta);
     }
 }

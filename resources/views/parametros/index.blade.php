@@ -25,10 +25,17 @@
                         <input type="number" class="form-control" id="paramTransporteUSD" name="paramTransporteUSD"
                             value="{{ $parametro->paramTransporteUSD }}" required>
                     </div>
+
+                    <div class="mb-3">
+                        <label for="paramPorcentajeLimiteDescuento" class="form-label">Porcentaje de límite de descuento: <span
+                                class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="paramPorcentajeLimiteDescuento" name="paramPorcentajeLimiteDescuento"
+                            value="{{ $parametro->paramPorcentajeLimiteDescuento }}" required>
+                    </div>
                 </form>
                 <p class="fw-bold">
                     <i class="fa-solid fa-duotone fa-circle-info"></i> Última modificación: <span
-                        class="text-info">{{ $parametro->editor?->nombreUsuario ? $parametro->editor->nombreUsuario : '-' }}</span>
+                        class="text-info" id="editor">{{ $parametro->editor?->nombreUsuario ? $parametro->editor->nombreUsuario : '-' }}</span>
                 </p>
                 <button type="button" id="btnGuardar" class="btn btn-primary"><i class="fa-solid fa-duotone fa-save"></i>
                     Guardar</button>
@@ -58,6 +65,7 @@
                     success: function(response) {
                         if (response.success) {
                             Swal.fire('Éxito', response.message, 'success');
+                            document.getElementById("editor").textContent = response.parametro.editor?.nombreUsuario;
                         } else {
                             Swal.fire('Error', response.message, 'error');
                         }

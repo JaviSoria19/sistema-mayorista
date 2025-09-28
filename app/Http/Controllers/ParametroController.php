@@ -33,13 +33,14 @@ class ParametroController extends Controller
         $parametro = (new Parametro())->getParametro();
         $parametro->paramPorcentajeTraspaso = $request->paramPorcentajeTraspaso;
         $parametro->paramTransporteUSD = $request->paramTransporteUSD;
+        $parametro->paramPorcentajeLimiteDescuento = $request->paramPorcentajeLimiteDescuento;
         $parametro->modificadoPor = session('idUsuario');
         $parametro->save();
 
         return response()->json([
             'success' => true,
             'message' => 'Parametro actualizado correctamente',
-            'parametro' => $parametro
+            'parametro' => $parametro->load(['editor']),
         ]);
     }
 }

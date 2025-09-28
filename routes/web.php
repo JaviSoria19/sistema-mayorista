@@ -11,6 +11,7 @@ use App\Http\Controllers\PedidoEmpresaController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\SaldoEmpresaController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\VentaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -116,7 +117,7 @@ Route::controller(AbastecimientoController::class)->group(function () {
     Route::post('abastecimientos', 'create')->name('abastecimientos.create');
 });
 
-/* Tabla con PK FK 'empresas' y relación uno a muchos con detalles_pedidos_empresas*/
+/* Tabla con PK FK 'empresas','marcas','abastecimientos' y relación muchos a muchos con 'ventas' mediante 'detalles_ventas'*/
 Route::controller(ProductoController::class)->group(function () {
     Route::get('productos', 'view_index')->name('productos.index');
     Route::get('productos/listar', 'listarProductos')->name('productos.listar');
@@ -124,4 +125,20 @@ Route::controller(ProductoController::class)->group(function () {
     Route::post('productos', 'create')->name('productos.create');
     Route::put('productos/{producto}', 'update')->name('productos.update');
     Route::patch('productos/{producto}', 'delete')->name('productos.delete');
+});
+
+/* Tabla con PK FK 'usuarios','clientes','empleados' y relación muchos a muchos con 'productos' mediante 'detalles_ventas'*/
+Route::controller(VentaController::class)->group(function () {
+    // Vistas web
+    Route::get('ventas', 'view_index')->name('ventas.index');
+    Route::get('ventas/crear', 'view_create')->name('ventas.crear');
+    Route::get('ventas/{venta}/editar', 'view_update')->name('ventas.editar');
+    Route::get('ventas/{venta}/imprimir', 'view_imprimir')->name('ventas.imprimir');
+
+    // Operaciones CRUD
+    Route::get('ventas/listar', 'listarVentas')->name('ventas.listar');
+    Route::get('ventas/{venta}', 'mostrarVenta')->name('ventas.mostrar');
+    Route::post('ventas', 'create')->name('ventas.create');
+    Route::put('ventas/{venta}', 'update')->name('ventas.update');
+    Route::patch('ventas/{venta}', 'delete')->name('ventas.delete');
 });
