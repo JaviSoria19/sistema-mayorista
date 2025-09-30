@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Venta;
-use App\Models\Cliente;
 use App\Models\Empleado;
 use App\Models\PagoVenta;
 use App\Models\Producto;
@@ -217,7 +216,7 @@ class VentaController extends Controller
         }
     }
 
-    public function update(Request $request, Venta $venta)
+    public function update(Request $request, $idVenta)
     {
         if (!session('tieneAcceso')) {
             return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
@@ -233,28 +232,45 @@ class VentaController extends Controller
 
         DB::beginTransaction();
         try {
+            $venta = (new Venta())->getVenta($idVenta);
             $venta->idCliente = $request->idCliente;
             $venta->idEmpleado = $request->idEmpleado;
             $venta->modificadoPor = session('idUsuario');
+            $venta->totalUSD = $request->totalUSD;
+            $venta->saldoUSD = $request->saldoUSD;
+            $venta->save();
+
+            // Elimina todos los 'detalles_ventas'
             $venta->productos()->detach();
 
-            $total = 0;
             foreach ($request->productos as $detalle) {
                 $venta->productos()->attach($detalle['idProducto'], [
                     'precioUSD' => $detalle['precioUSD']
                 ]);
-                $total += $detalle['precioUSD'];
+
+                $producto = (new Producto())->getProducto($detalle['idProducto']);
+                $producto->estado = 2;
+                $producto->fechaVenta = Carbon::now();
+                $producto->save();
             }
 
-            $venta->totalUSD = $total;
-            $venta->saldoUSD = $total; // aquí podrías calcular saldo si hay pagos
-            $venta->save();
+            // Borrar pagos anteriores
+            PagoVenta::where('idVenta', $venta->idVenta)->delete();
+
+            // Insertar nuevos pagos
+            foreach ($request->pagos as $pago) {
+                $p = new PagoVenta();
+                $p->idVenta = $venta->idVenta;
+                $p->pagoUSD = $pago['pagoUSD'];
+                $p->modificadoPor = session('idUsuario');
+                $p->save();
+            }
 
             DB::commit();
             return response()->json([
                 'success' => true,
                 'message' => 'Venta actualizada correctamente',
-                'venta'   => $venta->load(['productos', 'cliente'])
+                'venta'   => $venta->load(['productos', 'cliente', 'pagos'])
             ]);
         } catch (\Throwable $e) {
             DB::rollBack();

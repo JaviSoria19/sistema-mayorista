@@ -269,8 +269,12 @@
         // Validación del detalle si está vacío al perder el foco
         $("#productos").on("blur", ".precioUSD", function() {
             let valor = $(this).text().trim();
-            let precioMinimo = parseFloat($(".costoFinalUSD").text()) / 100 * (100 -
-                paramPorcentajeLimiteDescuento);
+
+            // Obtener el costoFinalUSD de la FILA ACTUAL
+            let costoFinal = $(this).closest('tr').find('.costoFinalUSD').text();
+            let precioMinimo = Math.round(parseFloat(costoFinal) / 100 * (100 -
+                paramPorcentajeLimiteDescuento), 2);
+
             // Validar que sea numérico, no esté vació o no sea menor al precio minimo
             if (isNaN(valor) || valor.trim() === "" || valor < precioMinimo) {
                 Swal.fire({
@@ -364,7 +368,7 @@
 
         // Fin de métodos para los pagos
 
-        $("#btnCrearVenta").on("click", function() {
+        $("#btnGuardarVenta").on("click", function() {
 
             const idEmpleado = $('#empleado').val();
             const idCliente = $('#cliente').val();
@@ -431,7 +435,7 @@
                     cancelButtonText: "No, cancelar"
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        registrarVentaAJAX(idEmpleado, idCliente, productos, pagos);
+                        editarVentaAJAX(idEmpleado, idCliente, productos, pagos);
                     }
                 });
             } else {
@@ -447,22 +451,19 @@
                     cancelButtonText: "No, cancelar"
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        registrarVentaAJAX(idEmpleado, idCliente, productos, pagos);
+                        editarVentaAJAX(idEmpleado, idCliente, productos, pagos);
                     }
                 });
             }
         });
 
-        function registrarVentaAJAX(idEmpleado, idCliente, productos, pagos) {
-            const btnCrearVenta = document.getElementById('btnCrearVenta');
+        function editarVentaAJAX(idEmpleado, idCliente, productos, pagos) {
+            const btnGuardarVenta = document.getElementById('btnGuardarVenta');
             const _totalUSD = document.getElementById('totalUSD');
             const _value_totalUSD = parseFloat(_totalUSD.textContent);
             const _saldoUSD = document.getElementById('saldoUSD');
             const _value_saldoUSD = parseFloat(_saldoUSD.textContent);
-            btnCrearVenta.disabled = true;
-            btnCrearVenta.innerHTML = '<i class="fa-duotone fa-solid fa-loader fa-spin"></i> Guardando...';
-
-
+            
             /*console.log('idEmpleado');
             console.log(idEmpleado);
             console.log('idCliente');
@@ -477,14 +478,17 @@
             console.log(pagos);
             return;*/
 
+            btnGuardarVenta.disabled = true;
+            btnGuardarVenta.innerHTML = '<i class="fa-duotone fa-solid fa-loader fa-spin"></i> Guardando...';
+
             $.ajax({
-                url: "{{ route('ventas.create') }}",
-                type: 'POST',
+
+                url: "{{ route('ventas.update', $venta->idVenta) }}",
+                type: 'PUT',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 data: {
-                    idUsuario: '{{ session('idUsuario') }}',
                     idCliente: idCliente,
                     idEmpleado: idEmpleado,
                     totalUSD: _value_totalUSD,
@@ -495,19 +499,19 @@
                 success: function(response) {
                     if (response.success) {
                         Swal.fire('Éxito', response.message, 'success');
-                        btnCrearVenta.innerHTML =
+                        btnGuardarVenta.innerHTML =
                             '<i class="fa-solid fa-duotone fa-cart-circle-check"></i> ¡Éxito!';
                         window.open(
                             `{{ route('ventas.index') }}/${response.venta.idVenta}/imprimir`,
                             '_blank', 'noopener,noreferrer');
                     } else {
                         Swal.fire('Error', response.message, 'error');
-                        btnCrearVenta.disabled = false;
+                        btnGuardarVenta.disabled = false;
                     }
                 },
                 error: function(xhr) {
-                    btnCrearVenta.disabled = false;
-                    btnCrearVenta.innerHTML =
+                    btnGuardarVenta.disabled = false;
+                    btnGuardarVenta.innerHTML =
                         '<i class="fa-solid fa-duotone fa-save"></i> Guardar venta';
 
                     //console.error(xhr.responseText);
@@ -625,7 +629,8 @@
                     motivoInput.disabled = true;
                     btnEliminarVenta.disabled = true;
                     btnGuardarVenta.disabled = true;
-                    btnEliminarVenta.innerHTML = '<i class="fa-duotone fa-solid fa-loader fa-spin"></i>';
+                    btnEliminarVenta.innerHTML =
+                        '<i class="fa-duotone fa-solid fa-loader fa-spin"></i>';
 
                     $.ajax({
                         url: "{{ route('ventas.index') . '/' }}" + id,
@@ -638,14 +643,16 @@
                             motivoEliminacion: _motivoEliminacion
                         },
                         success: function(response) {
-                            btnEliminarVenta.innerHTML = '<i class="fa-solid fa-duotone fa-trash-check"></i>';
+                            btnEliminarVenta.innerHTML =
+                                '<i class="fa-solid fa-duotone fa-trash-check"></i>';
                             Swal.fire('Eliminado', response.message, 'success');
                         },
                         error: function() {
                             motivoInput.disabled = false;
                             btnEliminarVenta.disabled = false;
                             btnGuardarVenta.disabled = false;
-                            btnEliminarVenta.innerHTML = '<i class="fa-solid fa-duotone fa-cart-xmark"></i>';
+                            btnEliminarVenta.innerHTML =
+                                '<i class="fa-solid fa-duotone fa-cart-xmark"></i>';
                             Swal.fire('Error', `No se pudo eliminar la venta`, 'error');
                         }
                     });

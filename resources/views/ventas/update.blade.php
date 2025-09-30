@@ -70,12 +70,10 @@
                 <tbody>
                     @foreach ($venta->productos as $producto)
                         @php
-                            $costoFinalUSD = number_format(
-                                $producto->costoBaseUSD +
+                            $costoFinalUSD = $producto->costoBaseUSD +
                                     ($producto->costoBaseUSD * $producto->traspasoPorcentaje) / 100 +
-                                    $producto->transporteUSD,
-                                2,
-                            );
+                                    $producto->transporteUSD;
+                            $costoFinalUSD = number_format($costoFinalUSD, 2, '.', '')
                         @endphp
                         <tr>
                             <td class="visually-hidden idProducto">{{ $producto->idProducto }}</td>
@@ -83,7 +81,7 @@
                             <td class="nombreProducto">{{ $producto->marca->nombreMarca }} {{ $producto->nombreProducto }}
                             </td>
                             <td class="costoFinalUSD">{{ $costoFinalUSD }}</td>
-                            <td class="precioUSD">{{ $producto->pivot->precioUSD }}</td>
+                            <td class="precioUSD" contenteditable="true">{{ $producto->pivot->precioUSD }}</td>
                             <td>
                                 <button type="button" class="btn btn-danger btn-sm btn-remover" data-toggle="tooltip"
                                     title="Remover de la tabla"
@@ -112,7 +110,6 @@
                 <table class="table table-bordered table-striped" id="pagos">
                     <thead class="text-center">
                         <tr>
-                            <th class="visually-hidden">Id</th>
                             <th>Pagos (USD)</th>
                             <th>Remover</th>
                         </tr>
@@ -120,7 +117,6 @@
                     <tbody>
                         @foreach ($venta->pagos as $pago)
                             <tr>
-                                <td class="visually-hidden idPagoVenta">{{ $pago->idPagoVenta }}</td>
                                 <td class="pagoUSD" contenteditable="true">{{ $pago->pagoUSD }}</td>
                                 <td>
                                     <button type="button" class="btn btn-danger btn-sm btn-remover" data-toggle="tooltip"
@@ -135,9 +131,9 @@
             </div>
 
             <div class="mb-3 col-4">
-                <h5>Total: <span class="text-primary fw-bold" id="totalUSD">0.00</span> USD</h5>
-                <h5>Pagos: <span class="text-success fw-bold" id="totalPagoUSD">0.00</span> USD</h5>
-                <h5>Saldo: <span class="text-warning fw-bold" id="saldoUSD">0.00</span> USD</h5>
+                <h5>Total: <span class="text-primary fw-bold" id="totalUSD">{{ number_format($venta->totalUSD, 2, '.', '') }}</span> USD</h5>
+                <h5>Pagos: <span class="text-success fw-bold" id="totalPagoUSD">{{ number_format($venta->pagos->sum('pagoUSD'), 2, '.', '') }}</span> USD</h5>
+                <h5>Saldo: <span class="text-warning fw-bold" id="saldoUSD">{{ number_format($venta->saldoUSD, 2, '.', '') }}</span> USD</h5>
             </div>
 
             <h2 class="text-danger fw-bold"><i class="fa-solid fa-duotone fa-credit-card"></i> ¿ELIMINARÁ LA VENTA?</h2>

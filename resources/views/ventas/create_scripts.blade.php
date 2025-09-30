@@ -268,8 +268,12 @@
         // Validación del detalle si está vacío al perder el foco
         $("#productos").on("blur", ".precioUSD", function() {
             let valor = $(this).text().trim();
-            let precioMinimo = parseFloat($(".costoFinalUSD").text()) / 100 * (100 -
-                paramPorcentajeLimiteDescuento);
+
+            // Obtener el costoFinalUSD de la FILA ACTUAL
+            let costoFinal = $(this).closest('tr').find('.costoFinalUSD').text();
+            let precioMinimo = Math.round(parseFloat(costoFinal) / 100 * (100 -
+                paramPorcentajeLimiteDescuento), 2);
+
             // Validar que sea numérico, no esté vació o no sea menor al precio minimo
             if (isNaN(valor) || valor.trim() === "" || valor < precioMinimo) {
                 Swal.fire({
@@ -461,7 +465,7 @@
             btnCrearVenta.disabled = true;
             btnCrearVenta.innerHTML = '<i class="fa-duotone fa-solid fa-loader fa-spin"></i> Guardando...';
 
-            
+
             /*console.log('idEmpleado');
             console.log(idEmpleado);
             console.log('idCliente');
