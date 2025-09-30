@@ -10,7 +10,7 @@
             <a class="btn {{ session('temaPreferido') == 'dark' ? 'btn-light' : 'btn-dark' }} mb-3"
                 href="{{ route('ventas.imprimir', $venta->idVenta) }}" data-toggle="tooltip" title="Imprimir" target="_blank"
                 rel="noopener noreferrer">
-                <i class="fa-duotone fa-solid fa-print"></i>
+                <i class="fa-duotone fa-solid fa-print"></i> Imprimir
             </a>
             <h2 class="text-info fw-bold"><i class="fa-solid fa-duotone fa-user-tag"></i> EMPLEADO</h2>
 
