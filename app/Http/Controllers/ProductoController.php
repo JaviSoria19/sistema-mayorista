@@ -60,6 +60,18 @@ class ProductoController extends Controller
         ]);
     }
 
+    public function mostrarProductoPorCodigo(Request $request)
+    {
+        if (!session('tieneAcceso')) {
+            return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
+        }
+
+        $producto = (new Producto())->getProductoByCodigo($request->producto);
+        return response()->json([
+            'data' => $producto
+        ]);
+    }
+
     public function create(ProductoValidation $request)
     {
         if (!session('tieneAcceso')) {

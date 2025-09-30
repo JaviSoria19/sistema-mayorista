@@ -1,0 +1,227 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use App\Models\Venta;
+use App\Models\Cliente;
+use App\Models\Empleado;
+use App\Models\PagoVenta;
+use App\Models\Producto;
+use App\Models\Parametro;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
+
+class VentaController extends Controller
+{
+    public function view_index()
+    {
+        if (!session('tieneAcceso')) {
+            return redirect()->route('login');
+        }
+
+        return view('ventas.index', [
+            'headTitle' => 'GESTIÓN DE VENTAS',
+        ]);
+    }
+
+    public function view_create()
+    {
+        if (!session('tieneAcceso')) {
+            return redirect()->route('login');
+        }
+
+        $empleados = (new Empleado())->getAllEmpleados();
+        $parametro = (new Parametro())->getParametro();
+
+        return view('ventas.create', [
+            'headTitle' => 'CREAR VENTA',
+            'empleados' => $empleados,
+            'parametro' => $parametro,
+        ]);
+    }
+
+    public function view_update(Venta $venta)
+    {
+        if (!session('tieneAcceso')) {
+            return redirect()->route('login');
+        }
+
+        return view('ventas.update', [
+            'headTitle' => 'EDITAR VENTA',
+        ]);
+    }
+
+    public function view_imprimir($venta)
+    {
+        if (!session('tieneAcceso')) {
+            return redirect()->route('login');
+        }
+
+        ini_set('memory_limit', '512M');
+        set_time_limit(300);
+
+        $venta = (new Venta())->getVenta($venta);
+        $fecha = date('Y-m-d H_i_s');
+
+        $pdf = Pdf::loadView('ventas.imprimir', compact('venta'));
+        $pdf->setPaper('letter');
+        return $pdf->stream('VENTA N° ' . $venta->idVenta . ' - ' . $fecha . '.pdf');
+    }
+
+    /** API: listar todas las ventas */
+    public function listarVentas()
+    {
+        if (!session('tieneAcceso')) {
+            return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
+        }
+
+        $ventas = (new Venta())->getAllVentas();
+
+        return response()->json([
+            'data' => $ventas
+        ]);
+    }
+
+    /** API: mostrar una venta */
+    public function mostrarVenta(Request $request)
+    {
+        if (!session('tieneAcceso')) {
+            return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
+        }
+
+        $venta = (new Venta())->getVenta($request->venta);
+
+        return response()->json([
+            'data' => $venta
+        ]);
+    }
+
+    /** API: crear nueva venta */
+    public function create(Request $request)
+    {
+        if (!session('tieneAcceso')) {
+            return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
+        }
+
+        $request->validate([
+            'idCliente'   => 'required|integer|exists:clientes,idCliente',
+            'idEmpleado'  => 'nullable|integer|exists:empleados,idEmpleado',
+            'productos'   => 'required|array|min:1',
+            'productos.*.idProducto' => 'required|integer|exists:productos,idProducto',
+            'productos.*.precioUSD'  => 'required|numeric|min:0',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $venta = new Venta();
+            $venta->idUsuario = session('idUsuario');
+            $venta->idCliente = $request->idCliente;
+            $venta->idEmpleado = $request->idEmpleado;
+            $venta->modificadoPor = session('idUsuario');
+            $venta->totalUSD = $request->totalUSD;
+            $venta->saldoUSD = $request->saldoUSD;
+            $venta->save();
+
+            foreach ($request->productos as $detalle) {
+                $venta->productos()->attach($detalle['idProducto'], [
+                    'precioUSD' => $detalle['precioUSD']
+                ]);
+
+                $producto = (new Producto())->getProducto($detalle['idProducto']);
+                $producto->estado = 2;
+                $producto->fechaVenta = Carbon::now();
+                $producto->save();
+            }
+
+            foreach ($request->pagos as $pago) {
+                $p = new PagoVenta();
+                $p->idVenta = $venta->idVenta;
+                $p->pagoUSD = $pago['pagoUSD'];
+                $p->modificadoPor = session('idUsuario');
+                $p->save();
+            }
+
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Venta registrada correctamente',
+                'venta'   => $venta->load(['productos', 'cliente'])
+            ]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /** API: actualizar una venta */
+    public function update(Request $request, Venta $venta)
+    {
+        if (!session('tieneAcceso')) {
+            return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
+        }
+
+        $request->validate([
+            'idCliente'   => 'required|integer|exists:clientes,idCliente',
+            'idEmpleado'  => 'nullable|integer|exists:empleados,idEmpleado',
+            'productos'   => 'required|array|min:1',
+            'productos.*.idProducto' => 'required|integer|exists:productos,idProducto',
+            'productos.*.precioUSD'  => 'required|numeric|min:0',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $venta->idCliente = $request->idCliente;
+            $venta->idEmpleado = $request->idEmpleado;
+            $venta->modificadoPor = session('idUsuario');
+            $venta->productos()->detach();
+
+            $total = 0;
+            foreach ($request->productos as $detalle) {
+                $venta->productos()->attach($detalle['idProducto'], [
+                    'precioUSD' => $detalle['precioUSD']
+                ]);
+                $total += $detalle['precioUSD'];
+            }
+
+            $venta->totalUSD = $total;
+            $venta->saldoUSD = $total; // aquí podrías calcular saldo si hay pagos
+            $venta->save();
+
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Venta actualizada correctamente',
+                'venta'   => $venta->load(['productos', 'cliente'])
+            ]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /** API: eliminar (lógicamente) una venta */
+    public function delete(Request $request, Venta $venta)
+    {
+        if (!session('tieneAcceso')) {
+            return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
+        }
+
+        $request->validate([
+            'motivoEliminacion' => 'required|string|min:3|max:255',
+        ]);
+
+        $venta->estado = 0;
+        $venta->fechaEliminacion = now();
+        $venta->motivoEliminacion = $request->motivoEliminacion;
+        $venta->modificadoPor = session('idUsuario');
+        $venta->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Venta eliminada correctamente',
+            'venta'   => $venta
+        ]);
+    }
+}

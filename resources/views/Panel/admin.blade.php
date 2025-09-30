@@ -14,7 +14,7 @@
         <div class="card-body">
             <div class="row mb-3">
                 <div class="col d-flex justify-content-center">
-                    <a class="btn btn-sq-lg btn-success" href="#">
+                    <a class="btn btn-sq-lg btn-success" href="{{ route('ventas.crear') }}">
                         <div>
                             <i class="fa-solid fa-duotone fa-cart-plus fa-2xl"></i><br />Añadir venta
                         </div>

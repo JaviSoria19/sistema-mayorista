@@ -122,6 +122,7 @@ Route::controller(ProductoController::class)->group(function () {
     Route::get('productos', 'view_index')->name('productos.index');
     Route::get('productos/listar', 'listarProductos')->name('productos.listar');
     Route::get('productos/{producto}', 'mostrarProducto')->name('productos.mostrar');
+    Route::get('productos/{producto}/codigo', 'mostrarProductoPorCodigo')->name('productos.codigo');
     Route::post('productos', 'create')->name('productos.create');
     Route::put('productos/{producto}', 'update')->name('productos.update');
     Route::patch('productos/{producto}', 'delete')->name('productos.delete');
