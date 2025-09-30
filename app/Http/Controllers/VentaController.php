@@ -128,7 +128,7 @@ class VentaController extends Controller
         $ventas = (new Venta())->getVentasPorEstadoYSaldo('1', '<=', '0', 'DESC', $fechaInicio, $fechaFin);
 
         return view('ventas.reporte_perdidas', [
-            'headTitle' => 'REPORTE UTILIDADES',
+            'headTitle' => 'REPORTE PERDIDAS',
             'ventas' => $ventas,
             'fechaInicio' => $fechaInicio,
             'fechaFin' => $fechaFin,
