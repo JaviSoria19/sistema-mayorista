@@ -42,14 +42,21 @@ class VentaController extends Controller
         ]);
     }
 
-    public function view_update(Venta $venta)
+    public function view_update($venta)
     {
         if (!session('tieneAcceso')) {
             return redirect()->route('login');
         }
 
+        $venta = (new Venta())->getVenta($venta);
+        $empleados = (new Empleado())->getAllEmpleados();
+        $parametro = (new Parametro())->getParametro();
+
         return view('ventas.update', [
-            'headTitle' => 'EDITAR VENTA',
+            'headTitle' => 'EDITAR VENTA N°' . $venta->idVenta,
+            'empleados' => $empleados,
+            'parametro' => $parametro,
+            'venta' => $venta,
         ]);
     }
 
@@ -70,7 +77,6 @@ class VentaController extends Controller
         return $pdf->stream('VENTA N° ' . $venta->idVenta . ' - ' . $fecha . '.pdf');
     }
 
-    /** API: listar todas las ventas */
     public function listarVentas()
     {
         if (!session('tieneAcceso')) {
@@ -84,7 +90,6 @@ class VentaController extends Controller
         ]);
     }
 
-    /** API: mostrar una venta */
     public function mostrarVenta(Request $request)
     {
         if (!session('tieneAcceso')) {
@@ -98,7 +103,6 @@ class VentaController extends Controller
         ]);
     }
 
-    /** API: crear nueva venta */
     public function create(Request $request)
     {
         if (!session('tieneAcceso')) {
@@ -155,7 +159,6 @@ class VentaController extends Controller
         }
     }
 
-    /** API: actualizar una venta */
     public function update(Request $request, Venta $venta)
     {
         if (!session('tieneAcceso')) {
@@ -201,8 +204,7 @@ class VentaController extends Controller
         }
     }
 
-    /** API: eliminar (lógicamente) una venta */
-    public function delete(Request $request, Venta $venta)
+    public function delete(Request $request)
     {
         if (!session('tieneAcceso')) {
             return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
@@ -212,15 +214,23 @@ class VentaController extends Controller
             'motivoEliminacion' => 'required|string|min:3|max:255',
         ]);
 
+        $venta = (new Venta())->getVenta($request->idVenta);
         $venta->estado = 0;
         $venta->fechaEliminacion = now();
         $venta->motivoEliminacion = $request->motivoEliminacion;
         $venta->modificadoPor = session('idUsuario');
         $venta->save();
 
+        foreach ($venta->productos as $producto) {
+            $p = (new Producto())->getProducto($producto->idProducto);
+            $p->estado = 1;
+            $p->fechaVenta = null;
+            $p->save();
+        }
+
         return response()->json([
             'success' => true,
-            'message' => 'Venta eliminada correctamente',
+            'message' => 'Venta eliminada correctamente, todos los productos involucrados retornaron al inventario',
             'venta'   => $venta
         ]);
     }

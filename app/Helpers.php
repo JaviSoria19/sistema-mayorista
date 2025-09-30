@@ -5,7 +5,7 @@ function helper_tituloPagina(){
 }
 
 function helper_versionApp(){
-    return "0.8 en desarrollo";
+    return "0.9 en desarrollo";
 }
 
 function helper_encrypt($string)

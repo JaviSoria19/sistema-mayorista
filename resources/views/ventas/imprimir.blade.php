@@ -5,12 +5,12 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>{{ helper_tituloPagina() }} | VENTA N° {{ $venta->idVenta }}</title>
+        <title>{{ helper_tituloPagina() }} | VENTA N° {{ $venta->idVenta }} {{ $venta->estado == '0' ? '(ELIMINADA)' : '' }}</title>
         <!-- Bootstrap CSS -->
         <link href="{{ asset('/public/dependencies/bootstrapdompdf.css') }}" rel="stylesheet">
     </head>
 
-    <body class="border border-info">
+    <body class="border border-{{ $venta->estado == '0' ? 'danger' : 'info' }}">
         <style>
             html {
                 margin: 25px;
@@ -37,7 +37,7 @@
         </style>
         <img src="{{ public_path('img/logo_sistema_mayorista.jpg') }}" class="watermark">
 
-        <p class="titulo bg-info text-white p-1 m-2 text-center rounded align-middle">VENTA N° {{ $venta?->idVenta }}
+        <p class="titulo bg-{{ $venta->estado == '0' ? 'danger' : 'info' }} text-white p-1 m-2 text-center rounded align-middle">VENTA N° {{ $venta?->idVenta }} {{ $venta->estado == '0' ? '(ELIMINADA)' : '' }}
         </p>
 
         <div class="border border-info rounded p-2 m-2">
@@ -54,6 +54,14 @@
                         {{ date('d/m/Y H:i:s', strtotime($venta?->fechaActualizacion)) }}
                     </td>
                 </tr>
+                @if ($venta->fechaEliminacion)
+                <tr>
+                    <td class="font-weight-bold text-center" colspan="2">
+                        <span class="text-info">Fecha de Eliminación:</span>
+                        {{ date('d/m/Y H:i:s', strtotime($venta?->fechaEliminacion)) }}
+                    </td>
+                </tr>
+                @endif
             </table>
 
             <table class="table table-bordered">
