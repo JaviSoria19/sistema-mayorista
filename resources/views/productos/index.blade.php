@@ -4,8 +4,12 @@
     <h1 class="text-center text-info fw-bold"><i class="fa-solid fa-duotone fa-boxes-stacked"></i>
         {{ $headTitle }}</h1>
 
-    <button type="button" class="btn btn-success mb-3 btn-crear" data-bs-toggle="modal" data-bs-target="#modalCreateOrEdit">
-        <i class="fa-solid fa-duotone fa-plus"></i> Crear producto</button>
+    <div class="mb-3">
+        <a class="btn btn-success" href="{{ route('abastecimientos.create') }}"><i class="fa-solid fa-duotone fa-plus"></i>
+            Crear abastecimiento</a>
+        <button type="button" class="btn btn-success btn-crear" data-bs-toggle="modal" data-bs-target="#modalCreateOrEdit">
+            <i class="fa-solid fa-duotone fa-plus"></i> Crear producto</button>
+    </div>
 
     <h2 class="text-info fw-bold">Lista de productos</h2>
 
@@ -92,7 +96,8 @@
                         <div class="mb-3">
                             <label for="nombreProducto" class="form-label">Nombre de producto <span
                                     class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="nombreProducto" name="nombreProducto" list="productos" required>
+                            <input type="text" class="form-control" id="nombreProducto" name="nombreProducto"
+                                list="productos" required>
                         </div>
 
                         <datalist id="productos">

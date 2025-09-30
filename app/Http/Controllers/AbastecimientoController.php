@@ -63,8 +63,6 @@ class AbastecimientoController extends Controller
         }
 
         $request->validate([
-            'idEmpresa' => 'required|numeric|integer',
-            'idMarca' => 'required|numeric|integer',
             'productos' => 'required|array|min:1',
             'productos.*.nombreProducto' => 'required|string|min:3|max:255',
             'productos.*.codigoProducto' => 'required|string|min:3|max:100',
@@ -81,8 +79,8 @@ class AbastecimientoController extends Controller
 
             foreach ($request->productos as $producto) {
                 $p = new Producto();
-                $p->idEmpresa = $request->idEmpresa;
-                $p->idMarca = $request->idMarca;
+                $p->idEmpresa = $producto['idEmpresa'];
+                $p->idMarca = $producto['idMarca'];
                 $p->idAbastecimiento = $abastecimiento->idAbastecimiento;
                 $p->nombreProducto = $producto['nombreProducto'];
                 $p->codigoProducto = $producto['codigoProducto'];
