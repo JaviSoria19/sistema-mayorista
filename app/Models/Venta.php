@@ -61,6 +61,16 @@ class Venta extends Model
         return Venta::with(['productos.marca','pagos','usuario', 'cliente', 'empleado', 'editor'])->orderBy('idVenta', 'ASC')->get();
     }
 
+    public function getVentasPorEstadoYSaldo($estado, $saldoUSD_operador, $saldoUSD, $orden, $fechaInicio, $fechaFin)
+    {
+        return Venta::with(['productos.marca','pagos','usuario', 'cliente', 'empleado', 'editor'])
+        ->where('estado', $estado)
+        ->where('saldoUSD', $saldoUSD_operador ,$saldoUSD)
+        ->whereBetween('fechaRegistro', [$fechaInicio . ' 00:00:00', $fechaFin . ' 23:59:59'])
+        ->orderBy('idVenta', $orden)
+        ->get();
+    }
+
     public function getVenta($idVenta)
     {
         return Venta::with(['productos.marca','pagos','usuario', 'cliente', 'empleado', 'editor'])->find($idVenta);

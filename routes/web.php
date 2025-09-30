@@ -135,6 +135,8 @@ Route::controller(VentaController::class)->group(function () {
     Route::get('ventas/crear', 'view_create')->name('ventas.crear');
     Route::get('ventas/{venta}/editar', 'view_update')->name('ventas.editar');
     Route::get('ventas/{venta}/imprimir', 'view_imprimir')->name('ventas.imprimir');
+    Route::get('ventas/reporte_utilidades', 'view_reporte_utilidades')->name('ventas.utilidades');
+    Route::get('ventas/reporte_perdidas', 'view_reporte_perdidas')->name('ventas.perdidas');
 
     // Operaciones CRUD
     Route::get('ventas/listar', 'listarVentas')->name('ventas.listar');

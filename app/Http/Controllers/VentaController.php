@@ -77,6 +77,62 @@ class VentaController extends Controller
         return $pdf->stream('VENTA N° ' . $venta->idVenta . ' - ' . $fecha . '.pdf');
     }
 
+    public function view_reporte_utilidades(Request $request)
+    {
+        if (!session('tieneAcceso')) {
+            return redirect()->route('login');
+        }
+
+        $fechaInicio = $request->fechaInicio ? $request->fechaInicio : date('Y-m-d', strtotime('-1 months'));
+        $fechaFin = $request->fechaFin ? $request->fechaFin : date('Y-m-d');
+
+        if ($fechaInicio > $fechaFin) {
+            return redirect()->route('ventas.utilidades')->withErrors(['error' => 'La fecha de inicio ingresada (' . date('d/m/Y', strtotime($fechaInicio)) . ') no puede ser mayor a la fecha de fin (' . date('d/m/Y', strtotime($fechaFin)) . ').']);
+        }
+
+        $ventas = (new Venta())->getVentasPorEstadoYSaldo('1', '<=', '0', 'DESC', $fechaInicio, $fechaFin);
+
+        $utilidadTotal = 0;
+        foreach ($ventas as $venta) {
+            foreach ($venta->productos as $producto) {
+                $costoFinalUSD = $producto->costoBaseUSD +
+                    ($producto->costoBaseUSD * $producto->traspasoPorcentaje) / 100 +
+                    $producto->transporteUSD;
+
+                $utilidadTotal += $producto->pivot->precioUSD - $costoFinalUSD;
+            }
+        }
+
+        return view('ventas.reporte_utilidades', [
+            'headTitle' => 'REPORTE UTILIDADES',
+            'ventas' => $ventas,
+            'utilidadTotal' => $utilidadTotal,
+            'fechaInicio' => $fechaInicio,
+            'fechaFin' => $fechaFin,
+        ]);
+    }
+
+    public function view_reporte_perdidas(Request $request)
+    {
+        if (!session('tieneAcceso')) {
+            return redirect()->route('login');
+        }
+
+        $fechaInicio = $request->fechaInicio ? $request->fechaInicio : date('Y-m-d', strtotime('-1 months'));
+        $fechaFin = $request->fechaFin ? $request->fechaFin : date('Y-m-d');
+
+        if ($fechaInicio > $fechaFin) {
+            return redirect()->route('ventas.utilidades')->withErrors(['error' => 'La fecha de inicio ingresada (' . date('d/m/Y', strtotime($fechaInicio)) . ') no puede ser mayor a la fecha de fin (' . date('d/m/Y', strtotime($fechaFin)) . ').']);
+        }
+
+        $ventas = (new Venta())->getVentasPorEstadoYSaldo('1', '<=', '0', 'DESC', $fechaInicio, $fechaFin);
+
+        return view('ventas.reporte_perdidas', [
+            'headTitle' => 'REPORTE PÉRDIDAS',
+            'ventas' => $ventas,
+        ]);
+    }
+
     public function listarVentas()
     {
         if (!session('tieneAcceso')) {

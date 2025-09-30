@@ -29,16 +29,8 @@
                     </a>
                 </div>
 
-                {{-- <div class="col d-flex justify-content-center">
-                    <a class="btn btn-sq-lg btn-success" href="#">
-                        <div>
-                            <i class="fa-solid fa-duotone fa-clock-rotate-left fa-2xl"></i><br />Historial de productos
-                        </div>
-                    </a>
-                </div> --}}
-
                 <div class="col d-flex justify-content-center">
-                    <a class="btn btn-sq-lg btn-success" href="#">
+                    <a class="btn btn-sq-lg btn-success" href="{{ route('ventas.utilidades') }}">
                         <div>
                             <i class="fa-solid fa-duotone fa-chart-mixed-up-circle-dollar fa-2xl"></i><br />Reporte
                             utilidades
@@ -47,7 +39,7 @@
                 </div>
 
                 <div class="col d-flex justify-content-center">
-                    <a class="btn btn-sq-lg btn-success" href="#">
+                    <a class="btn btn-sq-lg btn-success" href="{{ route('ventas.perdidas') }}">
                         <div>
                             <i class="fa-solid fa-duotone fa-chart-line-down fa-2xl"></i><br />Reporte pérdidas
                         </div>
