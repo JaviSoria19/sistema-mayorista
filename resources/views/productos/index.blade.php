@@ -381,11 +381,14 @@
                     let empresa = $("#empresa option:selected").text().trim();
                     let marca = $("#marca option:selected").text().trim();
                     let ahora = new Date();
-                    let fechaHora = ahora.getFullYear() +
+                    /*let fechaHora = ahora.getFullYear() +
                         String(ahora.getMonth() + 1).padStart(2, "0") +
                         String(ahora.getDate()).padStart(2, "0") + "-" +
                         String(ahora.getHours()).padStart(2, "0") +
-                        String(ahora.getMinutes()).padStart(2, "0");
+                        String(ahora.getMinutes()).padStart(2, "0");*/
+                    let fechaHora = ahora.getFullYear() +
+                        String(ahora.getMonth() + 1).padStart(2, "0") +
+                        String(ahora.getDate()).padStart(2, "0");
 
                     function generarId() {
                         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -398,9 +401,11 @@
                         return result;
                     }
 
-                    let codigo = empresa.substring(0, 2).toUpperCase() + "-" +
+                    /*let codigo = empresa.substring(0, 2).toUpperCase() + "-" +
                         marca.substring(0, 2).toUpperCase() + "-" +
-                        fechaHora + "-" + generarId();
+                        fechaHora + "-" + generarId();*/
+
+                    let codigo = fechaHora + "-" + generarId();
 
                     $('#formCreateOrEdit input[name="codigoProducto"]').val(codigo);
                 }

@@ -131,12 +131,13 @@ class Venta extends Model
             'clientes.idCliente',
             'clientes.nombreCliente',
             'clientes.celular',
-            DB::raw('SUM(ventas.saldoUSD) as saldoPendiente')
+            DB::raw('SUM(ventas.saldoUSD) as saldoPendiente'),
+            DB::raw('MIN(ventas.fechaRegistro) as fechaMasAntigua')
         )
             ->join('clientes', 'ventas.idCliente', '=', 'clientes.idCliente')
             ->where('ventas.estado', 1)
             ->where('ventas.saldoUSD', '>', 0)
-            ->groupBy('clientes.idCliente', 'clientes.nombreCliente')
+            ->groupBy('clientes.idCliente', 'clientes.nombreCliente', 'clientes.celular')
             ->orderByDesc('saldoPendiente')
             ->get();
     }

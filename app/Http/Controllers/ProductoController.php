@@ -83,7 +83,7 @@ class ProductoController extends Controller
         $producto->idMarca = $request->idMarca;
         $producto->idAbastecimiento = $request->idAbastecimiento;
         $producto->nombreProducto = strtoupper($request->nombreProducto);
-        $producto->codigoProducto = $request->codigoProducto;
+        $producto->codigoProducto = $request->idAbastecimiento . '-' . $request->codigoProducto;
         $producto->costoBaseUSD = $request->costoBaseUSD;
         $producto->traspasoPorcentaje = $request->traspasoPorcentaje;
         $producto->transporteUSD = $request->transporteUSD;

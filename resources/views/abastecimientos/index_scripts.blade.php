@@ -156,6 +156,7 @@
 
             if (productos.length === 0) {
                 Swal.fire({
+                    theme: 'auto',
                     title: "¡No válido!",
                     text: "Debe agregar al menos un producto a la tabla.",
                     icon: "warning"
@@ -237,6 +238,7 @@
 
         $("#btnEmptyTable").on("click", function() {
             Swal.fire({
+                theme: 'auto',
                 title: `¡ATENCIÓN!`,
                 text: `¿Estás seguro de vaciar la tabla de productos?`,
                 icon: 'question',
@@ -251,6 +253,7 @@
                     actualizarTotales();
 
                     Swal.fire({
+                        theme: 'auto',
                         icon: "success",
                         title: "¡Hecho!",
                         showConfirmButton: false,
@@ -274,6 +277,7 @@
             if (!empresa || !marca || !nombreProducto || isNaN(costoBase) || isNaN(traspasoPorcentaje) || isNaN(
                     transporteUSD) || isNaN(cantidad)) {
                 Swal.fire({
+                    theme: 'auto',
                     title: "¡No válido!",
                     text: "Complete todos los campos obligatorios.",
                     icon: "warning"
@@ -290,16 +294,20 @@
 
                 // 3. Generar código: 2 letras empresa + 2 letras marca + fecha/hora + correlativo
                 let ahora = new Date();
-                let fechaHora = ahora.getFullYear() +
+                /*let fechaHora = ahora.getFullYear() +
                     String(ahora.getMonth() + 1).padStart(2, "0") +
                     String(ahora.getDate()).padStart(2, "0") + "-" +
                     String(ahora.getHours()).padStart(2, "0") +
-                    String(ahora.getMinutes()).padStart(2, "0");
+                    String(ahora.getMinutes()).padStart(2, "0");*/
+                let fechaHora = ahora.getFullYear() +
+                    String(ahora.getMonth() + 1).padStart(2, "0") +
+                    String(ahora.getDate()).padStart(2, "0");
 
-                let codigo = empresa.substring(0, 2).toUpperCase() + "-" +
+                /*let codigo = empresa.substring(0, 2).toUpperCase() + "-" +
                     marca.substring(0, 2).toUpperCase() + "-" +
                     fechaHora + "-" +
-                    String(numeroFila).padStart(2, "0");
+                    String(numeroFila).padStart(2, "0");*/
+                let codigo = fechaHora + "-" + String(numeroFila).padStart(2, "0");
 
                 let costoTraspasoUSD = (costoBase * traspasoPorcentaje / 100).toFixed(2);
                 let costoFinalUSD = (costoBase + parseFloat(costoTraspasoUSD) + transporteUSD).toFixed(2);

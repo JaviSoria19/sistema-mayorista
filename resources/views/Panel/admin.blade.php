@@ -241,7 +241,15 @@
 
             <div class="row">
                 <div class="col-6">
+
                     <h4 class="fw-bold"><i class="fa-solid fa-duotone fa-cart-shopping"></i> SALDOS PENDIENTES</h4>
+
+                    <div class="border p-3 mb-3 rounded">
+                        <p>Seleccione una opción para <i class="fa-solid fa-duotone fa-file-export"></i> exportar o <i
+                                class="fa-solid fa-duotone fa-filter"></i> filtrar la tabla:</p>
+                        <div id="dataTableExportButtonsContainer"></div>
+                    </div>
+
                     <table class="table table-bordered table-striped" id="dataTable">
                         <thead class="text-center">
                             <tr>
@@ -249,6 +257,7 @@
                                 <th>Cliente</th>
                                 <th>Celular</th>
                                 <th>Saldo (USD)</th>
+                                <th>Fecha</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -258,6 +267,7 @@
                                     <th>{{ $saldo_pendiente->nombreCliente }}</th>
                                     <th>{{ $saldo_pendiente->celular }}</th>
                                     <th>{{ $saldo_pendiente->saldoPendiente }}</th>
+                                    <th>{{ date('d/m/Y H:i:s', strtotime($saldo_pendiente->fechaMasAntigua)) }}</th>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -295,11 +305,10 @@
 
     <script>
         $(document).ready(function() {
-            $('#dataTable').DataTable(
-                {
-                    @include('datatables.dataTablesLanguageProperty')
-                }
-            );
+            $('#dataTable').DataTable({
+                @include('datatables.dataTablesGlobalProperties')
+                @include('datatables.dataTablesLanguageProperty')
+            }).buttons().container().appendTo('#dataTableExportButtonsContainer');
         });
     </script>
 @endsection
