@@ -240,6 +240,23 @@ class VentaController extends Controller
             $venta->saldoUSD = $request->saldoUSD;
             $venta->save();
 
+            // Obtener productos antes de la actualización
+            $productosAnteriores = $venta->productos->pluck('idProducto')->toArray();
+            $productosNuevos = collect($request->productos)->pluck('idProducto')->toArray();
+
+            // Identificar productos eliminados
+            $productosEliminados = array_diff($productosAnteriores, $productosNuevos);
+
+            // Revertir estado de los productos eliminados
+            foreach ($productosEliminados as $idProd) {
+                $producto = Producto::find($idProd);
+                if ($producto) {
+                    $producto->estado = 1; // Disponible nuevamente
+                    $producto->fechaVenta = null;
+                    $producto->save();
+                }
+            }
+
             // Elimina todos los 'detalles_ventas'
             $venta->productos()->detach();
 

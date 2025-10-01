@@ -447,7 +447,7 @@
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
                     cancelButtonColor: "#d33",
-                    confirmButtonText: "Si, registrar la venta",
+                    confirmButtonText: "Si, guardar cambios",
                     cancelButtonText: "No, cancelar"
                 }).then((result) => {
                     if (result.isConfirmed) {
