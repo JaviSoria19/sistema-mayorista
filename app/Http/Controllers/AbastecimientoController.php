@@ -83,7 +83,7 @@ class AbastecimientoController extends Controller
                 $p->idMarca = $producto['idMarca'];
                 $p->idAbastecimiento = $abastecimiento->idAbastecimiento;
                 $p->nombreProducto = $producto['nombreProducto'];
-                $p->codigoProducto = $producto['codigoProducto'];
+                $p->codigoProducto = $abastecimiento->idAbastecimiento . '-' . $producto['codigoProducto'];
                 $p->costoBaseUSD = $producto['costoBaseUSD'];
                 $p->traspasoPorcentaje = $producto['traspasoPorcentaje'];
                 $p->transporteUSD = $producto['transporteUSD'];

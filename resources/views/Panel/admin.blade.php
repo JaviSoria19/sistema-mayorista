@@ -195,7 +195,7 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row mb-3">
                 <div class="col-md-6 col-lg-4">
                     <div class="card info-card shadow-sm border-success">
                         <div class="card-body d-flex align-items-center bg-success bg-opacity-10">
@@ -238,6 +238,35 @@
                     </div>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <h4 class="fw-bold"><i class="fa-solid fa-duotone fa-cart-shopping"></i> SALDOS PENDIENTES</h4>
+                    <table class="table table-bordered table-striped" id="dataTable">
+                        <thead class="text-center">
+                            <tr>
+                                <th>#</th>
+                                <th>Cliente</th>
+                                <th>Celular</th>
+                                <th>Saldo (USD)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($saldos_pendientes as $saldo_pendiente)
+                                <tr>
+                                    <th class="text-center">{{ $loop->index + 1 }}.</th>
+                                    <th>{{ $saldo_pendiente->nombreCliente }}</th>
+                                    <th>{{ $saldo_pendiente->celular }}</th>
+                                    <th>{{ $saldo_pendiente->saldoPendiente }}</th>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
@@ -264,5 +293,13 @@
         }
     </style>
 
-    <script></script>
+    <script>
+        $(document).ready(function() {
+            $('#dataTable').DataTable(
+                {
+                    @include('datatables.dataTablesLanguageProperty')
+                }
+            );
+        });
+    </script>
 @endsection

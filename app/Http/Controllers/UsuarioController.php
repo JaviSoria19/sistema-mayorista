@@ -33,6 +33,7 @@ class UsuarioController extends Controller
         $ingresos_hoy = (new Venta())->dashboard_getIngresosVentasHoy();
         $ingresos_semana = (new Venta())->dashboard_getIngresosVentasSemana();
         $ingresos_mes = (new Venta())->dashboard_getIngresosVentasMes();
+        $saldos_pendientes = (new Venta())->dashboard_getClientesConSaldo();
 
         return view('panel.admin', [
             'headTitle' => 'PANEL DE ADMINISTRACIÓN',
@@ -42,6 +43,7 @@ class UsuarioController extends Controller
             'ingresos_hoy' => $ingresos_hoy,
             'ingresos_semana' => $ingresos_semana,
             'ingresos_mes' => $ingresos_mes,
+            'saldos_pendientes' => $saldos_pendientes,
         ]);
     }
 

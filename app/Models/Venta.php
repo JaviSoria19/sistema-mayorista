@@ -124,4 +124,20 @@ class Venta extends Model
             ->select(DB::raw('SUM(totalUSD - saldoUSD) as ingresos'))
             ->value('ingresos');
     }
+
+    public function dashboard_getClientesConSaldo()
+    {
+        return Venta::select(
+            'clientes.idCliente',
+            'clientes.nombreCliente',
+            'clientes.celular',
+            DB::raw('SUM(ventas.saldoUSD) as saldoPendiente')
+        )
+            ->join('clientes', 'ventas.idCliente', '=', 'clientes.idCliente')
+            ->where('ventas.estado', 1)
+            ->where('ventas.saldoUSD', '>', 0)
+            ->groupBy('clientes.idCliente', 'clientes.nombreCliente')
+            ->orderByDesc('saldoPendiente')
+            ->get();
+    }
 }
