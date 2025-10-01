@@ -6,6 +6,7 @@ use App\Http\Requests\UsuarioValidation;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use App\Models\Empleado;
+use App\Models\Venta;
 
 class UsuarioController extends Controller
 {
@@ -26,8 +27,21 @@ class UsuarioController extends Controller
             session(['tieneAcceso' => false]);
         }
 
+        $ventas_hoy = (new Venta())->dashboard_getCantidadVentasHoy();
+        $ventas_semana = (new Venta())->dashboard_getCantidadVentasSemana();
+        $ventas_mes = (new Venta())->dashboard_getCantidadVentasMes();
+        $ingresos_hoy = (new Venta())->dashboard_getIngresosVentasHoy();
+        $ingresos_semana = (new Venta())->dashboard_getIngresosVentasSemana();
+        $ingresos_mes = (new Venta())->dashboard_getIngresosVentasMes();
+
         return view('panel.admin', [
             'headTitle' => 'PANEL DE ADMINISTRACIÓN',
+            'ventas_hoy' => $ventas_hoy,
+            'ventas_semana' => $ventas_semana,
+            'ventas_mes' => $ventas_mes,
+            'ingresos_hoy' => $ingresos_hoy,
+            'ingresos_semana' => $ingresos_semana,
+            'ingresos_mes' => $ingresos_mes,
         ]);
     }
 
