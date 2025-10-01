@@ -204,7 +204,7 @@
                             </div>
                             <div>
                                 <h6 class="text-muted mb-1 small">Ingresos de hoy</h6>
-                                <h3 class="fw-bold">$ {{ $ingresos_hoy }}</h3>
+                                <h3 class="fw-bold">$ {{ $ingresos_hoy != null ? $ingresos_hoy : '0.00' }}</h3>
                             </div>
                         </div>
                     </div>
@@ -218,7 +218,7 @@
                             </div>
                             <div>
                                 <h6 class="text-muted mb-1 small">Ingresos de la semana</h6>
-                                <h3 class="fw-bold">$ {{ $ingresos_semana }}</h3>
+                                <h3 class="fw-bold">$ {{ $ingresos_semana != null ? $ingresos_semana : '0.00' }}</h3>
                             </div>
                         </div>
                     </div>
@@ -232,7 +232,7 @@
                             </div>
                             <div>
                                 <h6 class="text-muted mb-1 small">Ingresos del mes</h6>
-                                <h3 class="fw-bold">$ {{ $ingresos_mes }}</h3>
+                                <h3 class="fw-bold">$ {{ $ingresos_mes != null ? $ingresos_mes : '0.00' }}</h3>
                             </div>
                         </div>
                     </div>
