@@ -45,12 +45,10 @@
             @foreach ($ventas as $venta)
                 @foreach ($venta->productos as $producto)
                     @php
-                        $costoFinalUSD = number_format(
+                        $costoFinalUSD =
                             $producto->costoBaseUSD +
-                                ($producto->costoBaseUSD * $producto->traspasoPorcentaje) / 100 +
-                                $producto->transporteUSD,
-                            2,
-                        );
+                            ($producto->costoBaseUSD * $producto->traspasoPorcentaje) / 100 +
+                            $producto->transporteUSD;
                         $utilidad = $producto->pivot->precioUSD - $costoFinalUSD;
                     @endphp
                     <tr>

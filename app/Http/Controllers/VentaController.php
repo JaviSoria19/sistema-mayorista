@@ -272,15 +272,17 @@ class VentaController extends Controller
             }
 
             // Borrar pagos anteriores
-            PagoVenta::where('idVenta', $venta->idVenta)->delete();
+            /*PagoVenta::where('idVenta', $venta->idVenta)->delete();*/
 
             // Insertar nuevos pagos
             foreach ($request->pagos as $pago) {
-                $p = new PagoVenta();
-                $p->idVenta = $venta->idVenta;
-                $p->pagoUSD = $pago['pagoUSD'];
-                $p->modificadoPor = session('idUsuario');
-                $p->save();
+                if ($pago['idPagoVenta'] == '0') {
+                    $p = new PagoVenta();
+                    $p->idVenta = $venta->idVenta;
+                    $p->pagoUSD = $pago['pagoUSD'];
+                    $p->modificadoPor = session('idUsuario');
+                    $p->save();
+                }
             }
 
             DB::commit();

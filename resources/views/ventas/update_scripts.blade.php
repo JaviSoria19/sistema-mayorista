@@ -298,9 +298,12 @@
 
             if (pagoUSD > 0) {
                 let fila = `
-                <tr>
+                <tr class="border-warning">
+                    <td class="text-center text-warning fw-bold">Nuevo</td>
+                    <td class="visually-hidden idPagoVenta">0</td>
+                    <td class="text-warning">-</td>
                     <td class="pagoUSD" contenteditable="true">${pagoUSD.toFixed(2)}</td>
-                    <td>
+                    <td class="text-center">
                         <button type="button" class="btn btn-danger btn-sm btn-remover" 
                             data-toggle="tooltip" title="Remover de la tabla">
                             <i class="fa-solid fa-duotone fa-trash-can-list"></i>
@@ -386,8 +389,10 @@
             });
 
             $("#pagos tbody tr").each(function() {
+                let idPagoVenta = parseFloat($(this).find('.idPagoVenta').text());
                 let pagoUSD = parseFloat($(this).find('.pagoUSD').text());
                 pagos.push({
+                    idPagoVenta: idPagoVenta,
                     pagoUSD: pagoUSD
                 });
             });
@@ -498,12 +503,13 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        Swal.fire('Éxito', response.message, 'success');
+                        /*Swal.fire('Éxito', response.message, 'success');
                         btnGuardarVenta.innerHTML =
-                            '<i class="fa-solid fa-duotone fa-cart-circle-check"></i> ¡Éxito!';
+                            '<i class="fa-solid fa-duotone fa-cart-circle-check"></i> ¡Éxito!';*/
                         window.open(
                             `{{ route('ventas.index') }}/${response.venta.idVenta}/imprimir`,
                             '_blank', 'noopener,noreferrer');
+                        location.reload();
                     } else {
                         Swal.fire('Error', response.message, 'error');
                         btnGuardarVenta.disabled = false;

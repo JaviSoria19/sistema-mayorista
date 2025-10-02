@@ -256,6 +256,7 @@
                                 <th>#</th>
                                 <th>Cliente</th>
                                 <th>Celular</th>
+                                <th>Procedencia</th>
                                 <th>Saldo (USD)</th>
                                 <th>Fecha</th>
                             </tr>
@@ -266,6 +267,7 @@
                                     <th class="text-center">{{ $loop->index + 1 }}.</th>
                                     <th>{{ $saldo_pendiente->nombreCliente }}</th>
                                     <th>{{ $saldo_pendiente->celular }}</th>
+                                    <th>{{ $saldo_pendiente->procedencia }}</th>
                                     <th>{{ $saldo_pendiente->saldoPendiente }}</th>
                                     <th>{{ date('d/m/Y H:i:s', strtotime($saldo_pendiente->fechaMasAntigua)) }}</th>
                                 </tr>

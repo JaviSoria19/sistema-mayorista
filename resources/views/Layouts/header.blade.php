@@ -12,34 +12,27 @@
                     </li>
                     
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('empleados') ? 'active' : '' }}" aria-current="page"
-                            href="{{ route('empleados.index') }}"><i class="fa-solid fa-duotone fa-user-tag"></i>
-                            Empleados</a>
+                        <a class="nav-link {{ request()->is('ventas/crear') ? 'active' : '' }}" aria-current="page"
+                            href="{{ route('ventas.crear') }}"><i class="fa-solid fa-duotone fa-cart-plus"></i>
+                            Añadir venta</a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('usuarios') ? 'active' : '' }}" aria-current="page"
-                            href="{{ route('usuarios.index') }}"><i class="fa-solid fa-duotone fa-user-tie"></i>
-                            Usuarios</a>
+                        <a class="nav-link {{ request()->is('ventas') ? 'active' : '' }}" aria-current="page"
+                            href="{{ route('ventas.index') }}"><i class="fa-solid fa-duotone fa-cart-shopping"></i>
+                            Ventas</a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('clientes') ? 'active' : '' }}" aria-current="page"
-                            href="{{ route('clientes.index') }}"><i class="fa-solid fa-duotone fa-address-card"></i>
-                            Clientes</a>
+                        <a class="nav-link {{ request()->is('abastecimientos') ? 'active' : '' }}" aria-current="page"
+                            href="{{ route('abastecimientos.index') }}"><i class="fa-solid fa-duotone fa-cart-flatbed-boxes"></i>
+                            Abastecimientos</a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('marcas') ? 'active' : '' }}" aria-current="page"
-                            href="{{ route('marcas.index') }}"><i class="fa-solid fa-duotone fa-industry-windows"></i>
-                            Marcas</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->is('empresas') ? 'active' : '' }}" aria-current="page"
-                            href="{{ route('empresas.index') }}"><i class="fa-solid fa-duotone fa-building"></i>
-                            Empresas</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->is('saldos-empresas') ? 'active' : '' }}" aria-current="page"
-                            href="{{ route('saldos-empresas.index') }}"><i class="fa-solid fa-duotone fa-money-check-dollar-pen"></i>
-                            Saldos de empresas</a>
+                        <a class="nav-link {{ request()->is('productos') ? 'active' : '' }}" aria-current="page"
+                            href="{{ route('productos.index') }}"><i class="fa-solid fa-duotone fa-boxes-stacked"></i>
+                            Productos</a>
                     </li>
                 </ul>
             </ul>

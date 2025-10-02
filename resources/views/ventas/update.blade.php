@@ -109,20 +109,26 @@
             <div class="mb-3 col-4">
                 <table class="table table-bordered table-striped" id="pagos">
                     <thead class="text-center">
-                        <tr>
+                        <tr class="border border-primary">
+                            <th>#</th>
+                            <th class="visually-hidden">Id Pago</th>
+                            <th>Fecha registro</th>
                             <th>Pagos (USD)</th>
                             <th>Remover</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($venta->pagos as $pago)
-                            <tr>
-                                <td class="pagoUSD" contenteditable="true">{{ $pago->pagoUSD }}</td>
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-sm btn-remover" data-toggle="tooltip"
+                            <tr class="border border-primary">
+                                <td class="text-center text-primary fw-bold">{{ $loop->index + 1 }}.</td>
+                                <td class="visually-hidden idPagoVenta">{{ $pago->idPagoVenta }}</td>
+                                <td>{{ date('d/m/Y H:i:s',strtotime($pago->fechaRegistro)) }}</td>
+                                <td class="text-success fw-bold pagoUSD">{{ $pago->pagoUSD }}</td>
+                                <td class="bg-secondary">
+                                    {{-- <button type="button" class="btn btn-danger btn-sm btn-remover" data-toggle="tooltip"
                                         title="Remover de la tabla">
                                         <i class="fa-solid fa-duotone fa-trash-can-list"></i>
-                                    </button>
+                                    </button> --}}
                                 </td>
                             </tr>
                         @endforeach

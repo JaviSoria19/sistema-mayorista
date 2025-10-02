@@ -131,6 +131,7 @@ class Venta extends Model
             'clientes.idCliente',
             'clientes.nombreCliente',
             'clientes.celular',
+            'clientes.procedencia',
             DB::raw('SUM(ventas.saldoUSD) as saldoPendiente'),
             DB::raw('MIN(ventas.fechaRegistro) as fechaMasAntigua')
         )
