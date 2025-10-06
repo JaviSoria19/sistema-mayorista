@@ -46,7 +46,9 @@
                             <select style="width: 100%" class="form-select" id="empresa" name="idEmpresa" required>
                                 <option value="" disabled selected>Seleccione un empresa</option>
                                 @foreach ($empresas as $empresa)
-                                    <option value="{{ $empresa->idEmpresa }}">{{ $empresa->nombreEmpresa }}</option>
+                                    @if ($empresa->estado != '0')
+                                        <option value="{{ $empresa->idEmpresa }}">{{ $empresa->nombreEmpresa }}</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
@@ -56,7 +58,9 @@
                             <select style="width: 100%" class="form-select" id="marca" name="idMarca" required>
                                 <option value="" disabled selected>Seleccione una marca</option>
                                 @foreach ($marcas as $marca)
-                                    <option value="{{ $marca->idMarca }}">{{ $marca->nombreMarca }}</option>
+                                    @if ($marca->estado != '0')
+                                        <option value="{{ $marca->idMarca }}">{{ $marca->nombreMarca }}</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
