@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="{{ session('temaPreferido') ? session('temaPreferido') : 'dark' }}">
 
 <head>
     <meta charset="utf-8">
@@ -11,7 +11,7 @@
     @include('layouts.dependenciesCSS')
 </head>
 
-<body data-bs-theme="dark">
+<body>
     <div class="container">
         <div class="row justify-content-center align-items-center vh-100">
             <div class="col-md-4">

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="{{ session('temaPreferido') ? session('temaPreferido') : 'dark' }}">
 
 <head>
     <meta charset="UTF-8">
@@ -15,7 +15,7 @@
 
 </head>
 
-<body data-bs-theme="{{ session('temaPreferido') ? session('temaPreferido') : 'dark' }}" class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100">
 
     @include('layouts.header')
 

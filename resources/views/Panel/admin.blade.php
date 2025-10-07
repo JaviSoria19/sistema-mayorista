@@ -150,6 +150,9 @@
     </div>
 
     <div class="card mb-3">
+        <div class="card-header">
+            <span class="h2 text-info fw-bold align-middle"><i class="fa-solid fa-duotone fa-chart-simple"></i> ESTADÍSTICAS</span>
+        </div>
         <div class="card-body">
             <div class="row mb-3">
                 <div class="col-md-6 col-lg-4">
