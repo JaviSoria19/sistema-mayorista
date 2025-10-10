@@ -1,5 +1,103 @@
+<!-- DYMO connect framework  -->
+<script src="{{ asset('/public/dependencies/dymo-connect-framework/dymo.connect.framework.full.js') }}"></script>
 <script>
     $(document).ready(function() {
+        dymo.label.framework.init(); //Initialize DYMO Label Framework
+        const dymo_entorno = dymo.label.framework.checkEnvironment();
+
+        if (!dymo_entorno.isFrameworkInstalled) {
+            Swal.fire({
+                theme: 'auto',
+                title: "¡Atención!",
+                text: "Por favor instale DYMO Label Software (DLS) o DYMO Connect for Desktop (DCD), caso contrario no se podrán imprimir etiquetas con el código de producto.",
+                icon: "error"
+            });
+        }
+
+        if (!dymo_entorno.isWebServicePresent) {
+            Swal.fire({
+                theme: 'auto',
+                title: "¡Atención!",
+                text: "Por favor inicie la aplicación DYMO Label Software (DLS) o DYMO Connect for Desktop (DCD) para poder imprimir",
+                icon: "error"
+            });
+        }
+
+        const dymo_printers = dymo.label.framework.getPrinters();
+
+        if (dymo_printers.length === 0) {
+            Swal.fire({
+                theme: 'auto',
+                title: "¡Atención!",
+                text: "No hay impresoras DYMO instaladas. Por favor instale una impresora DYMO para poder imprimir etiquetas con el código de producto.",
+                icon: "warning",
+            });
+        } else {
+            console.log("Impresoras DYMO encontradas:");
+            dymo_printers.forEach(function(printer) {
+                console.log(`- ${printer.name} (${printer.modelName}) - ${printer.isConnected ? 'Conectada' : 'Desconectada'}`);
+            });
+        }
+
+        var dymo_labelXml = `<?xml version="1.0" encoding="utf-8"?>
+<DieCutLabel Version="8.0" Units="twips">
+	<PaperOrientation>Portrait</PaperOrientation>
+	<Id>Small30332</Id>
+	<PaperName>30332 1 in x 1 in</PaperName>
+	<DrawCommands>
+		<RoundRectangle X="0" Y="0" Width="1440" Height="1440" Rx="180" Ry="180" />
+	</DrawCommands>
+	<ObjectInfo>
+		<TextObject>
+			<Name>lblCodigoProducto</Name>
+			<ForeColor Alpha="255" Red="0" Green="0" Blue="0" />
+			<BackColor Alpha="0" Red="255" Green="255" Blue="255" />
+			<LinkedObjectName></LinkedObjectName>
+			<Rotation>Rotation0</Rotation>
+			<IsMirrored>False</IsMirrored>
+			<IsVariable>False</IsVariable>
+			<HorizontalAlignment>Center</HorizontalAlignment>
+			<VerticalAlignment>Middle</VerticalAlignment>
+			<TextFitMode>AlwaysFit</TextFitMode>
+			<UseFullFontHeight>True</UseFullFontHeight>
+			<Verticalized>False</Verticalized>
+			<StyledText>
+				<Element>
+					<String>PL1-1-1</String>
+					<Attributes>
+						<Font Family="Arial" Size="12" Bold="False" Italic="False" Underline="False" Strikeout="False" />
+						<ForeColor Alpha="255" Red="0" Green="0" Blue="0" />
+					</Attributes>
+				</Element>
+			</StyledText>
+		</TextObject>
+		<Bounds X="344.621544893498" Y="252.042954757161" Width="763.056631892695" Height="170.611028315945" />
+	</ObjectInfo>
+	<ObjectInfo>
+		<BarcodeObject>
+			<Name>lblCodigoQR</Name>
+			<ForeColor Alpha="255" Red="0" Green="0" Blue="0" />
+			<BackColor Alpha="0" Red="255" Green="255" Blue="255" />
+			<LinkedObjectName></LinkedObjectName>
+			<Rotation>Rotation0</Rotation>
+			<IsMirrored>False</IsMirrored>
+			<IsVariable>False</IsVariable>
+			<Text>PL1-1-1</Text>
+			<Type>QRCode</Type>
+			<Size>Medium</Size>
+			<TextPosition>None</TextPosition>
+			<TextFont Family="Arial" Size="8" Bold="False" Italic="False" Underline="False" Strikeout="False" />
+			<CheckSumFont Family="Arial" Size="8" Bold="False" Italic="False" Underline="False" Strikeout="False" />
+			<TextEmbedding>None</TextEmbedding>
+			<ECLevel>0</ECLevel>
+			<HorizontalAlignment>Center</HorizontalAlignment>
+			<QuietZonesPadding Left="0" Top="0" Right="0" Bottom="0" />
+		</BarcodeObject>
+		<Bounds X="82" Y="634" Width="1301" Height="720" />
+	</ObjectInfo>
+</DieCutLabel>`;
+
+
         $("#dataTable").DataTable({
             processing: true,
             ajax: {
@@ -179,22 +277,46 @@
                 success: function(response) {
                     if (response.success) {
                         btnGuardar.disabled = false;
-                        btnGuardar.innerHTML = '<i class="fa-solid fa-duotone fa-save"></i> Guardar';
-                        
+                        btnGuardar.innerHTML =
+                            '<i class="fa-solid fa-duotone fa-save"></i> Guardar';
+
                         Swal.fire('Éxito', response.message, 'success');
                         $('#modalCreate').modal('hide');
                         $('#dataTable').DataTable().ajax.reload();
 
                         $("#productos tbody").empty();
                         actualizarTotales();
+
+                        
+
+                        if (dymo_printers.length === 0) {
+                            Swal.fire({
+                                theme: 'auto',
+                                title: "¡Atención!",
+                                text: "No hay impresoras DYMO instaladas.",
+                                icon: "error",
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                            return;
+                        }
+
+                        // Este código solo se ejecuta si HAY impresoras
+                        response.abastecimiento?.productos?.forEach(function(producto) {
+                            DYMO_imprimirCodigoProducto(producto.codigoProducto);
+                        });
                     } else {
                         btnGuardar.disabled = false;
-                        btnGuardar.innerHTML = '<i class="fa-solid fa-duotone fa-save"></i> Guardar';
+                        btnGuardar.innerHTML =
+                            '<i class="fa-solid fa-duotone fa-save"></i> Guardar';
 
                         Swal.fire('Error', response.message, 'error');
                     }
                 },
                 error: function(xhr) {
+                    btnGuardar.disabled = false;
+                    btnGuardar.innerHTML =
+                        '<i class="fa-solid fa-duotone fa-save"></i> Guardar';
                     //console.error(xhr.responseText);
                     //console.error(JSON.parse(xhr.responseText));
 
@@ -379,6 +501,15 @@
         function limpiarCampos() {
             $("#cantidad").val("");
             $("#nombreProducto").focus();
+        }
+
+        function DYMO_imprimirCodigoProducto(codigoProducto) {
+            let label = dymo.label.framework.openLabelXml(dymo_labelXml);
+            label.setObjectText("lblCodigoProducto", codigoProducto);
+            label.setObjectText("lblCodigoQR", codigoProducto);
+
+            let printerName = dymo_printers[0].name; // Usar la primera encontrada
+            label.print(printerName);
         }
 
     });
