@@ -172,7 +172,28 @@ class VentaController extends Controller
             'productos'   => 'required|array|min:1',
             'productos.*.idProducto' => 'required|integer|exists:productos,idProducto',
             'productos.*.precioUSD'  => 'required|numeric|min:0',
+            'pagos'       => 'nullable|array'
         ]);
+
+        // Validar productos antes de iniciar la transacción
+        foreach ($request->productos as $detalle) {
+            $producto = Producto::find($detalle['idProducto']);
+            if (!$producto) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'El producto con ID ' . $detalle['idProducto'] . ' no existe.'
+                ], 400);
+            }
+
+            if ($producto->estado != 1) {
+                // Estado 2 = vendido, Estado 0 = eliminado
+                $estadoTexto = $producto->estado == 2 ? 'vendido' : 'eliminado';
+                return response()->json([
+                    'success' => false,
+                    'message' => 'El producto con el código ' . $producto->codigoProducto . ' no está disponible para la venta (actualmente ' . $estadoTexto . ').'
+                ], 400);
+            }
+        }
 
         DB::beginTransaction();
         try {
@@ -190,21 +211,24 @@ class VentaController extends Controller
                     'precioUSD' => $detalle['precioUSD']
                 ]);
 
-                $producto = (new Producto())->getProducto($detalle['idProducto']);
+                $producto = Producto::find($detalle['idProducto']);
                 $producto->estado = 2;
                 $producto->fechaVenta = Carbon::now();
                 $producto->save();
             }
 
-            foreach ($request->pagos as $pago) {
-                $p = new PagoVenta();
-                $p->idVenta = $venta->idVenta;
-                $p->pagoUSD = $pago['pagoUSD'];
-                $p->modificadoPor = session('idUsuario');
-                $p->save();
+            if (!empty($request->pagos)) {
+                foreach ($request->pagos as $pago) {
+                    $p = new PagoVenta();
+                    $p->idVenta = $venta->idVenta;
+                    $p->pagoUSD = $pago['pagoUSD'];
+                    $p->modificadoPor = session('idUsuario');
+                    $p->save();
+                }
             }
 
             DB::commit();
+
             return response()->json([
                 'success' => true,
                 'message' => 'Venta registrada correctamente',
@@ -212,9 +236,13 @@ class VentaController extends Controller
             ]);
         } catch (\Throwable $e) {
             DB::rollBack();
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
+
 
     public function update(Request $request, $idVenta)
     {

@@ -504,8 +504,9 @@
                             `{{ route('ventas.index') }}/${response.venta.idVenta}/imprimir`,
                             '_blank', 'noopener,noreferrer');
                     } else {
-                        Swal.fire('Error', response.message, 'error');
                         btnCrearVenta.disabled = false;
+                        btnCrearVenta.innerHTML = '<i class="fa-solid fa-duotone fa-save"></i> Guardar venta';
+                        Swal.fire('Error', response.message, 'error');
                     }
                 },
                 error: function(xhr) {
