@@ -24,6 +24,7 @@
                 <th>F. Registro</th>
                 <th>F. Actualización</th>
                 <th>Modificado Por</th>
+                <th>Acciones</th>
             </tr>
         </thead>
     </table>

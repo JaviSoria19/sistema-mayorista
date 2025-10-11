@@ -35,7 +35,9 @@
         } else {
             console.log("Impresoras DYMO encontradas:");
             dymo_printers.forEach(function(printer) {
-                console.log(`- ${printer.name} (${printer.modelName}) - ${printer.isConnected ? 'Conectada' : 'Desconectada'}`);
+                console.log(
+                    `- ${printer.name} (${printer.modelName}) - ${printer.isConnected ? 'Conectada' : 'Desconectada'}`
+                );
             });
         }
 
@@ -183,6 +185,20 @@
                     render: function(data, type, row) {
                         return data || '-';
                     }
+                },
+                {
+                    data: null,
+                    orderable: false,
+                    searchable: false,
+                    render: function(data, type, row) {
+                        return `
+                    <div class="btn-group" role="group">
+                        <a href="{{ route('abastecimientos.index') }}/${row.idAbastecimiento}/editar" class="btn btn-warning btn-sm btn-editar" data-toggle="tooltip" title="Editar" target="_blank" rel="noopener noreferrer">
+                            <i class="fa-duotone fa-solid fa-edit"></i>
+                        </a>
+                    </div>
+                `;
+                    }
                 }
             ],
             responsive: true,
@@ -287,7 +303,7 @@
                         $("#productos tbody").empty();
                         actualizarTotales();
 
-                        
+
 
                         if (dymo_printers.length === 0) {
                             Swal.fire({

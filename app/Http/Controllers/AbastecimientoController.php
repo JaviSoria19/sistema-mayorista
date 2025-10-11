@@ -32,6 +32,27 @@ class AbastecimientoController extends Controller
         ]);
     }
 
+    public function view_update($abastecimiento){
+        if (!session('tieneAcceso')) {
+            return redirect()->route('login');
+        }
+
+        $abastecimiento = (new Abastecimiento())->getAbastecimiento($abastecimiento);
+        $parametro = (new Parametro())->getParametro();
+        $empresas = (new Empresa())->getAllEmpresas();
+        $marcas = (new Marca())->getAllMarcas();
+        $productos = (new Producto())->getAllProductosGroupByNombreProducto();
+
+        return view('abastecimientos.update', [
+            'headTitle' => 'ACTUALIZAR ABASTECIMIENTO',
+            'abastecimiento' => $abastecimiento,
+            'parametro' => $parametro,
+            'empresas' => $empresas,
+            'marcas' => $marcas,
+            'productos' => $productos,
+        ]);
+    }
+
     public function listarAbastecimientos()
     {
         if (!session('tieneAcceso')) {
@@ -101,5 +122,22 @@ class AbastecimientoController extends Controller
             DB::rollBack();
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
+    }
+
+    public function update(Request $request){
+        if (!session('tieneAcceso')) {
+            return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
+        }
+
+        $request->validate([
+            'productos' => 'required|array|min:1',
+            'productos.*.nombreProducto' => 'required|string|min:3|max:255',
+            'productos.*.codigoProducto' => 'required|string|min:3|max:100',
+            'productos.*.costoBaseUSD' => 'required|numeric|min:0|max:99999.99',
+            'productos.*.traspasoPorcentaje' => 'required|numeric|min:0|max:999.99',
+            'productos.*.transporteUSD' => 'required|numeric|min:0|max:99999.99',
+        ]);
+
+        return;
     }
 }

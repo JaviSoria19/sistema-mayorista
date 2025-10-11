@@ -114,7 +114,10 @@ Route::controller(AbastecimientoController::class)->group(function () {
     Route::get('abastecimientos', 'view_index')->name('abastecimientos.index');
     Route::get('abastecimientos/listar', 'listarAbastecimientos')->name('abastecimientos.listar');
     Route::get('abastecimientos/{abastecimiento}', 'mostrarAbastecimiento')->name('abastecimientos.mostrar');
+    Route::get('abastecimientos/{abastecimiento}/editar', 'view_update')->name('abastecimientos.editar');
+    
     Route::post('abastecimientos', 'create')->name('abastecimientos.create');
+    Route::put('abastecimientos/{abastecimiento}', 'update')->name('abastecimientos.update');
 });
 
 /* Tabla con PK FK 'empresas','marcas','abastecimientos' y relación muchos a muchos con 'ventas' mediante 'detalles_ventas'*/
