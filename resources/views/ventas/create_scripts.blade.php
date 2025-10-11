@@ -421,7 +421,7 @@
                 return;
             }
 
-            if (pagos.length === 0) {
+            if (pagos.length === 0 || (pagos.length === 1 && pagos[0].pagoUSD === 0)) {
                 Swal.fire({
                     theme: "auto",
                     title: "¿Estás seguro?",
@@ -505,7 +505,8 @@
                             '_blank', 'noopener,noreferrer');
                     } else {
                         btnCrearVenta.disabled = false;
-                        btnCrearVenta.innerHTML = '<i class="fa-solid fa-duotone fa-save"></i> Guardar venta';
+                        btnCrearVenta.innerHTML =
+                            '<i class="fa-solid fa-duotone fa-save"></i> Guardar venta';
                         Swal.fire('Error', response.message, 'error');
                     }
                 },
@@ -517,13 +518,14 @@
                     //console.error(xhr.responseText);
                     //console.error(JSON.parse(xhr.responseText));
 
-                    const erroresConcatenados = Object.values(JSON.parse(xhr.responseText)
-                            .errors)
-                        .flatMap(errores => errores)
-                        .join('<br>');
+                    let message = JSON.parse(xhr.responseText).message;
 
-                    Swal.fire('Error', 'Ocurrió un error al intentar la acción: <br>' +
-                        erroresConcatenados, 'error');
+                    Swal.fire({
+                        theme: 'auto',
+                        title: 'Error',
+                        html: 'Ocurrió un error al intentar la acción:<br>' + message,
+                        icon: 'error',
+                    });
                 }
             });
         }

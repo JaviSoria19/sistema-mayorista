@@ -187,10 +187,10 @@ class VentaController extends Controller
 
             if ($producto->estado != 1) {
                 // Estado 2 = vendido, Estado 0 = eliminado
-                $estadoTexto = $producto->estado == 2 ? 'vendido' : 'eliminado';
+                $estadoTexto = $producto->estado == 2 ? '<b class="text-primary">vendido</b>' : '<b class="text-secondary">eliminado</b>';
                 return response()->json([
                     'success' => false,
-                    'message' => 'El producto con el código ' . $producto->codigoProducto . ' no está disponible para la venta (actualmente ' . $estadoTexto . ').'
+                    'message' => 'El producto con el código <b class="text-primary">' . $producto->codigoProducto . '</b> no está disponible para la venta (actualmente ' . $estadoTexto . '), remuévalo de la lista e intente nuevamente.',
                 ], 400);
             }
         }
@@ -310,6 +310,15 @@ class VentaController extends Controller
                     $p->pagoUSD = $pago['pagoUSD'];
                     $p->modificadoPor = session('idUsuario');
                     $p->save();
+                } else {
+                    $p = (new PagoVenta())->getPagoVenta($pago['idPagoVenta']);
+                    // Actualizar solo si el pago es menor o igual a 0.00 (editable)
+                    if ($p->pagoUSD <= '0.00') {
+                        $p->pagoUSD = $pago['pagoUSD'];
+                        $p->fechaRegistro = Carbon::now();
+                        $p->modificadoPor = session('idUsuario');
+                        $p->save();
+                    }
                 }
             }
 

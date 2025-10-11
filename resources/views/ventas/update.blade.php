@@ -123,7 +123,7 @@
                                 <td class="text-center text-primary fw-bold">{{ $loop->index + 1 }}.</td>
                                 <td class="visually-hidden idPagoVenta">{{ $pago->idPagoVenta }}</td>
                                 <td>{{ date('d/m/Y H:i:s',strtotime($pago->fechaRegistro)) }}</td>
-                                <td class="text-success fw-bold pagoUSD">{{ $pago->pagoUSD }}</td>
+                                <td class="text-success fw-bold pagoUSD" {{ $pago->pagoUSD <= '0' ? 'contenteditable=true' : ''}}>{{ $pago->pagoUSD }}</td>
                                 <td class="bg-secondary">
                                     {{-- <button type="button" class="btn btn-danger btn-sm btn-remover" data-toggle="tooltip"
                                         title="Remover de la tabla">
