@@ -27,22 +27,12 @@ class UsuarioController extends Controller
             session(['tieneAcceso' => false]);
         }
 
-        $ventas_hoy = (new Venta())->dashboard_getCantidadVentasHoy();
-        $ventas_semana = (new Venta())->dashboard_getCantidadVentasSemana();
-        $ventas_mes = (new Venta())->dashboard_getCantidadVentasMes();
-        $ingresos_hoy = (new Venta())->dashboard_getIngresosVentasHoy();
-        $ingresos_semana = (new Venta())->dashboard_getIngresosVentasSemana();
-        $ingresos_mes = (new Venta())->dashboard_getIngresosVentasMes();
+        $estadisticas = (new Venta())->dashboard_getEstadisticasVentas();
         $saldos_pendientes = (new Venta())->dashboard_getClientesConSaldo();
 
         return view('panel.admin', [
             'headTitle' => 'PANEL DE ADMINISTRACIÓN',
-            'ventas_hoy' => $ventas_hoy,
-            'ventas_semana' => $ventas_semana,
-            'ventas_mes' => $ventas_mes,
-            'ingresos_hoy' => $ingresos_hoy,
-            'ingresos_semana' => $ingresos_semana,
-            'ingresos_mes' => $ingresos_mes,
+            'estadisticas' => $estadisticas,
             'saldos_pendientes' => $saldos_pendientes,
         ]);
     }
@@ -154,7 +144,7 @@ class UsuarioController extends Controller
         $usuario->save();
         return response()->json([
             'success' => true,
-            'message' => $usuario->estado == '1' ? 'El usuario fue habilitado con éxito' : 'El usuario fue deshabilitado con éxito' ,
+            'message' => $usuario->estado == '1' ? 'El usuario fue habilitado con éxito' : 'El usuario fue deshabilitado con éxito',
             'usuario' => $usuario
         ]);
     }

@@ -78,51 +78,30 @@ class Venta extends Model
         return Venta::with(['productos.marca', 'pagos', 'usuario', 'cliente', 'empleado', 'editor'])->find($idVenta);
     }
 
-    public function dashboard_getCantidadVentasHoy()
+    public function dashboard_getEstadisticasVentas()
     {
-        return Venta::where('estado', 1)
-            ->whereDate('fechaRegistro', Carbon::today())
-            ->count();
-    }
+        $fechas = [
+            'hoy' => [Carbon::today(), Carbon::today()->endOfDay()],
+            'semana' => [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()],
+            'mes' => [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()],
+        ];
 
-    public function dashboard_getCantidadVentasSemana()
-    {
-        return Venta::where('estado', 1)
-            ->whereBetween('fechaRegistro', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
-            ->count();
-    }
+        $resultados = [];
 
-    public function dashboard_getCantidadVentasMes()
-    {
-        return Venta::where('estado', 1)
-            ->whereYear('fechaRegistro', Carbon::now()->year)
-            ->whereMonth('fechaRegistro', Carbon::now()->month)
-            ->count();
-    }
+        foreach ($fechas as $periodo => [$inicio, $fin]) {
+            $query = DB::table('ventas as v')
+                ->leftJoin('detalles_ventas as dv', 'v.idVenta', '=', 'dv.idVenta')
+                ->where('v.estado', 1)
+                ->whereBetween('v.fechaRegistro', [$inicio, $fin]);
 
-    public function dashboard_getIngresosVentasHoy()
-    {
-        return Venta::where('estado', 1)
-            ->whereDate('fechaRegistro', Carbon::today())
-            ->select(DB::raw('SUM(totalUSD - saldoUSD) as ingresos'))
-            ->value('ingresos');
-    }
+            $resultados[$periodo] = [
+                'cantidadVentas' => $query->distinct('v.idVenta')->count('v.idVenta'),
+                'ingresos' => $query->select(DB::raw('SUM(v.totalUSD - v.saldoUSD) as total'))->value('total') ?? 0,
+                'productosVendidos' => $query->count('dv.idProducto'),
+            ];
+        }
 
-    public function dashboard_getIngresosVentasSemana()
-    {
-        return Venta::where('estado', 1)
-            ->whereBetween('fechaRegistro', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
-            ->select(DB::raw('SUM(totalUSD - saldoUSD) as ingresos'))
-            ->value('ingresos');
-    }
-
-    public function dashboard_getIngresosVentasMes()
-    {
-        return Venta::where('estado', 1)
-            ->whereYear('fechaRegistro', Carbon::now()->year)
-            ->whereMonth('fechaRegistro', Carbon::now()->month)
-            ->select(DB::raw('SUM(totalUSD - saldoUSD) as ingresos'))
-            ->value('ingresos');
+        return $resultados;
     }
 
     public function dashboard_getClientesConSaldo()
