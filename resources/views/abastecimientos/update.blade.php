@@ -6,7 +6,20 @@
 
     <h2 class="text-info fw-bold">Lista de productos</h2>
 
-    <table class="table table-bordered table-striped">
+    <div class="mb-3">
+        <a href="{{ route('abastecimientos.index') }}"
+                class="btn btn-info">
+                <i class="fa-solid fa-arrow-left"></i> Volver a la lista de abastecimientos
+            </a>
+        <button type="button" class="btn {{ session('temaPreferido') == 'dark' ? 'btn-light' : 'btn-dark' }} btn-imprimir-codigos-disponibles">
+            <i class="fa-duotone fa-solid fa-qrcode"></i> Imprimir todos los códigos de los productos disponibles
+        </button>
+        <button type="button" class="btn btn-primary btn-guardar-cambios">
+            <i class="fa-solid fa-floppy-disk"></i> Guardar cambios
+        </button>
+    </div>
+
+    <table class="table table-bordered table-striped" id="productos">
         <thead>
             <tr class="text-center align-middle">
                 <th>#</th>
@@ -48,7 +61,7 @@
                 <tr class="{{ $backgroundColor }}">
                     <td>{{ $loop->iteration }}</td>
                     <td>
-                        <select style="width: 100%" class="form-select empresa" name="idEmpresa">
+                        <select style="width: 100%" class="form-select idEmpresa" name="idEmpresa">
                             <option value="{{ $producto->idEmpresa }}" selected>{{ $producto->empresa->nombreEmpresa }}
                             </option>
                             @foreach ($empresas as $empresa)
@@ -57,25 +70,37 @@
                         </select>
                     </td>
                     <td>
-                        <select style="width: 100%" class="form-select marca" name="idMarca">
+                        <select style="width: 100%" class="form-select idMarca" name="idMarca">
                             <option value="{{ $producto->idMarca }}" selected>{{ $producto->marca->nombreMarca }}</option>
                             @foreach ($marcas as $marca)
                                 <option value="{{ $marca->idMarca }}">{{ $marca->nombreMarca }}</option>
                             @endforeach
                         </select>
                     </td>
-                    <td class="nombreProducto" {{ $producto->estado == 1 ? 'contenteditable=true' : '' }}>{{ $producto->nombreProducto }}</td>
-                    <td class="text-primary fw-bold">{{ $producto->codigoProducto }}</td>
+                    <td class="fw-bold nombreProducto" {{ $producto->estado == 1 ? 'contenteditable=true' : '' }}>
+                        {{ $producto->nombreProducto }}</td>
+                    <td class="text-primary fw-bold codigoProducto">{{ $producto->codigoProducto }}</td>
                     <td class="text-success fw-bold costoBaseUSD"
                         {{ $producto->estado == 1 ? 'contenteditable=true' : '' }}>
                         {{ number_format($producto->costoBaseUSD, 2) }}</td>
-                    <td class="traspasoPorcentaje" {{ $producto->estado == 1 ? 'contenteditable=true' : '' }}>
+                    <td class="text-success fw-bold traspasoPorcentaje"
+                        {{ $producto->estado == 1 ? 'contenteditable=true' : '' }}>
                         {{ $producto->traspasoPorcentaje }}</td>
-                    <td class="transporteUSD" {{ $producto->estado == 1 ? 'contenteditable=true' : '' }}>
+                    <td class="text-success fw-bold transporteUSD"
+                        {{ $producto->estado == 1 ? 'contenteditable=true' : '' }}>
                         {{ number_format($producto->transporteUSD, 2) }}</td>
                     <td><span class="badge {{ $badgeColor }}">{{ $estado }}</span></td>
                     <td>
-                        
+                        @if ($producto->estado == 1)
+                            <div class="btn-group" role="group">
+                                <button type="button"
+                                    class="btn {{ session('temaPreferido') == 'dark' ? 'btn-light' : 'btn-dark' }} btn-sm btn-imprimir-codigo"
+                                    data-codigo="{{ $producto->codigoProducto }}" data-toggle="tooltip"
+                                    title="Imprimir código">
+                                    <i class="fa-duotone fa-solid fa-qrcode"></i>
+                                </button>
+                            </div>
+                        @endif
                     </td>
                 </tr>
             @endforeach
