@@ -25,6 +25,8 @@
                     $select.append('<option value="">-- Seleccione un cliente --</option>');
 
                     $.each(response.data, function(i, cliente) {
+                        if (cliente.estado == '0') return; // Omitir clientes inactivos
+                        
                         $select.append(
                             `<option value="${cliente.idCliente}">
                         ${cliente.nombreCliente} - CI: ${cliente.cedulaIdentidad} - Cel: ${cliente.celular} - Procedencia: ${cliente.procedencia}
