@@ -2,46 +2,109 @@
 <script src="{{ asset('/public/dependencies/dymo-connect-framework/dymo.connect.framework.full.js') }}"></script>
 <script>
     $(document).ready(function() {
-        dymo.label.framework.init(); //Initialize DYMO Label Framework
-        const dymo_entorno = dymo.label.framework.checkEnvironment();
-
-        if (!dymo_entorno.isFrameworkInstalled) {
-            Swal.fire({
-                theme: 'auto',
-                title: "¡Atención!",
-                text: "Por favor instale DYMO Label Software (DLS) o DYMO Connect for Desktop (DCD), caso contrario no se podrán imprimir etiquetas con el código de producto.",
-                icon: "error"
-            });
+        // Verificar si el objeto dymo existe
+        if (typeof dymo === 'undefined') {
+            console.error("El objeto DYMO no está cargado. Verifica la ruta del script.");
+            return;
         }
 
-        if (!dymo_entorno.isWebServicePresent) {
-            Swal.fire({
-                theme: 'auto',
-                title: "¡Atención!",
-                text: "Por favor inicie la aplicación DYMO Label Software (DLS) o DYMO Connect for Desktop (DCD) para poder imprimir",
-                icon: "error"
-            });
-        }
+        // Inicialización con callback
+        dymo.label.framework.init(function() {
+            console.log("✓ Framework DYMO inicializado correctamente");
 
-        const dymo_printers = dymo.label.framework.getPrinters();
+            // Verificar ambiente con más detalle
+            const dymo_entorno = dymo.label.framework.checkEnvironment();
+            console.log("Framework instalado:", dymo_entorno.isFrameworkInstalled);
+            console.log("WebService presente:", dymo_entorno.isWebServicePresent);
 
-        if (dymo_printers.length === 0) {
-            Swal.fire({
-                theme: 'auto',
-                title: "¡Atención!",
-                text: "No hay impresoras DYMO instaladas. Por favor instale una impresora DYMO para poder imprimir etiquetas con el código de producto.",
-                icon: "warning",
-            });
-        } else {
-            console.log("Impresoras DYMO encontradas:");
-            dymo_printers.forEach(function(printer) {
-                console.log(
-                    `- ${printer.name} (${printer.modelName}) - ${printer.isConnected ? 'Conectada' : 'Desconectada'}`
-                );
-            });
-        }
+            // Verificar puerto del servicio
+            if (dymo_entorno.webServicePort) {
+                console.log("Puerto del WebService:", dymo_entorno.webServicePort);
+            }
 
-        var dymo_labelXml = `<?xml version="1.0" encoding="utf-8"?>
+            // Validaciones de ambiente
+            if (!dymo_entorno.isFrameworkInstalled) {
+                Swal.fire({
+                    theme: 'auto',
+                    title: "¡Atención!",
+                    text: "Por favor instale DYMO Label Software (DLS) o DYMO Connect for Desktop (DCD)",
+                    icon: "error"
+                });
+                return;
+            }
+
+            if (!dymo_entorno.isWebServicePresent) {
+                Swal.fire({
+                    theme: 'auto',
+                    title: "¡Atención!",
+                    html: `El servicio web DYMO no está corriendo.<br><br>
+                       <strong>Solución:</strong><br>
+                       1. Abre DYMO Connect o DYMO Label Software<br>
+                       2. Asegúrate de que el servicio esté activo<br>
+                       3. Recarga esta página`,
+                    icon: "error"
+                });
+                return;
+            }
+
+            // Intentar obtener impresoras con manejo de errores
+            try {
+                const dymo_printers = dymo.label.framework.getPrinters();
+                console.log(dymo_printers);
+                console.log("Número de impresoras encontradas:", dymo_printers.length);
+
+                if (dymo_printers.length === 0) {
+                    console.warn("⚠ No se encontraron impresoras DYMO");
+
+                    // Verificar si hay impresoras del sistema
+                    const allPrinters = dymo.label.framework.getPrinters();
+                    console.log("Todas las impresoras:", allPrinters);
+
+                    Swal.fire({
+                        theme: 'auto',
+                        title: "Sin impresoras DYMO",
+                        html: `No se detectaron impresoras DYMO conectadas.<br><br>
+                           <strong>Verifica:</strong><br>
+                           • La impresora está encendida<br>
+                           • El cable USB está conectado<br>
+                           • Los drivers están instalados<br>
+                           • Windows reconoce la impresora`,
+                        icon: "warning"
+                    });
+                } else {
+                    console.log("✓ Impresoras DYMO encontradas:");
+                    dymo_printers.forEach(function(printer, index) {
+                        console.log(`  ${index + 1}. ${printer.name}`);
+                        console.log(`     Modelo: ${printer.modelName}`);
+                        console.log(
+                            `     Estado: ${printer.isConnected ? '🟢 Conectada' : '🔴 Desconectada'}`
+                        );
+                        console.log(`     Local: ${printer.isLocal ? 'Sí' : 'No'}`);
+                        console.log(`     Twin Turbo: ${printer.isTwinTurbo ? 'Sí' : 'No'}`);
+                    });
+
+                    // Guardar referencia a la primera impresora
+                    window.dymo_impresora = dymo_printers[0].name;
+                    console.log("✓ Impresora seleccionada:", window.dymo_impresora);
+                }
+
+            } catch (error) {
+                console.error("❌ Error al obtener impresoras:", error);
+                console.error("Detalles del error:", error.message);
+                console.error("Stack:", error.stack);
+
+                Swal.fire({
+                    theme: 'auto',
+                    title: "Error al detectar impresoras",
+                    html: `Ocurrió un error: <code>${error.message}</code><br><br>
+                       Revisa la consola del navegador para más detalles.`,
+                    icon: "error"
+                });
+            }
+        });
+
+        // XML de etiqueta
+        const dymo_labelXml = `<?xml version="1.0" encoding="utf-8"?>
 <DieCutLabel Version="8.0" Units="twips">
 	<PaperOrientation>Portrait</PaperOrientation>
 	<Id>Small30332</Id>
@@ -100,12 +163,32 @@
 </DieCutLabel>`;
 
         function DYMO_imprimirCodigoProducto(codigoProducto) {
-            let label = dymo.label.framework.openLabelXml(dymo_labelXml);
-            label.setObjectText("lblCodigoProducto", codigoProducto);
-            label.setObjectText("lblCodigoQR", codigoProducto);
+            try {
+                if (!window.dymo_impresora) {
+                    Swal.fire({
+                        theme: 'auto',
+                        title: "Error",
+                        text: "No hay impresora DYMO configurada",
+                        icon: "error"
+                    });
+                    return;
+                }
 
-            let printerName = dymo_printers[0].name; // Usar la primera encontrada
-            label.print(printerName);
+                let label = dymo.label.framework.openLabelXml(dymo_labelXml);
+                label.setObjectText("lblCodigoProducto", codigoProducto);
+                label.setObjectText("lblCodigoQR", codigoProducto);
+                label.print(window.dymo_impresora);
+
+                console.log(`✓ Etiqueta impresa: ${codigoProducto}`);
+            } catch (error) {
+                console.error("Error al imprimir:", error);
+                Swal.fire({
+                    theme: 'auto',
+                    title: "Error de impresión",
+                    text: error.message,
+                    icon: "error"
+                });
+            }
         }
 
         $("#dataTable").DataTable({
@@ -332,17 +415,6 @@
 
         $(document).on('click', '.btn-imprimir-codigo', function() {
             const codigoProducto = $(this).data('codigo');
-            if (dymo_printers.length === 0) {
-                Swal.fire({
-                    theme: 'auto',
-                    title: "¡Atención!",
-                    text: "No hay impresoras DYMO instaladas.",
-                    icon: "error",
-                    showConfirmButton: false,
-                    timer: 3000
-                });
-                return;
-            }
 
             Swal.fire({
                 theme: 'auto',
