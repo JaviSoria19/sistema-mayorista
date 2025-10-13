@@ -139,5 +139,5 @@
 @endsection
 
 @section('scripts')
-    @include('pedidos_empresas.scripts')
+    @include('pedidos_empresas.index_scripts')
 @endsection
