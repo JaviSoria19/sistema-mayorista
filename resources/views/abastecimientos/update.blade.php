@@ -76,7 +76,7 @@
                     };
                 @endphp
                 <tr class="{{ $backgroundColor }}">
-                    <td>{{ $loop->iteration }}</td>
+                    <td class="fw-bold">{{ $loop->iteration }}.</td>
                     <td class="visually-hidden idProducto">{{ $producto->idProducto }}</td>
                     <td>
                         <select style="width: 100%" class="form-select idEmpresa" name="idEmpresa">
@@ -100,15 +100,21 @@
                     <td class="text-primary fw-bold codigoProducto">{{ $producto->codigoProducto }}</td>
                     <td class="text-success fw-bold costoBaseUSD"
                         {{ $producto->estado == 1 ? 'contenteditable=true' : '' }}>
-                        {{ number_format($producto->costoBaseUSD, 2) }}</td>
+                        {{ $producto->costoBaseUSD }}</td>
                     <td class="text-success fw-bold traspasoPorcentaje"
                         {{ $producto->estado == 1 ? 'contenteditable=true' : '' }}>
                         {{ $producto->traspasoPorcentaje }}</td>
                     <td class="text-success fw-bold transporteUSD"
                         {{ $producto->estado == 1 ? 'contenteditable=true' : '' }}>
-                        {{ number_format($producto->transporteUSD, 2) }}</td>
+                        {{ $producto->transporteUSD }}</td>
                     <td><span class="badge {{ $badgeColor }}">{{ $estado }}</span></td>
-                    <td>{{ $producto->fechaActualizacion?->format('d/m/Y H:i') }} <br> por {{ $producto->editor?->nombreUsuario }}</td>
+                    <td>
+                        @if ($producto->editor?->nombreUsuario)
+                            {{ $producto->fechaActualizacion?->format('d/m/Y H:i') }} <br> por <span class="text-info fw-bold">{{ $producto->editor?->nombreUsuario }}</span>
+                        @else
+                            -
+                        @endif
+                    </td>
                     <td>
                         @if ($producto->estado == 1)
                             <div class="btn-group" role="group">
