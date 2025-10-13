@@ -4,25 +4,41 @@
     <h1 class="text-center text-info fw-bold"><i class="fa-solid fa-duotone fa-cart-flatbed-boxes"></i> {{ $headTitle }} N°
         {{ $abastecimiento->idAbastecimiento }}</h1>
 
-    <h2 class="text-info fw-bold">Lista de productos</h2>
-
     <div class="mb-3">
-        <a href="{{ route('abastecimientos.index') }}"
-                class="btn btn-info">
-                <i class="fa-solid fa-arrow-left"></i> Volver a la lista de abastecimientos
-            </a>
-        <button type="button" class="btn {{ session('temaPreferido') == 'dark' ? 'btn-light' : 'btn-dark' }} btn-imprimir-codigos-disponibles">
+        <a href="{{ route('abastecimientos.index') }}" class="btn btn-info">
+            <i class="fa-solid fa-arrow-left"></i> Volver a la lista de abastecimientos
+        </a>
+        <button type="button"
+            class="btn {{ session('temaPreferido') == 'dark' ? 'btn-light' : 'btn-dark' }} btn-imprimir-codigos-disponibles">
             <i class="fa-duotone fa-solid fa-qrcode"></i> Imprimir todos los códigos de los productos disponibles
         </button>
-        <button type="button" class="btn btn-primary btn-guardar-cambios">
+        <button type="button" class="btn btn-primary btn-guardar-cambios" id="btnGuardar">
             <i class="fa-solid fa-floppy-disk"></i> Guardar cambios
         </button>
     </div>
+
+    <h2 class="text-info fw-bold">Lista de productos</h2>
+
+    <h5>Abastecimiento creado el {{ $abastecimiento->fechaRegistro->format('d/m/Y H:i') }}</h5>
+
+    <h5 class="mb-3">Última modificación por <span class="text-info">{{ $abastecimiento->editor?->nombreUsuario }}</span> el
+        {{ $abastecimiento->fechaActualizacion?->format('d/m/Y H:i') }}</h5>
+
+    <p>Nota: aquí puede actualizar la información de los productos <span class="badge bg-success">disponibles</span>.<br>
+        Los productos <span class="badge bg-secondary">eliminados</span> o <span class="badge bg-warning">vendidos</span> no
+        se pueden modificar.<br>
+        Haga clic en el nombre del producto, costo base, porcentaje de traspaso o costo de transporte para editar esos
+        campos, también puede editar la empresa o la marca.<br>
+        Los productos se modificarán a partir de la fila que haya seleccionado hacia abajo ↓, por lo que si desea modificar
+        varios productos, asegúrese de seleccionar la fila correcta antes de hacer clic en <span
+            class="text-primary fw-bold">"Guardar cambios".</span>
+    </p>
 
     <table class="table table-bordered table-striped" id="productos">
         <thead>
             <tr class="text-center align-middle">
                 <th>#</th>
+                <th class="visually-hidden">Id</th>
                 <th>Empresa</th>
                 <th>Marca</th>
                 <th>Producto</th>
@@ -31,6 +47,7 @@
                 <th>Costo traspaso (%)</th>
                 <th>Costo transporte (USD)</th>
                 <th>Estado</th>
+                <th>F. Actualización</th>
                 <th>Imprimir código</th>
             </tr>
         </thead>
@@ -60,6 +77,7 @@
                 @endphp
                 <tr class="{{ $backgroundColor }}">
                     <td>{{ $loop->iteration }}</td>
+                    <td class="visually-hidden idProducto">{{ $producto->idProducto }}</td>
                     <td>
                         <select style="width: 100%" class="form-select idEmpresa" name="idEmpresa">
                             <option value="{{ $producto->idEmpresa }}" selected>{{ $producto->empresa->nombreEmpresa }}
@@ -90,6 +108,7 @@
                         {{ $producto->estado == 1 ? 'contenteditable=true' : '' }}>
                         {{ number_format($producto->transporteUSD, 2) }}</td>
                     <td><span class="badge {{ $badgeColor }}">{{ $estado }}</span></td>
+                    <td>{{ $producto->fechaActualizacion?->format('d/m/Y H:i') }} <br> por {{ $producto->editor?->nombreUsuario }}</td>
                     <td>
                         @if ($producto->estado == 1)
                             <div class="btn-group" role="group">

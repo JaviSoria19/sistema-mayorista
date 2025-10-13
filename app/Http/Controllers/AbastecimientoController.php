@@ -32,7 +32,8 @@ class AbastecimientoController extends Controller
         ]);
     }
 
-    public function view_update($abastecimiento){
+    public function view_update($abastecimiento)
+    {
         if (!session('tieneAcceso')) {
             return redirect()->route('login');
         }
@@ -124,20 +125,54 @@ class AbastecimientoController extends Controller
         }
     }
 
-    public function update(Request $request){
+    public function update(Request $request)
+    {
         if (!session('tieneAcceso')) {
             return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
         }
 
         $request->validate([
             'productos' => 'required|array|min:1',
+            'productos.*.idProducto' => 'required|integer|exists:productos,idProducto',
+            'productos.*.idEmpresa' => 'required|integer|exists:empresas,idEmpresa',
+            'productos.*.idMarca' => 'required|integer|exists:marcas,idMarca',
             'productos.*.nombreProducto' => 'required|string|min:3|max:255',
-            'productos.*.codigoProducto' => 'required|string|min:3|max:100',
             'productos.*.costoBaseUSD' => 'required|numeric|min:0|max:99999.99',
             'productos.*.traspasoPorcentaje' => 'required|numeric|min:0|max:999.99',
             'productos.*.transporteUSD' => 'required|numeric|min:0|max:99999.99',
         ]);
 
-        return;
+        DB::beginTransaction();
+        try {
+            $abastecimiento = (new Abastecimiento())->getAbastecimiento($request->idAbastecimiento);
+            $abastecimiento->modificadoPor = session('idUsuario');
+            $abastecimiento->fechaActualizacion = now();
+            $abastecimiento->save();
+
+            foreach ($request->productos as $producto) {
+                $p = (new Producto())->getProducto($producto['idProducto']);
+                // Solo se pueden modificar los productos que estén en estado 'disponible' (1) y que pertenezcan al abastecimiento que se está editando.
+                if ($p->idAbastecimiento == $abastecimiento->idAbastecimiento && $p->estado == 1) {
+                    $p->idEmpresa = $producto['idEmpresa'];
+                    $p->idMarca = $producto['idMarca'];
+                    $p->nombreProducto = $producto['nombreProducto'];
+                    $p->costoBaseUSD = $producto['costoBaseUSD'];
+                    $p->traspasoPorcentaje = $producto['traspasoPorcentaje'];
+                    $p->transporteUSD = $producto['transporteUSD'];
+                    $p->modificadoPor = session('idUsuario');
+                    $p->save();
+                }
+            }
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Abastecimiento de productos actualizado correctamente',
+                'abastecimiento' => $abastecimiento->load('productos')
+            ]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 }

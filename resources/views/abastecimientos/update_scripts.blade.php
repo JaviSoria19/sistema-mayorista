@@ -245,7 +245,93 @@
                 }
             });
         });
+
+        $(document).on('click', '.btn-guardar-cambios', function() {
+            Swal.fire({
+                theme: 'auto',
+                title: `¡ATENCIÓN!`,
+                html: `¿Estás seguro de guardar los cambios realizados en los productos?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: `Sí, guardar`,
+                cancelButtonText: 'No, cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    guardarCambios();
+                }
+            });
+        });
     });
+
+    function guardarCambios() {
+        const btnGuardar = document.getElementById('btnGuardar');
+        const idAbastecimiento = '{{ $abastecimiento->idAbastecimiento }}';
+        let productos = [];
+        $("#productos tbody tr").each(function() {
+            const fila = $(this);
+            if (fila.hasClass("table-success")) { // Solo disponibles
+                const idProducto = fila.find(".idProducto").text().trim();
+                const idEmpresa = fila.find(".idEmpresa").val();
+                const idMarca = fila.find(".idMarca").val();
+                const nombreProducto = fila.find(".nombreProducto").text().trim();
+                const costoBaseUSD = parseFloat(fila.find(".costoBaseUSD").text().trim()) ||
+                    0;
+                const traspasoPorcentaje = parseFloat(fila.find(".traspasoPorcentaje")
+                    .text().trim()) || 0;
+                const transporteUSD = parseFloat(fila.find(".transporteUSD").text()
+                    .trim()) || 0;
+
+                productos.push({
+                    idProducto: idProducto,
+                    idEmpresa: idEmpresa,
+                    idMarca: idMarca,
+                    nombreProducto: nombreProducto,
+                    costoBaseUSD: costoBaseUSD,
+                    traspasoPorcentaje: traspasoPorcentaje,
+                    transporteUSD: transporteUSD
+                });
+            }
+        });
+
+        btnGuardar.disabled = true;
+        btnGuardar.innerHTML = '<i class="fa-duotone fa-solid fa-loader fa-spin"></i> Guardando...';
+
+        $.ajax({
+            url: "{{ route('abastecimientos.update', $abastecimiento->idAbastecimiento) }}",
+            type: 'PUT',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                idAbastecimiento: idAbastecimiento,
+                productos: productos
+            },
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire('Éxito', response.message, 'success').then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire('Error', response.message, 'error');
+                    btnGuardar.disabled = false;
+                    btnGuardar.innerHTML =
+                        '<i class="fa-solid fa-duotone fa-save"></i> Guardar cambios';
+                }
+            },
+            error: function(xhr) {
+                btnGuardar.disabled = false;
+                btnGuardar.innerHTML =
+                    '<i class="fa-solid fa-duotone fa-save"></i> Guardar cambios';
+
+                console.error(xhr.responseText);
+                console.error(JSON.parse(xhr.responseText));
+
+                Swal.fire('Error', 'Ocurrió un error al guardar los cambios.', 'error');
+            }
+        });
+    }
 
     $(document).ready(function() {
         const tabla = $("#productos");
@@ -262,8 +348,12 @@
         tabla.on("blur", ".nombreProducto", function() {
             let valor = $(this).text().trim();
 
+
+
             if (valor === "") {
                 $(this).text("PRODUCTO SIN NOMBRE");
+            } else {
+                $(this).text(valor.toUpperCase());
             }
         });
 

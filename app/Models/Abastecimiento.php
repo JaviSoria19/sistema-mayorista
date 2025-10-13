@@ -28,11 +28,11 @@ class Abastecimiento extends Model
 
     public function getAllAbastecimientos()
     {
-        return Abastecimiento::with(['productos.marca','productos.empresa','editor'])->orderBy('idAbastecimiento','ASC')->get();
+        return Abastecimiento::with(['productos.marca','productos.empresa','productos.editor','editor'])->orderBy('idAbastecimiento','ASC')->get();
     }
     
     public function getAbastecimiento($idAbastecimiento)
     {
-        return Abastecimiento::with(['productos.marca','productos.empresa','editor'])->find($idAbastecimiento);
+        return Abastecimiento::with(['productos.marca','productos.empresa','productos.editor','editor'])->find($idAbastecimiento);
     }
 }
