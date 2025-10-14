@@ -1,3 +1,8 @@
+<style>
+    .text-dark-aquamarine {
+        color: #20c997 !important;
+    }
+</style>
 <!-- DYMO connect framework  -->
 <script src="{{ asset('/public/dependencies/dymo-connect-framework/dymo.connect.framework.full.js') }}"></script>
 <script>
@@ -221,7 +226,9 @@
 
                             return `<span class="text-primary fw-bold">● ${index + 1}.</span> <span class="text-info fw-bold">${producto.empresa.nombreEmpresa}</span> - ${producto.marca.nombreMarca} ${producto.nombreProducto}:
                                 <br>
-                                ${producto.codigoProducto} - <span class="text-success fw-bold">Costo base: ${producto.costoBaseUSD} USD</span>, 
+                                <span class="fw-bold">${producto.codigoProducto}</span> | <span class="text-dark-aquamarine fw-bold">${producto.identificador}</span>
+                                <br>
+                                <span class="text-success fw-bold">Costo base: ${producto.costoBaseUSD} USD</span>, 
                                 Traspaso: ${producto.traspasoPorcentaje}% - ${(producto.costoBaseUSD * producto.traspasoPorcentaje / 100).toFixed(2)} USD, 
                                 Transporte: ${producto.transporteUSD} USD, 
                                 <span class="text-warning fw-bold">Costo Final: ${costoFinalUSD} USD</span>`
@@ -339,6 +346,7 @@
                 let idEmpresa = fila.find('.idEmpresa').text();
                 let idMarca = fila.find('.idMarca').text();
                 let nombreProducto = fila.find('.nombreProducto').text().trim().toUpperCase();
+                let identificador = fila.find('.identificador').text().trim().toUpperCase();
                 let codigoProducto = fila.find('.codigoProducto').text();
                 let costoBaseUSD = parseFloat(fila.find('.costoBaseUSD').text());
                 let traspasoPorcentaje = parseFloat(fila.find('.traspasoPorcentaje').text());
@@ -348,6 +356,7 @@
                     idEmpresa: idEmpresa,
                     idMarca: idMarca,
                     nombreProducto: nombreProducto,
+                    identificador: identificador,
                     codigoProducto: codigoProducto,
                     costoBaseUSD: costoBaseUSD,
                     traspasoPorcentaje: traspasoPorcentaje,
@@ -483,6 +492,7 @@
             let marca = $("#marca option:selected").text().trim();
             let idMarca = $("#marca option:selected").val();
             let nombreProducto = $("#nombreProducto").val().trim();
+            let identificador = $("#identificador").val().trim() || 'N/A';
             let costoBase = parseFloat($("#costoBaseUSD").val());
             let traspasoPorcentaje = parseFloat($("#traspasoPorcentaje").val());
             let transporteUSD = parseFloat($("#transporteUSD").val());
@@ -531,7 +541,8 @@
                             <td class="numero">${numeroFila}</td>
                             <td class="visually-hidden idEmpresa">${idEmpresa}</td>
                             <td class="visually-hidden idMarca">${idMarca}</td>
-                            <td class="nombreProducto">${nombreProducto.toUpperCase()}</td>
+                            <td class="nombreProducto" contenteditable="true">${nombreProducto.toUpperCase()}</td>
+                            <td class="identificador" contenteditable="true">${identificador}</td>
                             <td class="codigoProducto">${codigo}</td>
                             <td class="costoBaseUSD">${costoBase.toFixed(2)}</td>
                             <td class="traspasoPorcentaje">${traspasoPorcentaje.toFixed(2)}</td>
@@ -551,7 +562,7 @@
             }
 
             actualizarTotales();
-            limpiarCampos();
+            limpiarCampos(cantidad);
         }
 
         // 4. Actualizar totales
@@ -561,8 +572,8 @@
             let totalCostoFinal = 0;
 
             $("#productos tbody tr").each(function() {
-                totalCostoBase += parseFloat($(this).find("td:eq(5)").text());
-                totalCostoFinal += parseFloat($(this).find("td:eq(9)").text());
+                totalCostoBase += parseFloat($(this).find(".costoBaseUSD").text());
+                totalCostoFinal += parseFloat($(this).find(".costoFinalUSD").text());
             });
 
             $("#productosTotalCantidad").text(totalCantidad);
@@ -590,9 +601,125 @@
         }
 
         // Limpiar después de agregar
-        function limpiarCampos() {
+        function limpiarCampos(cantidad) {
             $("#cantidad").val("");
-            $("#nombreProducto").focus();
+            $("#identificador").val("");
+
+            if (cantidad === 1) {
+                $("#identificador").focus();
+            } else {
+                $("#nombreProducto").focus();
+            }
         }
+
+        $("#identificador").on("keypress", function(e) {
+            if (e.which === 13) { // ENTER
+                e.preventDefault();
+                agregarProductoPorIdentificador();
+            }
+        });
+
+        function agregarProductoPorIdentificador() {
+            let identificador = $("#identificador").val().trim();
+            if (!identificador) {
+                Swal.fire({
+                    theme: 'auto',
+                    title: "¡No válido!",
+                    text: "Ingrese un identificador de producto (IMEI/S.N.).",
+                    icon: "warning",
+                    showConfirmButton: false,
+                    timer: 500
+                });
+                return;
+            }
+
+            // Buscar si ya existe en la tabla
+            let existe = false;
+            $("#productos tbody tr").each(function() {
+                let filaIdentificador = $(this).find(".identificador").text().trim();
+                if (filaIdentificador === identificador) {
+                    existe = true;
+                    return false; // salir del each
+                }
+            });
+
+            if (existe) {
+                Swal.fire({
+                    theme: 'auto',
+                    title: "¡Duplicado!",
+                    text: `El producto con el identificador "${identificador}" ya está en la tabla.`,
+                    icon: "warning",
+                    showConfirmButton: false,
+                    timer: 500
+                });
+                return;
+            }
+
+            // Si no existe, agregar una fila con cantidad 1
+            $("#cantidad").val(1);
+            agregarProducto();
+        }
+
+        $(document).on("keydown", ".identificador", function(e) {
+            if (e.which === 13) { // ENTER
+                e.preventDefault();
+                let celdas = $(".identificador");
+                let indice = celdas.index(this);
+                if (indice >= 0 && indice < celdas.length - 1) {
+                    let siguienteCelda = celdas.eq(indice + 1);
+                    siguienteCelda.focus();
+
+                    // Seleccionar todo el contenido para contenteditable
+                    let range = document.createRange();
+                    range.selectNodeContents(siguienteCelda[0]);
+                    let sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
+            }
+        });
+
+        $(document).on("blur", ".nombreProducto", function(e) {
+            let valor = $(this).text().trim();
+
+            if (valor === "") {
+                $(this).text("PRODUCTO SIN NOMBRE");
+            } else {
+                $(this).text(valor.toUpperCase());
+            }
+        });
+
+        $(document).on("blur", ".identificador", function() {
+            let valor = $(this).text().trim();
+
+            if (valor === "" || valor.length < 3) {
+                $(this).text("N/A");
+            } else {
+                $(this).text(valor.toUpperCase());
+            }
+        });
+
+        // Aplicar hacia abajo cambios en celdas editables
+        $(document).on("blur", ".costoBaseUSD, .traspasoPorcentaje, .transporteUSD, .nombreProducto",
+            function() {
+                const celda = $(this);
+                const valor = celda.text().trim();
+                const clase = celda.attr("class").split(" ").find(c => ["costoBaseUSD",
+                    "traspasoPorcentaje", "transporteUSD", "nombreProducto"
+                ].includes(c));
+
+                if (!clase) return;
+
+                const filaActual = celda.closest("tr");
+                const filas = filaActual.nextAll("tr");
+
+                filas.each(function() {
+                    const fila = $(this);
+                    const celdaDestino = fila.find("." + clase);
+                    if (celdaDestino.is("[contenteditable=true]")) {
+                        celdaDestino.text(valor);
+                    }
+                });
+            });
     });
 </script>

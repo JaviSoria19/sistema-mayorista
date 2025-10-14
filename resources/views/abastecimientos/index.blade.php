@@ -80,6 +80,12 @@
                         </datalist>
 
                         <div class="mb-3">
+                            <label for="identificador" class="form-label">Identificador (IMEI/S.N.) <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="identificador" name="identificador" required>
+                        </div>
+
+                        <div class="mb-3">
                             <label for="costoBaseUSD" class="form-label">Costo base (USD) <span
                                     class="text-danger">*</span></label>
                             <input type="number" class="form-control" id="costoBaseUSD" name="costoBaseUSD" required>
@@ -109,7 +115,7 @@
                         <div class="mb-3">
                             <button type="button" id="btnAdd" class="btn btn-success"><i
                                     class="fa-solid fa-duotone fa-plus"></i>
-                                Añadir a la tabla</button>
+                                Añadir a la tabla (Cantidad)</button>
 
                             <button type="button" id="btnEmptyTable" class="btn btn-danger"><i
                                     class="fa-solid fa-duotone fa-trash-can-list"></i>
@@ -125,6 +131,7 @@
                                         <th class="visually-hidden">Empresa id</th>
                                         <th class="visually-hidden">Marca id</th>
                                         <th>Producto</th>
+                                        <th>Identificador</th>
                                         <th>Código</th>
                                         <th>Costo base (USD)</th>
                                         <th>Costo traspaso (%)</th>

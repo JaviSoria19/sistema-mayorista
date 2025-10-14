@@ -83,6 +83,7 @@ class ProductoController extends Controller
         $producto->idMarca = $request->idMarca;
         $producto->idAbastecimiento = $request->idAbastecimiento;
         $producto->nombreProducto = strtoupper($request->nombreProducto);
+        $producto->identificador = trim($request->identificador);
         $producto->codigoProducto = $request->idAbastecimiento . '-' . $request->codigoProducto;
         $producto->costoBaseUSD = $request->costoBaseUSD;
         $producto->traspasoPorcentaje = $request->traspasoPorcentaje;
@@ -105,6 +106,7 @@ class ProductoController extends Controller
 
         $producto = (new Producto())->getProducto($idProducto);
         $producto->nombreProducto = strtoupper($request->nombreProducto);
+        $producto->identificador = trim($request->identificador);
         $producto->costoBaseUSD = $request->costoBaseUSD;
         $producto->traspasoPorcentaje = $request->traspasoPorcentaje;
         $producto->transporteUSD = $request->transporteUSD;

@@ -12,7 +12,7 @@
     </div>
 
     <h2 class="text-info fw-bold">Lista de productos</h2>
-
+    <p>Nota: N° A. = Número de abastecimiento.</p>
     <div class="card p-3 mb-3">
         <p>Seleccione una opción para <i class="fa-solid fa-duotone fa-file-export"></i> exportar o <i
                 class="fa-solid fa-duotone fa-filter"></i> filtrar la tabla:</p>
@@ -23,10 +23,11 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th>Nro. Abastecimiento</th>
+                <th>N° A.</th>
                 <th>Empresa</th>
                 <th>Marca</th>
                 <th>Producto</th>
+                <th>Identificador</th>
                 <th>Código</th>
                 <th>Costo base (USD)</th>
                 <th>Costo traspaso (%)</th>
@@ -109,6 +110,12 @@
                                 <option>{{ $producto->nombreProducto }}</option>
                             @endforeach
                         </datalist>
+
+                        <div class="mb-3">
+                            <label for="identificador" class="form-label">Identificador <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="identificador" name="identificador" required>
+                        </div>
 
                         <div class="mb-3">
                             <label for="codigoProducto" class="form-label">Código de producto <span

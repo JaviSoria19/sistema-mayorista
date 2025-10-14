@@ -1,3 +1,8 @@
+<style>
+    .text-dark-aquamarine {
+        color: #20c997 !important;
+    }
+</style>
 <!-- DYMO connect framework  -->
 <script src="{{ asset('/public/dependencies/dymo-connect-framework/dymo.connect.framework.full.js') }}"></script>
 <script>
@@ -228,6 +233,12 @@
                     data: "nombreProducto",
                 },
                 {
+                    data: "identificador",
+                    render: function(data, type, row) {
+                        return `<b class="text-dark-aquamarine">${data}</b>`;
+                    }
+                },
+                {
                     data: "codigoProducto",
                 },
                 {
@@ -369,6 +380,7 @@
             $('#formCreateOrEdit select[name="idMarca"]').val('').trigger('change');
             $('#formCreateOrEdit select[name="idAbastecimiento"]').val('').trigger('change');
             $('#formCreateOrEdit input[name="nombreProducto"]').val('');
+            $('#formCreateOrEdit input[name="identificador"]').val('');
             $('#formCreateOrEdit input[name="codigoProducto"]').val('');
             $('#formCreateOrEdit input[name="costoBaseUSD"]').val(0);
             $('#formCreateOrEdit input[name="traspasoPorcentaje"]').val(
@@ -397,6 +409,8 @@
                     .idAbastecimiento).trigger('change');
                 $('#formCreateOrEdit input[name="nombreProducto"]').val(producto.data
                     .nombreProducto);
+                $('#formCreateOrEdit input[name="identificador"]').val(producto.data
+                    .identificador);
                 $('#formCreateOrEdit input[name="codigoProducto"]').val(producto.data
                     .codigoProducto);
                 $('#formCreateOrEdit input[name="costoBaseUSD"]').val(producto.data

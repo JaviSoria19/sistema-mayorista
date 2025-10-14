@@ -276,6 +276,7 @@
                 const idEmpresa = fila.find(".idEmpresa").val();
                 const idMarca = fila.find(".idMarca").val();
                 const nombreProducto = fila.find(".nombreProducto").text().trim();
+                const identificador = fila.find(".identificador").text().trim();
                 const costoBaseUSD = parseFloat(fila.find(".costoBaseUSD").text().trim()) ||
                     0;
                 const traspasoPorcentaje = parseFloat(fila.find(".traspasoPorcentaje")
@@ -288,6 +289,7 @@
                     idEmpresa: idEmpresa,
                     idMarca: idMarca,
                     nombreProducto: nombreProducto,
+                    identificador: identificador,
                     costoBaseUSD: costoBaseUSD,
                     traspasoPorcentaje: traspasoPorcentaje,
                     transporteUSD: transporteUSD
@@ -348,12 +350,40 @@
         tabla.on("blur", ".nombreProducto", function() {
             let valor = $(this).text().trim();
 
-
-
             if (valor === "") {
                 $(this).text("PRODUCTO SIN NOMBRE");
             } else {
                 $(this).text(valor.toUpperCase());
+            }
+        });
+
+        tabla.on("blur", ".identificador", function() {
+            let valor = $(this).text().trim();
+
+            if (valor === "" || valor.length < 3) {
+                $(this).text("N/A");
+            } else {
+                $(this).text(valor.toUpperCase());
+            }
+        });
+
+        tabla.on("keydown", ".identificador", function(e) {
+            if (e.which === 13) { // ENTER
+                e.preventDefault();
+                let celdas = $(".identificador");
+                let indice = celdas.index(this);
+                if (indice >= 0 && indice < celdas.length - 1 && celdas.eq(indice + 1).is(
+                        "[contenteditable=true]")) {
+                    let siguienteCelda = celdas.eq(indice + 1);
+                    siguienteCelda.focus();
+
+                    // Seleccionar todo el contenido para contenteditable
+                    let range = document.createRange();
+                    range.selectNodeContents(siguienteCelda[0]);
+                    let sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
             }
         });
 
