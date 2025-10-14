@@ -89,15 +89,30 @@ class Venta extends Model
         $resultados = [];
 
         foreach ($fechas as $periodo => [$inicio, $fin]) {
-            $query = DB::table('ventas as v')
-                ->leftJoin('detalles_ventas as dv', 'v.idVenta', '=', 'dv.idVenta')
+            // Query base para ventas (sin join)
+            $ventasBase = DB::table('ventas as v')
                 ->where('v.estado', 1)
                 ->whereBetween('v.fechaRegistro', [$inicio, $fin]);
 
+            // Cantidad de ventas e ingresos (sin join para evitar duplicados)
+            $estadisticasVentas = (clone $ventasBase)
+                ->select(
+                    DB::raw('COUNT(DISTINCT v.idVenta) as cantidad'),
+                    DB::raw('SUM(v.totalUSD - v.saldoUSD) as ingresos')
+                )
+                ->first();
+
+            // Productos vendidos (con join solo para este cálculo)
+            $productosVendidos = DB::table('detalles_ventas as dv')
+                ->join('ventas as v', 'dv.idVenta', '=', 'v.idVenta')
+                ->where('v.estado', 1)
+                ->whereBetween('v.fechaRegistro', [$inicio, $fin])
+                ->count('dv.idProducto');
+
             $resultados[$periodo] = [
-                'cantidadVentas' => $query->distinct('v.idVenta')->count('v.idVenta'),
-                'ingresos' => $query->select(DB::raw('SUM(v.totalUSD - v.saldoUSD) as total'))->value('total') ?? 0,
-                'productosVendidos' => $query->count('dv.idProducto'),
+                'cantidadVentas' => $estadisticasVentas->cantidad ?? 0,
+                'ingresos' => $estadisticasVentas->ingresos ?? 0,
+                'productosVendidos' => $productosVendidos ?? 0,
             ];
         }
 

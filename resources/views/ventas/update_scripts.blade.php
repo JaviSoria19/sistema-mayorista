@@ -156,6 +156,19 @@
             const codigoProducto = ($('#codigoProducto').val()).trim();
             let existe = false;
 
+            if (codigoProducto.length < 4 || codigoProducto === "") {
+                Swal.fire({
+                    theme: 'auto',
+                    icon: "warning",
+                    title: "",
+                    text: `¡Ingresa un código o identificador de producto!`,
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+                $('#codigoProducto').val('');
+                return;
+            }
+            
             $("#productos tbody tr").each(function() {
                 let codigoFila = $(this).find('.codigoProducto').text();
                 let identificadorFila = $(this).find('.identificador').text();
