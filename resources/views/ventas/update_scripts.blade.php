@@ -158,7 +158,8 @@
 
             $("#productos tbody tr").each(function() {
                 let codigoFila = $(this).find('.codigoProducto').text();
-                if (codigoFila == codigoProducto) {
+                let identificadorFila = $(this).find('.identificador').text();
+                if (codigoFila == codigoProducto || identificadorFila == codigoProducto) {
                     existe = true;
                 }
             });
@@ -168,7 +169,7 @@
                     theme: 'auto',
                     icon: "info",
                     title: "",
-                    html: `¡El producto con el código <b class="text-primary">${codigoProducto}</b> ya se encuentra en la lista!`,
+                    html: `¡El producto con el código o identificador <b class="text-primary">${codigoProducto}</b> ya se encuentra en la lista!`,
                     showConfirmButton: false,
                     timer: 1500
                 });
@@ -209,6 +210,7 @@
                         <tr>
                             <td class="visually-hidden idProducto">${producto.data.idProducto}</td>
                             <td class="codigoProducto">${producto.data.codigoProducto}</td>
+                            <td class="identificador">${producto.data.identificador}</td>
                             <td class="nombreProducto">${producto.data.marca.nombreMarca} ${producto.data.nombreProducto}</td>
                             <td class="costoFinalUSD">${costoFinalUSD.toFixed(2)}</td>
                             <td class="precioUSD" contenteditable="true">${precioUSD.toFixed(2)}</td>

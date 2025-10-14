@@ -61,6 +61,7 @@
                     <tr>
                         <th class="visually-hidden">Id</th>
                         <th>Código</th>
+                        <th>Identificador</th>
                         <th>Producto</th>
                         <th>C.F. (USD)</th>
                         <th>Precio (USD)</th>
@@ -78,6 +79,7 @@
                         <tr>
                             <td class="visually-hidden idProducto">{{ $producto->idProducto }}</td>
                             <td class="codigoProducto">{{ $producto->codigoProducto }}</td>
+                            <td class="identificador">{{ $producto->identificador }}</td>
                             <td class="nombreProducto">{{ $producto->marca->nombreMarca }} {{ $producto->nombreProducto }}
                             </td>
                             <td class="costoFinalUSD">{{ $costoFinalUSD }}</td>

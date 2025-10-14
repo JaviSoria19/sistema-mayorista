@@ -56,6 +56,7 @@
                     <tr>
                         <th class="visually-hidden">Id</th>
                         <th>Código</th>
+                        <th>Identificador</th>
                         <th>Producto</th>
                         <th>C.F. (USD)</th>
                         <th>Precio (USD)</th>

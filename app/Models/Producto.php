@@ -56,7 +56,10 @@ class Producto extends Model
 
     public function getProductoByCodigo($codigoProducto)
     {
-        return Producto::with(['empresa', 'marca', 'editor'])->where('codigoProducto', $codigoProducto)->first();
+        return Producto::with(['empresa', 'marca', 'editor'])->where(function ($query) use ($codigoProducto) {
+            $query->where('codigoProducto', $codigoProducto)
+                  ->orWhere('identificador', $codigoProducto);
+        })->first();
     }
 
     public function getAllProductosGroupByNombreProducto()
