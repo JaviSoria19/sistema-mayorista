@@ -223,15 +223,20 @@
                                 producto.costoBaseUSD * producto
                                 .traspasoPorcentaje / 100) + parseFloat(producto
                                 .transporteUSD)).toFixed(2);
-
+                            const bonoMarcaUSD = (parseFloat(producto.costoBaseUSD) * producto.marca.bonoMarcaPorcentaje / 100).toFixed(2);
+                            const bonoEmpresaUSD = (parseFloat(producto.costoBaseUSD) * producto.empresa.bonoEmpresaPorcentaje / 100).toFixed(2);
                             return `<span class="text-primary fw-bold">● ${index + 1}.</span> <span class="text-info fw-bold">${producto.empresa.nombreEmpresa}</span> - ${producto.marca.nombreMarca} ${producto.nombreProducto}:
                                 <br>
-                                <span class="fw-bold">${producto.codigoProducto}</span> | <span class="text-dark-aquamarine fw-bold">${producto.identificador}</span>
+                                <span class="fw-bold">${producto.codigoProducto}</span> | <span class="text-danger fw-bold">${producto.identificador}</span>
                                 <br>
                                 <span class="text-success fw-bold">Costo base: ${producto.costoBaseUSD} USD</span>, 
                                 Traspaso: ${producto.traspasoPorcentaje}% - ${(producto.costoBaseUSD * producto.traspasoPorcentaje / 100).toFixed(2)} USD, 
                                 Transporte: ${producto.transporteUSD} USD, 
-                                <span class="text-warning fw-bold">Costo Final: ${costoFinalUSD} USD</span>`
+                                <span class="text-warning fw-bold">Costo Final: ${costoFinalUSD} USD</span>
+                                <br>
+                                <span class="text-dark-aquamarine fw-bold">Bono empresa: ${producto.empresa.bonoEmpresaPorcentaje}%, ${bonoEmpresaUSD} USD</span>
+                                <br>
+                                <span class="text-dark-aquamarine fw-bold">Bono marca: ${producto.marca.bonoMarcaPorcentaje}%, ${bonoMarcaUSD} USD</span>`
                         }).join("<br>");
                     },
                     width: '100%'
@@ -246,6 +251,8 @@
                         let cantidadTotal = row.productos.length;
                         let costoBaseTotal = 0;
                         let costoFinalTotal = 0;
+                        let bonoEmpresaTotal = 0;
+                        let bonoMarcaTotal = 0;
 
                         row.productos.forEach((producto) => {
                             // Sumar costo base
@@ -257,12 +264,21 @@
                                     100) +
                                 parseFloat(producto.transporteUSD);
                             costoFinalTotal += costoFinal;
+
+                            // Calcular y sumar bono empresa
+                            const bonoEmpresa = (parseFloat(producto.costoBaseUSD) * producto.empresa.bonoEmpresaPorcentaje / 100);
+                            bonoEmpresaTotal += bonoEmpresa;
+
+                            const bonoMarca = (parseFloat(producto.costoBaseUSD) * producto.marca.bonoMarcaPorcentaje / 100);
+                            bonoMarcaTotal += bonoMarca;
                         });
 
                         return `
                                 <span class="text-info fw-bold">Cantidad total: ${cantidadTotal} productos</span><br>
                                 <span class="text-success fw-bold">Costo base total: ${costoBaseTotal.toFixed(2)} USD</span><br>
                                 <span class="text-warning fw-bold">Costo final total: ${costoFinalTotal.toFixed(2)} USD</span><br>
+                                <span class="text-dark-aquamarine fw-bold">Bono empresa total: ${bonoEmpresaTotal.toFixed(2)} USD</span><br>
+                                <span class="text-dark-aquamarine fw-bold">Bono marca total: ${bonoMarcaTotal.toFixed(2)} USD</span>
                             `;
                     }
                 },

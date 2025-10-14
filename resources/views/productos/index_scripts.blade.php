@@ -235,11 +235,14 @@
                 {
                     data: "identificador",
                     render: function(data, type, row) {
-                        return `<b class="text-dark-aquamarine">${data}</b>`;
+                        return `<b class="text-danger">${data}</b>`;
                     }
                 },
                 {
                     data: "codigoProducto",
+                    render: function(data, type, row) {
+                        return `<b>${data}</b>`;
+                    }
                 },
                 {
                     data: "costoBaseUSD",
@@ -268,6 +271,22 @@
                             .costoBaseUSD * row.traspasoPorcentaje / 100) + parseFloat(row
                             .transporteUSD);
                         return `<b class="text-warning">${costoFinalUSD.toFixed(2)}</b>`;
+                    }
+                },
+                {
+                    data: null,
+                    render: function(data, type, row) {
+                        let bonoEmpresaUSD = (row.costoBaseUSD * row.empresa
+                            .bonoEmpresaPorcentaje / 100).toFixed(2);
+                        return `<b class="text-dark-aquamarine">${bonoEmpresaUSD}</b>`;
+                    }
+                },
+                {
+                    data: null,
+                    render: function(data, type, row) {
+                        let bonoMarcaUSD = (row.costoBaseUSD * row.marca.bonoMarcaPorcentaje /
+                            100).toFixed(2);
+                        return `<b class="text-dark-aquamarine">${bonoMarcaUSD}</b>`;
                     }
                 },
                 {

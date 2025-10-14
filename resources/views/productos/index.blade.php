@@ -34,6 +34,8 @@
                 <th>Costo traspaso (USD)</th>
                 <th>Costo transporte (USD)</th>
                 <th>Costo final (USD)</th>
+                <th>Bono empresa (USD)</th>
+                <th>Bono marca (USD)</th>
                 <th>Estado</th>
                 <th>F. Registro</th>
                 <th>F. Actualización</th>
