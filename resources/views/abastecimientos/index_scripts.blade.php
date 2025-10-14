@@ -315,9 +315,10 @@
                     }
                 }
             ],
-            responsive: true,
+            responsive: false,
             lengthChange: true,
-            autoWidth: true,
+            autoWidth: false,
+            scrollX: true,
             colReorder: true,
             order: [
                 [0, 'desc']

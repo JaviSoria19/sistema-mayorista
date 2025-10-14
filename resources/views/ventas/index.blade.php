@@ -4,7 +4,8 @@
     <h1 class="text-center text-info fw-bold"><i class="fa-solid fa-duotone fa-money-check-dollar-pen"></i>
         {{ $headTitle }}</h1>
 
-    <a href="{{ route('ventas.crear') }}" class="btn btn-success mb-3 btn-crear" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-duotone fa-plus"></i> Crear venta</a>
+    <a href="{{ route('ventas.crear') }}" class="btn btn-success mb-3 btn-crear" target="_blank" rel="noopener noreferrer"><i
+            class="fa-solid fa-duotone fa-plus"></i> Crear venta</a>
 
     <h2 class="text-info fw-bold">Lista de ventas</h2>
 
@@ -78,7 +79,7 @@
 
                             return data.map((producto, index) =>
                                 `
-                                <b class="text-primary">${index + 1}.</b> ${producto.codigoProducto} <b class="text-info">${producto.marca.nombreMarca} ${producto.nombreProducto}</b> a <b class="text-success">${producto.pivot.precioUSD} USD</b>
+                                <b><span class="text-primary">${index + 1}.</span> ${producto.codigoProducto} <span class="text-danger">${producto.identificador}</span> <span class="text-info">${producto.marca.nombreMarca} ${producto.nombreProducto}</span> a <span class="text-success">${producto.pivot.precioUSD} USD</span></b>
                                 `
                             ).join("<br>");
                         },
@@ -169,9 +170,10 @@
                         }
                     }
                 ],
-                responsive: true,
+                responsive: false,
                 lengthChange: true,
-                autoWidth: true,
+                autoWidth: false,
+                scrollX: true,
                 colReorder: true,
                 order: [
                     [0, 'desc']
