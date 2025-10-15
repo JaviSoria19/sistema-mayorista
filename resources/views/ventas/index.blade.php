@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1 class="text-center text-info fw-bold"><i class="fa-solid fa-duotone fa-money-check-dollar-pen"></i>
+    <h1 class="text-center text-info fw-bold"><i class="fa-solid fa-duotone fa-cart-shopping"></i>
         {{ $headTitle }}</h1>
 
     <a href="{{ route('ventas.crear') }}" class="btn btn-success mb-3 btn-crear" target="_blank" rel="noopener noreferrer"><i
-            class="fa-solid fa-duotone fa-plus"></i> Crear venta</a>
+            class="fa-solid fa-duotone fa-cart-plus"></i> Crear venta</a>
 
     <h2 class="text-info fw-bold">Lista de ventas</h2>
 

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1 class="text-center text-info fw-bold"><i class="fa-solid fa-duotone fa-money-check-dollar-pen"></i>
+    <h1 class="text-center text-info fw-bold"><i class="fa-solid fa-duotone fa-cart-plus"></i>
         {{ $headTitle }}</h1>
     <div class="card mb-3">
         <div class="card-body">

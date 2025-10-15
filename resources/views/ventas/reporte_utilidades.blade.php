@@ -57,13 +57,14 @@
                                 class="text-{{ $venta->saldoUSD > 0 ? 'warning' : 'success' }}">{{ $venta->saldoUSD }}</span>
                         </td>
                         <td>{{ date('d/m/Y H:i:s', strtotime($venta->fechaRegistro)) }}</td>
-                        <td class="fw-bold">{{ $producto->codigoProducto }} <span
-                                class="text-info">{{ $producto->marca->nombreMarca . ' ' . $producto->nombreProducto }}</span>
+                        <td class="fw-bold">{{ $producto->codigoProducto }} 
+                            <span class="text-danger">{{ $producto->identificador }}</span>
+                            <span class="text-info">{{ $producto->marca->nombreMarca . ' ' . $producto->nombreProducto }}</span>
                         </td>
-                        <td>{{ $costoFinalUSD }}</td>
+                        <td>{{ number_format($costoFinalUSD, 2, '.', '') }}</td>
                         <td>{{ $producto->pivot->precioUSD }}</td>
                         <td class="fw-bold"><span
-                                class="text-{{ $utilidad > 0 ? 'success' : 'danger' }}">{{ number_format($utilidad, 2) }}</span>
+                                class="text-{{ $utilidad > 0 ? 'success' : 'danger' }}">{{ number_format($utilidad, 2, '.', '') }}</span>
                         </td>
                     </tr>
                 @endforeach
@@ -75,7 +76,7 @@
         <p class="fw-bold">Utilidad total entre las fechas <span
                 class="text-info">{{ date('d/m/Y', strtotime($fechaInicio)) }}</span> y <span
                 class="text-info">{{ date('d/m/Y', strtotime($fechaFin)) }}</span>: <span
-                class="text-success">{{ number_format($utilidadTotal, 2) }} USD</span></p>
+                class="text-success">{{ number_format($utilidadTotal, 2, '.', '') }} USD</span></p>
     </div>
 @endsection
 
