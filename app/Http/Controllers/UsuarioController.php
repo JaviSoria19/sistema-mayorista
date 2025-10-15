@@ -29,11 +29,13 @@ class UsuarioController extends Controller
 
         $estadisticas = (new Venta())->dashboard_getEstadisticasVentas();
         $saldos_pendientes = (new Venta())->dashboard_getClientesConSaldo();
+        $saldos_pendientes_detalles = (new Venta())->dashboard_getVentasConSaldo();
 
         return view('panel.admin', [
             'headTitle' => 'PANEL DE ADMINISTRACIÓN',
             'estadisticas' => $estadisticas,
             'saldos_pendientes' => $saldos_pendientes,
+            'saldos_pendientes_detalles' => $saldos_pendientes_detalles,
         ]);
     }
 

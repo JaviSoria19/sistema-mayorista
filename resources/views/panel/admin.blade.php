@@ -151,7 +151,8 @@
 
     <div class="card mb-3">
         <div class="card-header">
-            <span class="h2 text-info fw-bold align-middle"><i class="fa-solid fa-duotone fa-chart-simple"></i> ESTADÍSTICAS</span>
+            <span class="h2 text-info fw-bold align-middle"><i class="fa-solid fa-duotone fa-chart-simple"></i>
+                ESTADÍSTICAS</span>
         </div>
         <div class="card-body">
             <div class="row mb-3">
@@ -288,8 +289,8 @@
 
             <div class="row">
                 <div class="col-6">
-
-                    <h4 class="fw-bold"><i class="fa-solid fa-duotone fa-cart-shopping"></i> SALDOS PENDIENTES</h4>
+                    <h4 class="fw-bold"><i class="fa-solid fa-duotone fa-cart-shopping"></i> SALDOS PENDIENTES (RESUMEN)
+                    </h4>
 
                     <div class="border p-3 mb-3 rounded">
                         <p>Seleccione una opción para <i class="fa-solid fa-duotone fa-file-export"></i> exportar o <i
@@ -305,7 +306,7 @@
                                 <th>Celular</th>
                                 <th>Procedencia</th>
                                 <th>Saldo (USD)</th>
-                                <th>Fecha</th>
+                                <th>Fecha desde</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -315,14 +316,81 @@
                                     <th>{{ $saldo_pendiente->nombreCliente }}</th>
                                     <th>{{ $saldo_pendiente->celular }}</th>
                                     <th>{{ $saldo_pendiente->procedencia }}</th>
-                                    <th>{{ $saldo_pendiente->saldoPendiente }}</th>
+                                    <th class="text-warning">{{ $saldo_pendiente->saldoPendiente }}</th>
                                     <th>{{ date('d/m/Y H:i:s', strtotime($saldo_pendiente->fechaMasAntigua)) }}</th>
                                 </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
-
+                            <tr>
+                                <th colspan="4" class="text-end">Total Saldos Pendientes (USD):</th>
+                                <th
+                                    class="{{ $saldos_pendientes->sum('saldoPendiente') > 0 ? 'text-warning' : 'text-success' }}">
+                                    {{ number_format($saldos_pendientes->sum('saldoPendiente'), 2, '.', '') }}
+                                </th>
+                                <th></th>
+                            </tr>
                         </tfoot>
+                    </table>
+                </div>
+
+                <div class="col-6">
+                    <h4 class="fw-bold"><i class="fa-solid fa-duotone fa-cart-shopping"></i> SALDOS PENDIENTES (DETALLES)
+                    </h4>
+                    <div class="border p-3 mb-3 rounded">
+                        <p>Seleccione una opción para <i class="fa-solid fa-duotone fa-file-export"></i> exportar o <i
+                                class="fa-solid fa-duotone fa-filter"></i> filtrar la tabla:</p>
+                        <div id="dataTableExportButtonsContainer2"></div>
+                    </div>
+                    <table class="table table-bordered table-striped" id="dataTable2">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Venta</th>
+                                <th>Productos</th>
+                                <th>Total (USD)</th>
+                                <th>Pagos (USD)</th>
+                                <th>Saldo (USD)</th>
+                                <th>F. Registro</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($saldos_pendientes_detalles as $saldo_pendiente_detalle)
+                                <tr>
+                                    <td>{{ $saldo_pendiente_detalle->cliente->nombreCliente }}</td>
+                                    <td>{{ $saldo_pendiente_detalle->idVenta }}</td>
+                                    <td class="fw-bold">
+                                        @foreach ($saldo_pendiente_detalle->productos as $producto)
+                                            <span class="text-primary">{{ $loop->index + 1 }}.</span>
+                                            {{ $producto->codigoProducto }}
+                                            <span class="text-danger">{{ $producto->identificador }}</span>
+                                            <span class="text-info">{{ $producto->nombreProducto }}</span> a
+                                            <span class="text-success">{{ $producto->pivot->precioUSD }} USD</span>
+                                            <br>
+                                        @endforeach
+                                    </td>
+                                    <td class="text-success fw-bold">
+                                        {{ number_format($saldo_pendiente_detalle->totalUSD, 2, '.', '') }}</td>
+                                    <td class="text-success">
+                                        {{ number_format($saldo_pendiente_detalle->pagos->sum('montoUSD'), 2, '.', '') }}
+                                    </td>
+                                    <td class="text-warning fw-bold">
+                                        {{ number_format($saldo_pendiente_detalle->saldoUSD, 2, '.', '') }}</td>
+                                    <td>{{ date('d/m/Y H:i:s', strtotime($saldo_pendiente_detalle->fechaRegistro)) }}</td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ route('ventas.editar', $saldo_pendiente_detalle->idVenta) }}"
+                                                class="btn btn-warning btn-sm" title="Editar" target="_blank"
+                                                rel="noopener noreferrer"><i class="fa-solid fa-duotone fa-edit"></i></a>
+                                            <a href="{{ route('ventas.imprimir', $saldo_pendiente_detalle->idVenta) }}"
+                                                class="btn {{ session('temaPreferido') == 'dark' ? 'btn-light' : 'btn-dark' }} btn-sm"
+                                                title="Imprimir venta" target="_blank" rel="noopener noreferrer"><i
+                                                    class="fa-solid fa-duotone fa-print"></i></a>
+                                        </div>
+                                    </td>
+                            @endforeach
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -358,6 +426,42 @@
                 @include('datatables.dataTablesGlobalProperties')
                 @include('datatables.dataTablesLanguageProperty')
             }).buttons().container().appendTo('#dataTableExportButtonsContainer');
+            $('#dataTable2').DataTable({
+                responsive: false,
+                lengthChange: true,
+                autoWidth: false,
+                scrollX: true,
+                colReorder: true,
+                order: [],
+                pageLength: 10,
+                dom: 'Blfrtip',
+                buttons: [{
+                        extend: 'copy',
+                        className: 'btn btn-secondary'
+                    },
+                    {
+                        extend: 'csv',
+                        className: 'btn btn-success'
+                    },
+                    {
+                        extend: 'excel',
+                        className: 'btn btn-success'
+                    },
+                    {
+                        extend: 'pdf',
+                        className: 'btn btn-danger'
+                    },
+                    {
+                        extend: 'colvis',
+                        className: 'btn btn-info'
+                    },
+                    {
+                        extend: 'searchBuilder',
+                        className: 'btn btn-warning'
+                    },
+                ],
+                @include('datatables.dataTablesLanguageProperty')
+            }).buttons().container().appendTo('#dataTableExportButtonsContainer2');
         });
     </script>
 @endsection

@@ -136,4 +136,14 @@ class Venta extends Model
             ->orderByDesc('saldoPendiente')
             ->get();
     }
+
+    public function dashboard_getVentasConSaldo()
+    {
+        return Venta::with(['productos.marca', 'pagos', 'usuario', 'cliente', 'empleado', 'editor'])
+            ->where('ventas.estado', 1)
+            ->where('ventas.saldoUSD', '>', 0)
+            ->orderBy('ventas.idCliente', 'ASC')
+            ->orderBy('ventas.fechaRegistro', 'ASC')
+            ->get();
+    }
 }
