@@ -1,5 +1,5 @@
 <div class="row mb-3">
-    <h4 class="fw-bold"><i class="fa-solid fa-duotone fa-cart-shopping"></i> SALDOS PENDIENTES (RESUMEN)
+    <h4 class="text-warning fw-bold"><i class="fa-solid fa-duotone fa-cart-shopping"></i> SALDOS PENDIENTES (RESUMEN)
     </h4>
 
     <div class="border p-3 mb-3 rounded">
@@ -43,7 +43,7 @@
     </table>
 </div>
 <div class="row">
-    <h4 class="fw-bold"><i class="fa-solid fa-duotone fa-cart-shopping"></i> SALDOS PENDIENTES (DETALLES)
+    <h4 class="text-warning fw-bold"><i class="fa-solid fa-duotone fa-cart-shopping"></i> SALDOS PENDIENTES (DETALLES)
     </h4>
     <div class="border p-3 mb-3 rounded">
         <p>Seleccione una opción para <i class="fa-solid fa-duotone fa-file-export"></i> exportar o <i

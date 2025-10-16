@@ -17,6 +17,10 @@
         border-radius: 10px;
         font-size: 28px;
     }
+
+    .text-dark-aquamarine {
+        color: #20c997 !important;
+    }
 </style>
 
 <script>
