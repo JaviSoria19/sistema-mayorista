@@ -315,6 +315,10 @@
                 let fila = `
                 <tr>
                     <td class="pagoUSD" contenteditable="true">${pagoUSD.toFixed(2)}</td>
+                    <td class="fechaPago">
+                        <input type="date" class="form-control fechaPagoInput" 
+                            value="${new Date().toISOString().split('T')[0]}">
+                    </td>
                     <td>
                         <button type="button" class="btn btn-danger btn-sm btn-remover" 
                             data-toggle="tooltip" title="Remover de la tabla">
@@ -402,8 +406,10 @@
 
             $("#pagos tbody tr").each(function() {
                 let pagoUSD = parseFloat($(this).find('.pagoUSD').text());
+                let fechaPago = $(this).find('.fechaPagoInput').val();
                 pagos.push({
-                    pagoUSD: pagoUSD
+                    pagoUSD: pagoUSD,
+                    fechaPago: fechaPago,
                 });
             });
 

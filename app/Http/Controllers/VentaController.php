@@ -222,6 +222,7 @@ class VentaController extends Controller
                     $p = new PagoVenta();
                     $p->idVenta = $venta->idVenta;
                     $p->pagoUSD = $pago['pagoUSD'];
+                    $p->fechaPago = $pago['fechaPago'];
                     $p->modificadoPor = session('idUsuario');
                     $p->save();
                 }
@@ -308,6 +309,7 @@ class VentaController extends Controller
                     $p = new PagoVenta();
                     $p->idVenta = $venta->idVenta;
                     $p->pagoUSD = $pago['pagoUSD'];
+                    $p->fechaPago = $pago['fechaPago'];
                     $p->modificadoPor = session('idUsuario');
                     $p->save();
                 } else {
@@ -315,6 +317,7 @@ class VentaController extends Controller
                     // Actualizar solo si el pago es menor o igual a 0.00 (editable)
                     if ($p->pagoUSD <= '0.00') {
                         $p->pagoUSD = $pago['pagoUSD'];
+                        $p->fechaPago = $pago['fechaPago'];
                         $p->fechaRegistro = Carbon::now();
                         $p->modificadoPor = session('idUsuario');
                         $p->save();

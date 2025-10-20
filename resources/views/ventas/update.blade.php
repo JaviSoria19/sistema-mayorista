@@ -114,7 +114,7 @@
                         <tr class="border border-primary">
                             <th>#</th>
                             <th class="visually-hidden">Id Pago</th>
-                            <th>Fecha registro</th>
+                            <th>Fecha</th>
                             <th>Pagos (USD)</th>
                             <th>Remover</th>
                         </tr>
@@ -124,7 +124,10 @@
                             <tr class="border border-primary">
                                 <td class="text-center text-primary fw-bold">{{ $loop->index + 1 }}.</td>
                                 <td class="visually-hidden idPagoVenta">{{ $pago->idPagoVenta }}</td>
-                                <td>{{ date('d/m/Y H:i:s',strtotime($pago->fechaRegistro)) }}</td>
+                                <td class="fechaPago">
+                                    <input type="date" class="form-control fechaPagoInput" 
+                                    value="{{ date('Y-m-d', strtotime($pago->fechaPago)) }}">
+                                </td>
                                 <td class="text-success fw-bold pagoUSD" {{ $pago->pagoUSD <= '0' ? 'contenteditable=true' : ''}}>{{ $pago->pagoUSD }}</td>
                                 <td class="bg-secondary">
                                     {{-- <button type="button" class="btn btn-danger btn-sm btn-remover" data-toggle="tooltip"

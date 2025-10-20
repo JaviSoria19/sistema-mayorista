@@ -315,7 +315,10 @@
                 <tr class="border-warning">
                     <td class="text-center text-warning fw-bold">Nuevo</td>
                     <td class="visually-hidden idPagoVenta">0</td>
-                    <td class="text-warning">-</td>
+                    <td class="fechaPago">
+                        <input type="date" class="form-control fechaPagoInput" 
+                            value="${new Date().toISOString().split('T')[0]}">
+                    </td>
                     <td class="pagoUSD" contenteditable="true">${pagoUSD.toFixed(2)}</td>
                     <td class="text-center">
                         <button type="button" class="btn btn-danger btn-sm btn-remover" 
@@ -405,9 +408,11 @@
             $("#pagos tbody tr").each(function() {
                 let idPagoVenta = parseFloat($(this).find('.idPagoVenta').text());
                 let pagoUSD = parseFloat($(this).find('.pagoUSD').text());
+                let fechaPago = $(this).find('.fechaPagoInput').val();
                 pagos.push({
                     idPagoVenta: idPagoVenta,
-                    pagoUSD: pagoUSD
+                    pagoUSD: pagoUSD,
+                    fechaPago: fechaPago
                 });
             });
 

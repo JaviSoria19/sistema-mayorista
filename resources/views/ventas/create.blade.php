@@ -85,12 +85,17 @@
                     <thead class="text-center">
                         <tr>
                             <th>Pagos (USD)</th>
+                            <th>Fecha</th>
                             <th>Remover</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td class="pagoUSD" contenteditable="true">0.00</td>
+                            <td class="fechaPago">
+                                <input type="date" class="form-control fechaPagoInput" 
+                                    value="{{ date('Y-m-d') }}">
+                            </td>
                             <td></td>
                         </tr>
                     </tbody>

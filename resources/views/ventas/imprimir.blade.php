@@ -162,7 +162,7 @@
                         @foreach ($venta?->pagos as $index => $pago)
                             <tr>
                                 <td class="text-center"><b>{{ $index + 1 }}.</b></td>
-                                <td>{{ date('d/m/Y H:i:s', strtotime($pago->fechaRegistro)) }}</td>
+                                <td>{{ date('d/m/Y', strtotime($pago->fechaPago)) }}</td>
                                 <td class="text-right"><span
                                         class="text-success font-weight-bold">{{ $pago->pagoUSD }}</span></td>
                             </tr>
