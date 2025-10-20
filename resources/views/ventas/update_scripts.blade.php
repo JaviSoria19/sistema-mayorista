@@ -218,7 +218,6 @@
                     let costoFinalUSD = parseFloat(producto.data.costoBaseUSD) + parseFloat(producto
                         .data.costoBaseUSD * producto.data.traspasoPorcentaje / 100) + parseFloat(
                         producto.data.transporteUSD);
-                    let precioUSD = Math.round(parseFloat(costoFinalUSD / 100 * 110));
                     let fila = `
                         <tr>
                             <td class="visually-hidden idProducto">${producto.data.idProducto}</td>
@@ -226,7 +225,7 @@
                             <td class="identificador">${producto.data.identificador}</td>
                             <td class="nombreProducto">${producto.data.marca.nombreMarca} ${producto.data.nombreProducto}</td>
                             <td class="costoFinalUSD">${costoFinalUSD.toFixed(2)}</td>
-                            <td class="precioUSD" contenteditable="true">${precioUSD.toFixed(2)}</td>
+                            <td class="precioUSD" contenteditable="true">${producto.data.precioVentaUSD}</td>
                             <td>
                                 <button type="button" class="btn btn-danger btn-sm btn-remover" 
                                     data-toggle="tooltip" title="Remover de la tabla" data-producto="${producto.data.codigoProducto} ${producto.data.marca.nombreMarca} ${producto.data.nombreProducto}">
