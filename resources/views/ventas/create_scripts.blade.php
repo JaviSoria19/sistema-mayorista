@@ -26,7 +26,7 @@
 
                     $.each(response.data, function(i, cliente) {
                         if (cliente.estado == '0') return; // Omitir clientes inactivos
-                        
+
                         $select.append(
                             `<option value="${cliente.idCliente}">
                         ${cliente.nombreCliente} - CI: ${cliente.cedulaIdentidad} - Cel: ${cliente.celular} - Procedencia: ${cliente.procedencia}
@@ -610,6 +610,32 @@
                 seleccion.removeAllRanges();
                 seleccion.addRange(rango);
             }
+        });
+
+        // Aplicar hacia abajo cambios en celdas editables
+        $("#productos").on("blur", ".precioUSD", function() {
+            const celda = $(this);
+            const valor = celda.text().trim();
+            const clase = celda.attr("class").split(" ").find(c => ["precioUSD"].includes(c));
+
+            if (!clase) return;
+
+            // Aplicar hacia abajo
+            const tabla = $("#productos");
+            let aplicarHaciaAbajo = false;
+
+            tabla.find("tbody tr").each(function() {
+                const fila = $(this);
+                const celdaActual = fila.find(`.${clase}`);
+
+                if (celdaActual.is(celda)) {
+                    aplicarHaciaAbajo = true; // Empezar a aplicar hacia abajo desde esta fila
+                } else if (aplicarHaciaAbajo) {
+                    celdaActual.text(valor);
+                }
+            });
+
+            actualizarTotalPagosSaldo();
         });
     });
 </script>
