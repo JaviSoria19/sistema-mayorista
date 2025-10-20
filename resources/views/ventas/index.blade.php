@@ -205,10 +205,11 @@
                         className: 'btn btn-warning'
                     },
                 ],
+                /* filtrar visibilidad de las columnas de datatables. 
                 columnDefs: [{
                     targets: [8, 11, 12, 13], // Target the first and third columns (0-indexed)
                     visible: false
-                }, ],
+                }, ], */
                 @include('datatables.dataTablesLanguageProperty')
             }).buttons().container().appendTo('#dataTableExportButtonsContainer');
         });
