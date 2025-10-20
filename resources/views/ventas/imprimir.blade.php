@@ -53,36 +53,37 @@
             }
 
             * {
-                font-size: 12px;
+                font-size: 10px;
             }
         </style>
         <img src="{{ public_path('img/logo_venta.jpg') }}" class="watermark">
 
-        <p
+        {{-- <p
             class="font-weight-bold bg-{{ $venta->estado == '0' ? 'danger' : 'info' }} text-white m-2 text-center rounded align-middle">
             VENTA N° {{ $venta?->idVenta }}
             {{ $venta->estado == '0' ? '(ELIMINADA EL ' . date('d/m/Y H:i:s', strtotime($venta?->fechaEliminacion)) . ')' : '' }}
-        </p>
+        </p> --}}
 
         <div class="table-container border border-info rounded p-2 m-2">
             <table class="table table-bordered">
-                <tr>
-                    <td class="font-weight-bold">
-                        <span class="text-info">Empleado:</span> {{ $venta?->empleado->nombreEmpleado }}<br>
-                        <span class="text-info">Usuario:</span> {{ $venta?->usuario->nombreUsuario }}
+                <tr class="font-weight-bold bg-secondary text-light">
+                    <td class="bg-{{ $venta->estado == '0' ? 'danger' : 'info' }}" style="width: 33%">
+                        {{ $venta?->empleado->nombreEmpleado }}
+                        {{-- <span class="text-info">Usuario:</span> {{ $venta?->usuario->nombreUsuario }} --}}
                     </td>
-                    <td class="font-weight-bold text-right">
-                        <span class="text-info">F. Registro:</span>
-                        {{ date('d/m/Y H:i:s', strtotime($venta?->fechaRegistro)) }}<br>
-                        <span class="text-info">F. Actualización:</span>
-                        {{ date('d/m/Y H:i:s', strtotime($venta?->fechaActualizacion)) }}
+                    <td class="bg-{{ $venta->estado == '0' ? 'danger' : 'info' }} text-center" style="width: 33%">
+                        VENTA N° {{ $venta?->idVenta }}
+                    </td>
+                    <td class="bg-{{ $venta->estado == '0' ? 'danger' : 'info' }} text-right" style="width: 33%">
+                        F. Registro: {{ date('d/m/Y H:i:s', strtotime($venta?->fechaRegistro)) }}
+                        {{-- <span class="text-info">F. Actualización:</span>
+                        {{ date('d/m/Y H:i:s', strtotime($venta?->fechaActualizacion)) }} --}}
                     </td>
                 </tr>
                 @if ($venta->fechaEliminacion)
                     <tr>
-                        <td class="font-weight-bold text-center" colspan="2">
-                            <span class="text-info">Fecha de Eliminación:</span>
-                            {{ date('d/m/Y H:i:s', strtotime($venta?->fechaEliminacion)) }}
+                        <td class="text-center" colspan="3">
+                            Fecha de Eliminación: {{ date('d/m/Y H:i:s', strtotime($venta?->fechaEliminacion)) }}
                         </td>
                     </tr>
                 @endif
@@ -175,7 +176,7 @@
                     </tfoot>
                 </table>
             </div>
-            <div class="text-center">Muchas gracias por tu compra!</div>
+            {{-- <div class="text-center">Muchas gracias por tu compra!</div> --}}
         </div>
     </body>
 
