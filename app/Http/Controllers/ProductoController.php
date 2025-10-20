@@ -88,6 +88,7 @@ class ProductoController extends Controller
         $producto->costoBaseUSD = $request->costoBaseUSD;
         $producto->traspasoPorcentaje = $request->traspasoPorcentaje;
         $producto->transporteUSD = $request->transporteUSD;
+        $producto->precioVentaUSD = $request->precioVentaUSD;
         $producto->modificadoPor = session('idUsuario');
         $producto->save();
 
@@ -110,6 +111,7 @@ class ProductoController extends Controller
         $producto->costoBaseUSD = $request->costoBaseUSD;
         $producto->traspasoPorcentaje = $request->traspasoPorcentaje;
         $producto->transporteUSD = $request->transporteUSD;
+        $producto->precioVentaUSD = $request->precioVentaUSD;
         $producto->modificadoPor = session('idUsuario');
         $producto->save();
 

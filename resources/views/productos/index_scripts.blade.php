@@ -227,6 +227,12 @@
                     }
                 },
                 {
+                    data: "precioVentaUSD",
+                    render: function(data, type, row) {
+                        return `<b class="text-dark-aquamarine">${data}</b>`;
+                    }
+                },
+                {
                     data: null,
                     render: function(data, type, row) {
                         let bonoEmpresaUSD = (row.costoBaseUSD * row.empresa
@@ -392,6 +398,8 @@
                     .traspasoPorcentaje);
                 $('#formCreateOrEdit input[name="transporteUSD"]').val(producto.data
                     .transporteUSD);
+                $('#formCreateOrEdit input[name="precioVentaUSD"]').val(producto.data
+                    .precioVentaUSD);
 
                 const titleElement = document.getElementById('modalCreateOrEdit_Title');
                 titleElement.innerHTML =

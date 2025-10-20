@@ -21,7 +21,8 @@
 
     <h5>Abastecimiento creado el {{ $abastecimiento->fechaRegistro->format('d/m/Y H:i') }}</h5>
 
-    <h5 class="mb-3">Última modificación por <span class="text-info">{{ $abastecimiento->editor?->nombreUsuario }}</span> el
+    <h5 class="mb-3">Última modificación por <span class="text-info">{{ $abastecimiento->editor?->nombreUsuario }}</span>
+        el
         {{ $abastecimiento->fechaActualizacion?->format('d/m/Y H:i') }}</h5>
 
     <p>Nota: aquí puede actualizar la información de los productos <span class="badge bg-success">disponibles</span>.<br>
@@ -47,6 +48,7 @@
                 <th>Costo base (USD)</th>
                 <th>Costo traspaso (%)</th>
                 <th>Costo transporte (USD)</th>
+                <th>Precio de venta (USD)</th>
                 <th>Estado</th>
                 <th>F. Actualización</th>
                 <th>Imprimir código</th>
@@ -110,10 +112,14 @@
                     <td class="text-success fw-bold transporteUSD"
                         {{ $producto->estado == 1 ? 'contenteditable=true' : '' }}>
                         {{ $producto->transporteUSD }}</td>
+                    <td class="text-dark-aquamarine fw-bold precioVentaUSD"
+                        {{ $producto->estado == 1 ? 'contenteditable=true' : '' }}>
+                        {{ $producto->precioVentaUSD }}</td>
                     <td><span class="badge {{ $badgeColor }}">{{ $estado }}</span></td>
                     <td>
                         @if ($producto->editor?->nombreUsuario)
-                            {{ $producto->fechaActualizacion?->format('d/m/Y H:i') }} <br> por <span class="text-info fw-bold">{{ $producto->editor?->nombreUsuario }}</span>
+                            {{ $producto->fechaActualizacion?->format('d/m/Y H:i') }} <br> por <span
+                                class="text-info fw-bold">{{ $producto->editor?->nombreUsuario }}</span>
                         @else
                             -
                         @endif

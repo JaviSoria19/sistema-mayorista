@@ -34,6 +34,7 @@
                 <th>Costo traspaso (USD)</th>
                 <th>Costo transporte (USD)</th>
                 <th>Costo final (USD)</th>
+                <th>Precio de venta (USD)</th>
                 <th>Bono empresa (USD)</th>
                 <th>Bono marca (USD)</th>
                 <th>Estado</th>
@@ -143,6 +144,13 @@
                             <label for="transporteUSD" class="form-label">Costo transporte (USD) <span
                                     class="text-danger">*</span></label>
                             <input type="number" class="form-control" id="transporteUSD" name="transporteUSD"
+                                value="{{ $parametro->paramTransporteUSD }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="precioVentaUSD" class="form-label">Precio de venta (USD) <span
+                                    class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="precioVentaUSD" name="precioVentaUSD"
                                 value="{{ $parametro->paramTransporteUSD }}" required>
                         </div>
                     </form>

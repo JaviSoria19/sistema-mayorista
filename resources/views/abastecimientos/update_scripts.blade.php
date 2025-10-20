@@ -1,3 +1,8 @@
+<style>
+    .text-dark-aquamarine {
+        color: #008b8b !important;
+    }
+</style>
 <!-- DYMO connect framework  -->
 <script src="{{ asset('/public/dependencies/dymo-connect-framework/dymo.connect.framework.full.js') }}"></script>
 <script>
@@ -236,6 +241,8 @@
                     .text().trim()) || 0;
                 const transporteUSD = parseFloat(fila.find(".transporteUSD").text()
                     .trim()) || 0;
+                const precioVentaUSD = parseFloat(fila.find(".precioVentaUSD").text().trim()) ||
+                    0;
 
                 productos.push({
                     idProducto: idProducto,
@@ -245,7 +252,8 @@
                     identificador: identificador,
                     costoBaseUSD: costoBaseUSD,
                     traspasoPorcentaje: traspasoPorcentaje,
-                    transporteUSD: transporteUSD
+                    transporteUSD: transporteUSD,
+                    precioVentaUSD: precioVentaUSD
                 });
             }
         });
@@ -291,7 +299,7 @@
     $(document).ready(function() {
         const tabla = $("#productos");
 
-        tabla.on("input", ".costoBaseUSD, .traspasoPorcentaje, .transporteUSD", function() {
+        tabla.on("input", ".costoBaseUSD, .traspasoPorcentaje, .transporteUSD, .precioVentaUSD", function() {
             let valor = $(this).text();
 
             // Validar que sea numérico
@@ -341,11 +349,11 @@
         });
 
         // Aplicar hacia abajo cambios en celdas editables
-        tabla.on("blur", ".costoBaseUSD, .traspasoPorcentaje, .transporteUSD, .nombreProducto", function() {
+        tabla.on("blur", ".costoBaseUSD, .traspasoPorcentaje, .transporteUSD, .nombreProducto, .precioVentaUSD", function() {
             const celda = $(this);
             const valor = celda.text().trim();
             const clase = celda.attr("class").split(" ").find(c => ["costoBaseUSD",
-                "traspasoPorcentaje", "transporteUSD", "nombreProducto"
+                "traspasoPorcentaje", "transporteUSD", "nombreProducto", "precioVentaUSD"
             ].includes(c));
 
             if (!clase) return;
