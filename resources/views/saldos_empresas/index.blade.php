@@ -23,6 +23,7 @@
                 <th>Monto (USD)</th>
                 <th>Pago (USD)</th>
                 <th>Saldo (USD)</th>
+                <th>Fecha</th>
                 <th>Estado</th>
                 <th>F. Registro</th>
                 <th>F. Actualización</th>
@@ -69,6 +70,11 @@
                         <div class="mb-3">
                             <label for="pagoUSD" class="form-label">Pago (USD) <span class="text-danger">*</span></label>
                             <input type="number" class="form-control" id="pagoUSD" name="pagoUSD" required>
+                        </div>
+
+                        <div class="mb-3"> 
+                            <label for="fecha" class="form-label">Fecha <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="fecha" name="fecha" value="{{ date('Y-m-d') }}" required>
                         </div>
                     </form>
                 </div>
@@ -119,6 +125,14 @@
                         render: function(data, type, row) {
                             let saldoUSD = (row.montoUSD - row.pagoUSD).toFixed(2);
                             return saldoUSD;
+                        }
+                    },
+                    {
+                        data: "fecha",
+                        render: function(data, type, row) {
+                            let fecha = new Date(data);
+                            const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+                            return fecha.toLocaleDateString('es-ES', options);
                         }
                     },
                     {
@@ -227,12 +241,14 @@
                 const id = $(this).data('id');
 
                 $.get("{{ route('saldos-empresas.index') . '/' }}" + id, function(saldo_empresa) {
+                    fecha = new Date(saldo_empresa.data.fecha);
+                    options = { year: 'numeric', month: '2-digit', day: '2-digit' };
                     $('#formCreateOrEdit input[name="idSaldoEmpresa"]').val(saldo_empresa.data.idSaldoEmpresa);
                     $('#formCreateOrEdit select[name="idEmpresa"]').val(saldo_empresa.data.idEmpresa)
                         .trigger('change');
                     $('#formCreateOrEdit input[name="montoUSD"]').val(saldo_empresa.data.montoUSD);
                     $('#formCreateOrEdit input[name="pagoUSD"]').val(saldo_empresa.data.pagoUSD);
-
+                    $('#formCreateOrEdit input[name="fecha"]').val(fecha.toISOString().split('T')[0]);
                     const titleElement = document.getElementById('modalCreateOrEdit_Title');
                     titleElement.innerHTML =
                         '<i class="fa-solid fa-duotone fa-edit"></i> EDITAR SALDO DE EMPRESA';

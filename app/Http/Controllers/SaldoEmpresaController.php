@@ -57,6 +57,7 @@ class SaldoEmpresaController extends Controller
         $saldo_empresa->idEmpresa = $request->idEmpresa;
         $saldo_empresa->montoUSD = $request->montoUSD;
         $saldo_empresa->pagoUSD = $request->pagoUSD;
+        $saldo_empresa->fecha = $request->fecha;
         $saldo_empresa->save();
 
         return response()->json([
@@ -76,6 +77,7 @@ class SaldoEmpresaController extends Controller
         $saldo_empresa->idEmpresa = $request->idEmpresa;
         $saldo_empresa->montoUSD = $request->montoUSD;
         $saldo_empresa->pagoUSD = $request->pagoUSD;
+        $saldo_empresa->fecha = $request->fecha;
         $saldo_empresa->modificadoPor = session('idUsuario');
         $saldo_empresa->save();
 
