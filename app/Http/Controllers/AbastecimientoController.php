@@ -92,6 +92,7 @@ class AbastecimientoController extends Controller
             'productos.*.costoBaseUSD' => 'required|numeric|min:0|max:99999.99',
             'productos.*.traspasoPorcentaje' => 'required|numeric|min:0|max:999.99',
             'productos.*.transporteUSD' => 'required|numeric|min:0|max:99999.99',
+            'productos.*.precioVentaUSD' => 'required|numeric|min:0|max:99999.99',
         ]);
 
         DB::beginTransaction();
@@ -112,6 +113,7 @@ class AbastecimientoController extends Controller
                 $p->costoBaseUSD = $producto['costoBaseUSD'];
                 $p->traspasoPorcentaje = $producto['traspasoPorcentaje'];
                 $p->transporteUSD = $producto['transporteUSD'];
+                $p->precioVentaUSD = $producto['precioVentaUSD'];
                 $p->save();
             }
 
@@ -144,6 +146,7 @@ class AbastecimientoController extends Controller
             'productos.*.costoBaseUSD' => 'required|numeric|min:0|max:99999.99',
             'productos.*.traspasoPorcentaje' => 'required|numeric|min:0|max:999.99',
             'productos.*.transporteUSD' => 'required|numeric|min:0|max:99999.99',
+            'productos.*.precioVentaUSD' => 'required|numeric|min:0|max:99999.99',
         ]);
 
         DB::beginTransaction();
@@ -164,6 +167,7 @@ class AbastecimientoController extends Controller
                     $p->costoBaseUSD = $producto['costoBaseUSD'];
                     $p->traspasoPorcentaje = $producto['traspasoPorcentaje'];
                     $p->transporteUSD = $producto['transporteUSD'];
+                    $p->precioVentaUSD = $producto['precioVentaUSD'];
                     $p->modificadoPor = session('idUsuario');
                     $p->save();
                 }

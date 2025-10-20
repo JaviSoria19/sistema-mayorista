@@ -99,9 +99,20 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="transporteUSD" class="form-label">Costo Transporte USD: <span
+                            <label for="transporteUSD" class="form-label">Costo Transporte (USD): <span
                                     class="text-danger">*</span></label>
                             <input type="number" class="form-control" id="transporteUSD" name="transporteUSD"
+                                value="{{ $parametro->paramTransporteUSD }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            Costo Final: <span class="text-warning fw-bold" id="costoFinalUSD">0.00 USD</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="precioVentaUSD" class="form-label">Precio de venta (USD): <span
+                                    class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="precioVentaUSD" name="precioVentaUSD"
                                 value="{{ $parametro->paramTransporteUSD }}" required>
                         </div>
 
@@ -138,6 +149,7 @@
                                         <th>Costo traspaso (USD)</th>
                                         <th>Costo transporte (USD)</th>
                                         <th>Costo final (USD)</th>
+                                        <th>Precio de venta (USD)</th>
                                         <th>Remover</th>
                                     </tr>
                                 </thead>

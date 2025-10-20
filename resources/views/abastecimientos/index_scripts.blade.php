@@ -176,16 +176,23 @@
                                 producto.costoBaseUSD * producto
                                 .traspasoPorcentaje / 100) + parseFloat(producto
                                 .transporteUSD)).toFixed(2);
-                            const bonoMarcaUSD = (parseFloat(producto.costoBaseUSD) * producto.marca.bonoMarcaPorcentaje / 100).toFixed(2);
-                            const bonoEmpresaUSD = (parseFloat(producto.costoBaseUSD) * producto.empresa.bonoEmpresaPorcentaje / 100).toFixed(2);
+                            const bonoMarcaUSD = (parseFloat(producto.costoBaseUSD) *
+                                producto.marca.bonoMarcaPorcentaje / 100).toFixed(2);
+                            const bonoEmpresaUSD = (parseFloat(producto.costoBaseUSD) *
+                                    producto.empresa.bonoEmpresaPorcentaje / 100)
+                                .toFixed(2);
                             return `<span class="text-primary fw-bold">● ${index + 1}.</span> <span class="text-info fw-bold">${producto.empresa.nombreEmpresa}</span> - ${producto.marca.nombreMarca} ${producto.nombreProducto}:
                                 <br>
                                 <span class="fw-bold">${producto.codigoProducto}</span> | <span class="text-danger fw-bold">${producto.identificador}</span>
                                 <br>
-                                <span class="text-success fw-bold">Costo base: ${producto.costoBaseUSD} USD</span>, 
+                                <span class="text-success fw-bold">Costo base: ${producto.costoBaseUSD} USD</span>,
+                                <br> 
                                 Traspaso: ${producto.traspasoPorcentaje}% - ${(producto.costoBaseUSD * producto.traspasoPorcentaje / 100).toFixed(2)} USD, 
                                 Transporte: ${producto.transporteUSD} USD, 
+                                <br>
                                 <span class="text-warning fw-bold">Costo Final: ${costoFinalUSD} USD</span>
+                                <br>
+                                <span class="text-dark-aquamarine fw-bold">Precio de venta: ${producto.precioVentaUSD} USD</span>
                                 <br>
                                 <span class="text-dark-aquamarine fw-bold">Bono empresa: ${producto.empresa.bonoEmpresaPorcentaje}%, ${bonoEmpresaUSD} USD</span>
                                 <br>
@@ -219,10 +226,12 @@
                             costoFinalTotal += costoFinal;
 
                             // Calcular y sumar bono empresa
-                            const bonoEmpresa = (parseFloat(producto.costoBaseUSD) * producto.empresa.bonoEmpresaPorcentaje / 100);
+                            const bonoEmpresa = (parseFloat(producto.costoBaseUSD) *
+                                producto.empresa.bonoEmpresaPorcentaje / 100);
                             bonoEmpresaTotal += bonoEmpresa;
 
-                            const bonoMarca = (parseFloat(producto.costoBaseUSD) * producto.marca.bonoMarcaPorcentaje / 100);
+                            const bonoMarca = (parseFloat(producto.costoBaseUSD) *
+                                producto.marca.bonoMarcaPorcentaje / 100);
                             bonoMarcaTotal += bonoMarca;
                         });
 
@@ -321,6 +330,7 @@
                 let costoBaseUSD = parseFloat(fila.find('.costoBaseUSD').text());
                 let traspasoPorcentaje = parseFloat(fila.find('.traspasoPorcentaje').text());
                 let transporteUSD = parseFloat(fila.find('.transporteUSD').text());
+                let precioVentaUSD = parseFloat(fila.find('.precioVentaUSD').text());
 
                 productos.push({
                     idEmpresa: idEmpresa,
@@ -331,6 +341,7 @@
                     costoBaseUSD: costoBaseUSD,
                     traspasoPorcentaje: traspasoPorcentaje,
                     transporteUSD: transporteUSD,
+                    precioVentaUSD: precioVentaUSD
                 });
             });
 
@@ -376,6 +387,16 @@
                         response.abastecimiento?.productos?.forEach(function(producto) {
                             DYMO_imprimirCodigoProducto(producto.codigoProducto);
                         });
+
+                        // vaciar inputs
+                        $('#empresa').val(1).trigger('change');
+                        $('#marca').val(1).trigger('change');
+                        $('#nombreProducto').val('');
+                        $('#identificador').val('');
+                        $('#costoBaseUSD').val('');
+                        $('#precioVentaUSD').val('');
+                        $('#cantidad').val('');
+                        $('#costoFinalUSD').text('0.00 USD');
                     } else {
                         btnGuardar.disabled = false;
                         btnGuardar.innerHTML =
@@ -466,10 +487,11 @@
             let costoBase = parseFloat($("#costoBaseUSD").val());
             let traspasoPorcentaje = parseFloat($("#traspasoPorcentaje").val());
             let transporteUSD = parseFloat($("#transporteUSD").val());
+            let precioVentaUSD = parseFloat($("#precioVentaUSD").val());
             let cantidad = parseInt($("#cantidad").val());
 
             if (!empresa || !marca || !nombreProducto || isNaN(costoBase) || isNaN(traspasoPorcentaje) || isNaN(
-                    transporteUSD) || isNaN(cantidad)) {
+                    transporteUSD)|| isNaN(precioVentaUSD)  || isNaN(cantidad)) {
                 Swal.fire({
                     theme: 'auto',
                     title: "¡No válido!",
@@ -519,6 +541,7 @@
                             <td class="traspasoUSD">${costoTraspasoUSD}</td>
                             <td class="transporteUSD">${transporteUSD.toFixed(2)}</td>
                             <td class="costoFinalUSD">${costoFinalUSD}</td>
+                            <td class="precioVentaUSD">${precioVentaUSD.toFixed(2)}</td>
                             <td>
                                 <button type="button" class="btn btn-danger btn-sm btn-remover" 
                                 data-toggle="tooltip" title="Remover de la tabla">
@@ -691,5 +714,28 @@
                     }
                 });
             });
+
+        // Calcular costo final para que el usuario vea el resultado en tiempo real
+        const costoBaseInput = document.getElementById('costoBaseUSD');
+        const traspasoInput = document.getElementById('traspasoPorcentaje');
+        const transporteInput = document.getElementById('transporteUSD');
+        const costoFinalSpan = document.getElementById('costoFinalUSD');
+        const precioVentaInput = document.getElementById('precioVentaUSD');
+        
+        function calcularCostoFinal() {
+            const costoBase = parseFloat(costoBaseInput.value) || 0;
+            const traspaso = parseFloat(traspasoInput.value) || 0;
+            const transporte = parseFloat(transporteInput.value) || 0;
+
+            const costoFinal = costoBase + (costoBase * (traspaso / 100)) + transporte;
+            costoFinalSpan.textContent = `${costoFinal.toFixed(2)} USD`;
+
+            precioVentaInput.value = costoFinal.toFixed(2);
+        }
+
+        // recalcular cada vez que cambia un input
+        [costoBaseInput, traspasoInput, transporteInput].forEach(input => {
+            input.addEventListener('input', calcularCostoFinal);
+        });
     });
 </script>
