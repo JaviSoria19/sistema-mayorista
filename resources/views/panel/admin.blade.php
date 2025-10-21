@@ -12,7 +12,11 @@
         </div>
 
         <div class="card-body">
-            @include('panel.admin_botones')
+            @if (session('idUsuario') == 1)
+                @include('panel.admin_botones_super')
+            @else
+                @include('panel.admin_botones')
+            @endif
         </div>
     </div>
 

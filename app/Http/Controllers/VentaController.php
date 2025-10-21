@@ -82,6 +82,10 @@ class VentaController extends Controller
             return redirect()->route('login');
         }
 
+        if (session('idUsuario') != 1){
+            return view('403')->with('headTitle', 'ACCESO NO AUTORIZADO');
+        }
+
         $fechaInicio = $request->fechaInicio ? $request->fechaInicio : date('Y-m-d', strtotime('-1 months'));
         $fechaFin = $request->fechaFin ? $request->fechaFin : date('Y-m-d');
 
@@ -115,6 +119,10 @@ class VentaController extends Controller
     {
         if (!session('tieneAcceso')) {
             return redirect()->route('login');
+        }
+
+        if (session('idUsuario') != 1){
+            return view('403')->with('headTitle', 'ACCESO NO AUTORIZADO');
         }
 
         $fechaInicio = $request->fechaInicio ? $request->fechaInicio : date('Y-m-d', strtotime('-1 months'));

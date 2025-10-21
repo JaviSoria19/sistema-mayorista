@@ -16,6 +16,22 @@
     </div>
 
     <div class="col-6 col-md-4 col-lg-2 d-flex justify-content-center mb-3">
+        <a class="btn btn-sq-lg btn-success" href="{{ route('ventas.utilidades') }}">
+            <div>
+                <i class="fa-solid fa-duotone fa-chart-mixed-up-circle-dollar fa-2xl"></i><br />Reporte utilidades
+            </div>
+        </a>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-2 d-flex justify-content-center mb-3">
+        <a class="btn btn-sq-lg btn-success" href="{{ route('ventas.perdidas') }}">
+            <div>
+                <i class="fa-solid fa-duotone fa-chart-line-down fa-2xl"></i><br />Reporte pérdidas
+            </div>
+        </a>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-2 d-flex justify-content-center mb-3">
         <a class="btn btn-sq-lg btn-info" href="{{ route('productos.index') }}">
             <div>
                 <i class="fa-solid fa-duotone fa-boxes-stacked fa-2xl"></i><br />Stock de productos
@@ -30,7 +46,9 @@
             </div>
         </a>
     </div>
+</div>
 
+<div class="row mb-3">
     <div class="col-6 col-md-4 col-lg-2 d-flex justify-content-center mb-3">
         <a class="btn btn-sq-lg btn-info" href="{{ route('saldos-empresas.index') }}">
             <div>
@@ -46,10 +64,6 @@
             </div>
         </a>
     </div>
-</div>
-
-<div class="row mb-3">
-    
 
     <div class="col-6 col-md-4 col-lg-2 d-flex justify-content-center mb-3">
         <a class="btn btn-sq-lg btn-info" href="{{ route('clientes.index') }}">
@@ -66,11 +80,28 @@
             </div>
         </a>
     </div>
-    
     <div class="col-6 col-md-4 col-lg-2 d-flex justify-content-center mb-3">
         <a class="btn btn-sq-lg btn-info" href="{{ route('marcas.index') }}">
             <div>
                 <i class="fa-solid fa-duotone fa-industry-windows fa-2xl"></i><br />Marcas
+            </div>
+        </a>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-2 d-flex justify-content-center mb-3">
+        <a class="btn btn-sq-lg btn-info" href="{{ route('empleados.index') }}">
+            <div>
+                <i class="fa-solid fa-duotone fa-user-tag fa-2xl"></i><br />Empleados
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-6 col-md-4 col-lg-2 d-flex justify-content-center mb-3">
+        <a class="btn btn-sq-lg btn-info" href="{{ route('usuarios.index') }}">
+            <div>
+                <i class="fa-solid fa-duotone fa-user-tie fa-2xl"></i><br />Usuarios
             </div>
         </a>
     </div>
