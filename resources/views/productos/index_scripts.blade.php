@@ -353,6 +353,11 @@
             @include('datatables.dataTablesLanguageProperty')
         }).buttons().container().appendTo('#dataTableExportButtonsContainer');
 
+        $("#dataTable2").DataTable({
+            @include('datatables.dataTablesGlobalProperties')
+            @include('datatables.dataTablesLanguageProperty')
+        }).buttons().container().appendTo('#dataTableExportButtonsContainer2');
+
         $(document).on('click', '.btn-crear', function() {
             $('#formCreateOrEdit input[name="idProducto"]').val(0);
             $('#formCreateOrEdit select[name="idEmpresa"]').val('').trigger('change');

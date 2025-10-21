@@ -21,6 +21,7 @@ class ProductoController extends Controller
 
         $productos = (new Producto())->getAllProductosGroupByNombreProducto();
         $parametro = (new Parametro())->getParametro();
+        $productos_cantidades_disponibles = (new Producto())->getProductosDisponiblesAgrupados();
 
         $abastecimientos = (new Abastecimiento())->getAllAbastecimientos();
         $empresas = (new Empresa())->getAllEmpresas();
@@ -29,6 +30,7 @@ class ProductoController extends Controller
         return view('productos.index', [
             'headTitle' => 'GESTIÓN DE PRODUCTOS',
             'productos' => $productos,
+            'productos_cantidades_disponibles' => $productos_cantidades_disponibles,
             'parametro' => $parametro,
             'empresas' => $empresas,
             'marcas' => $marcas,

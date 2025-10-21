@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Producto extends Model
 {
@@ -58,12 +59,28 @@ class Producto extends Model
     {
         return Producto::with(['empresa', 'marca', 'editor'])->where(function ($query) use ($codigoProducto) {
             $query->where('codigoProducto', $codigoProducto)
-                  ->orWhere('identificador', $codigoProducto);
+                ->orWhere('identificador', $codigoProducto);
         })->first();
     }
 
     public function getAllProductosGroupByNombreProducto()
     {
         return Producto::groupBy('nombreProducto')->orderBy('nombreProducto')->get();
+    }
+
+    public function getProductosDisponiblesAgrupados()
+    {
+        return Producto::select(
+            'productos.nombreProducto',
+            'marcas.nombreMarca',
+            DB::raw('COUNT(productos.idProducto) as cantidad'),
+            DB::raw('SUM(productos.costoBaseUSD) as costoBaseUSD'),
+            DB::raw('ROUND(SUM(productos.costoBaseUSD + (productos.costoBaseUSD * productos.traspasoPorcentaje) / 100 + productos.transporteUSD), 2) as costoFinalUSD')
+        )
+            ->join('marcas', 'productos.idMarca', '=', 'marcas.idMarca')
+            ->where('productos.estado', 1)
+            ->groupBy('productos.nombreProducto', 'marcas.nombreMarca')
+            ->orderBy('productos.nombreProducto', 'ASC')
+            ->get();
     }
 }
