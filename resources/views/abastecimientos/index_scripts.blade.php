@@ -382,6 +382,7 @@
                         $('#dataTable').DataTable().ajax.reload();
 
                         $("#productos tbody").empty();
+                        $("#resumen_productos tbody").empty();
                         actualizarTotales();
 
                         response.abastecimiento?.productos?.forEach(function(producto) {
@@ -423,14 +424,7 @@
             });
         });
 
-        $('#empresa').select2({
-            language: "es",
-            dropdownCssClass: "{{ session('temaPreferido') == 'dark' ? 'bg-dark' : '' }}",
-            selectionCssClass: "{{ session('temaPreferido') == 'dark' ? 'bg-dark' : '' }}",
-            dropdownParent: $('#modalCreate')
-        });
-
-        $('#marca').select2({
+        $('.select2').select2({
             language: "es",
             dropdownCssClass: "{{ session('temaPreferido') == 'dark' ? 'bg-dark' : '' }}",
             selectionCssClass: "{{ session('temaPreferido') == 'dark' ? 'bg-dark' : '' }}",
@@ -464,6 +458,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $("#productos tbody").empty();
+                    $("#resumen_productos tbody").empty();
                     actualizarTotales();
 
                     Swal.fire({
@@ -491,7 +486,7 @@
             let cantidad = parseInt($("#cantidad").val());
 
             if (!empresa || !marca || !nombreProducto || isNaN(costoBase) || isNaN(traspasoPorcentaje) || isNaN(
-                    transporteUSD)|| isNaN(precioVentaUSD)  || isNaN(cantidad)) {
+                    transporteUSD) || isNaN(precioVentaUSD) || isNaN(cantidad)) {
                 Swal.fire({
                     theme: 'auto',
                     title: "¡No válido!",
@@ -533,6 +528,8 @@
                             <td class="numero">${numeroFila}</td>
                             <td class="visually-hidden idEmpresa">${idEmpresa}</td>
                             <td class="visually-hidden idMarca">${idMarca}</td>
+                            <td class="empresa">${empresa}</td>
+                            <td class="marca">${marca}</td>
                             <td class="nombreProducto" contenteditable="true">${nombreProducto.toUpperCase()}</td>
                             <td class="identificador" contenteditable="true">${identificador}</td>
                             <td class="codigoProducto">${codigo}</td>
@@ -555,8 +552,72 @@
             }
 
             actualizarTotales();
+            actualizarResumen();
             limpiarCampos(cantidad);
         }
+
+        function actualizarResumen() {
+            let resumen = {}; // objeto agrupador
+
+            // Recorremos todas las filas de la tabla productos
+            $("#productos tbody tr").each(function() {
+                let empresa = $(this).find(".empresa").text().trim();
+                let marca = $(this).find(".marca").text().trim();
+                let nombre = $(this).find(".nombreProducto").text().trim().toUpperCase();
+                let costoBase = parseFloat($(this).find(".costoBaseUSD").text()) || 0;
+                let traspasoPorcentaje = parseFloat($(this).find(".traspasoPorcentaje").text()) || 0;
+                let traspasoUSD = parseFloat($(this).find(".traspasoUSD").text()) || 0;
+                let transporteUSD = parseFloat($(this).find(".transporteUSD").text()) || 0;
+                let costoFinal = parseFloat($(this).find(".costoFinalUSD").text()) || 0;
+                let precioVenta = parseFloat($(this).find(".precioVentaUSD").text()) || 0;
+
+                // Si ya existe el producto, sumamos sus valores
+                if (!resumen[nombre]) {
+                    resumen[nombre] = {
+                        empresa,
+                        marca,
+                        costoBase: 0,
+                        traspasoPorcentaje,
+                        traspasoUSD: 0,
+                        transporteUSD: 0,
+                        costoFinalUSD: 0,
+                        precioVentaUSD: 0,
+                        cantidad: 0
+                    };
+                }
+
+                resumen[nombre].costoBase += costoBase;
+                resumen[nombre].traspasoUSD += traspasoUSD;
+                resumen[nombre].transporteUSD += transporteUSD;
+                resumen[nombre].costoFinalUSD += costoFinal;
+                resumen[nombre].precioVentaUSD += precioVenta;
+                resumen[nombre].cantidad += 1;
+            });
+
+            // Limpiamos la tabla resumen
+            let tbody = $("#resumen_productos tbody");
+            tbody.empty();
+
+            // Insertamos filas nuevas con los totales
+            for (let nombre in resumen) {
+                let r = resumen[nombre];
+                tbody.append(`
+            <tr class="table-primary" data-producto="${nombre}">
+                <td>${r.empresa}</td>
+                <td>${r.marca}</td>
+                <td>${nombre}</td>
+                <td>${r.costoBase.toFixed(2)}</td>
+                <td>${r.traspasoPorcentaje.toFixed(2)}</td>
+                <td>${r.traspasoUSD.toFixed(2)}</td>
+                <td>${r.transporteUSD.toFixed(2)}</td>
+                <td>${r.costoFinalUSD.toFixed(2)}</td>
+                <td>${r.precioVentaUSD.toFixed(2)}</td>
+                <td class="cantidad">${r.cantidad}</td>
+            </tr>
+        `);
+            }
+        }
+
 
         // 4. Actualizar totales
         function actualizarTotales() {
@@ -576,24 +637,25 @@
 
         // Eliminar fila
         $(document).on("click", ".btn-remover", function() {
-            $(this).closest("tr").remove();
+            // Obtener los datos de la fila que se eliminará
+            let fila = $(this).closest("tr");
+            let nombreProducto = fila.find(".nombreProducto").text().trim().toUpperCase();
+            fila.remove();
             reenumerarFilas();
             actualizarTotales();
+            actualizarResumen();
         });
 
         function reenumerarFilas() {
             $("#productos tbody tr").each(function(index) {
                 let numero = index + 1;
                 $(this).find(".numero").text(numero);
-
-                // reconstruir código con nuevo correlativo
                 let codigoActual = $(this).find(".codigoProducto").text();
                 let baseCodigo = codigoActual.slice(0, -2); // quitar correlativo
                 $(this).find(".codigoProducto").text(baseCodigo + String(numero).padStart(2, "0"));
             });
         }
 
-        // Limpiar después de agregar
         function limpiarCampos(cantidad) {
             $("#cantidad").val("");
             $("#identificador").val("");
@@ -672,24 +734,33 @@
             }
         });
 
-        $(document).on("blur", ".nombreProducto", function(e) {
-            let valor = $(this).text().trim();
+        $(document).on("keydown", ".nombreProducto", function(e) {
+            if (e.which === 13) { // ENTER
+                e.preventDefault();
+                let celdas = $(".nombreProducto");
+                let indice = celdas.index(this);
+                if (indice >= 0 && indice < celdas.length - 1) {
+                    let siguienteCelda = celdas.eq(indice + 1);
+                    siguienteCelda.focus();
 
-            if (valor === "") {
-                $(this).text("PRODUCTO SIN NOMBRE");
-            } else {
-                $(this).text(valor.toUpperCase());
+                    // Seleccionar todo el contenido para contenteditable
+                    let range = document.createRange();
+                    range.selectNodeContents(siguienteCelda[0]);
+                    let sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
             }
+        });
+
+        $(document).on("blur", ".nombreProducto", function() {
+            let valor = $(this).text().trim();
+            $(this).text(valor === "" ? "PRODUCTO SIN NOMBRE" : valor.toUpperCase());
         });
 
         $(document).on("blur", ".identificador", function() {
             let valor = $(this).text().trim();
-
-            if (valor === "" || valor.length < 3) {
-                $(this).text("N/A");
-            } else {
-                $(this).text(valor.toUpperCase());
-            }
+            $(this).text((valor === "" || valor.length < 3) ? "N/A" : valor.toUpperCase());
         });
 
         // Aplicar hacia abajo cambios en celdas editables
@@ -713,6 +784,9 @@
                         celdaDestino.text(valor);
                     }
                 });
+
+                actualizarTotales();
+                actualizarResumen();
             });
 
         // Calcular costo final para que el usuario vea el resultado en tiempo real
@@ -721,7 +795,7 @@
         const transporteInput = document.getElementById('transporteUSD');
         const costoFinalSpan = document.getElementById('costoFinalUSD');
         const precioVentaInput = document.getElementById('precioVentaUSD');
-        
+
         function calcularCostoFinal() {
             const costoBase = parseFloat(costoBaseInput.value) || 0;
             const traspaso = parseFloat(traspasoInput.value) || 0;

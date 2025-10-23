@@ -44,7 +44,7 @@
                     <form id="formCreate">
                         <div class="mb-3">
                             <label for="empresa" class="form-label">Empresa <span class="text-danger">*</span></label><br>
-                            <select style="width: 100%" class="form-select" id="empresa" name="idEmpresa" required>
+                            <select style="width: 100%" class="form-select select2" id="empresa" name="idEmpresa" required>
                                 <option value="" disabled selected>Seleccione un empresa</option>
                                 @foreach ($empresas as $empresa)
                                     @if ($empresa->estado != '0')
@@ -56,7 +56,7 @@
 
                         <div class="mb-3">
                             <label for="marca" class="form-label">Marca <span class="text-danger">*</span></label><br>
-                            <select style="width: 100%" class="form-select" id="marca" name="idMarca" required>
+                            <select style="width: 100%" class="form-select select2" id="marca" name="idMarca" required>
                                 <option value="" disabled selected>Seleccione una marca</option>
                                 @foreach ($marcas as $marca)
                                     @if ($marca->estado != '0')
@@ -141,6 +141,8 @@
                                         <th>#</th>
                                         <th class="visually-hidden">Empresa id</th>
                                         <th class="visually-hidden">Marca id</th>
+                                        <th>Empresa</th>
+                                        <th>Marca</th>
                                         <th>Producto</th>
                                         <th>Identificador</th>
                                         <th>Código</th>
@@ -151,6 +153,29 @@
                                         <th>Costo final (USD)</th>
                                         <th>Precio de venta (USD)</th>
                                         <th>Remover</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mb-3">
+                            Resumen:
+                            <table class="table table-bordered table-striped" id="resumen_productos">
+                                <thead>
+                                    <tr>
+                                        <th>Empresa</th>
+                                        <th>Marca</th>
+                                        <th>Producto</th>
+                                        <th>Costo base (USD)</th>
+                                        <th>Costo traspaso (%)</th>
+                                        <th>Costo traspaso (USD)</th>
+                                        <th>Costo transporte (USD)</th>
+                                        <th>Costo final (USD)</th>
+                                        <th>Precio de venta (USD)</th>
+                                        <th>Cantidad</th>
                                     </tr>
                                 </thead>
                                 <tbody>
