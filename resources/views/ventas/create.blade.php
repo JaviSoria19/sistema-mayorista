@@ -68,6 +68,23 @@
                 </tbody>
             </table>
 
+            <h2 class="text-info fw-bold"><i class="fa-solid fa-duotone fa-list-check"></i> RESUMEN</h2>
+
+            <table class="table table-bordered table-striped" id="resumen_productos">
+                <thead class="text-center">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio (USD)</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+            
+            <h5 class="text-end">Cantidad total de productos: <span id="resumen_productos_cantidad_total">0</span></h5>
+
             <h2 class="text-info fw-bold"><i class="fa-solid fa-duotone fa-credit-card"></i> PAGOS</h2>
 
             <div class="mb-3 col-4">

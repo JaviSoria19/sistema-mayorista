@@ -201,6 +201,7 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
+                    return;
                 } else {
                     if (producto.data.estado == 2 || producto.data.estado == 0) {
                         let estado = producto.data.estado == 2 ? 'vendido' : 'eliminado';
@@ -236,6 +237,7 @@
                     `;
                     $("#productos tbody").append(fila);
                     actualizarTotalPagosSaldo();
+                    actualizarResumen();
                 }
             });
 
@@ -268,6 +270,7 @@
                 if (result.isConfirmed) {
                     $(this).closest("tr").remove();
                     actualizarTotalPagosSaldo();
+                    actualizarResumen();
                     Swal.fire({
                         theme: 'auto',
                         icon: "success",
@@ -723,5 +726,44 @@
 
             actualizarTotalPagosSaldo();
         });
+
+        function actualizarResumen() {
+            let resumen = {};
+            let cantidad_total = 0;
+            $("#productos tbody tr").each(function() {
+                let nombre = $(this).find(".nombreProducto").text().trim().toUpperCase();
+                let precioUSD = parseFloat($(this).find(".precioUSD").text()) || 0;
+
+                // Si ya existe el producto, sumamos sus valores
+                if (!resumen[nombre]) {
+                    resumen[nombre] = {
+                        precioUSD: 0,
+                        cantidad: 0
+                    };
+                }
+
+                resumen[nombre].precioUSD += precioUSD;
+                resumen[nombre].cantidad += 1;
+                cantidad_total += 1;
+            });
+
+            // Limpiamos la tabla resumen
+            let tbody = $("#resumen_productos tbody");
+            tbody.empty();
+
+            // Insertamos filas nuevas con los totales
+            for (let nombre in resumen) {
+                let r = resumen[nombre];
+                tbody.append(`
+                    <tr class="table-primary" data-producto="${nombre}">
+                        <td>${nombre}</td>
+                        <td>${r.precioUSD.toFixed(2)}</td>
+                        <td class="cantidad">${r.cantidad}</td>
+                    </tr>
+                `);
+            }
+
+            $("#resumen_productos_cantidad_total").text(cantidad_total);
+        }
     });
 </script>

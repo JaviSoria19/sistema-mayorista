@@ -71,10 +71,11 @@
                 <tbody>
                     @foreach ($venta->productos as $producto)
                         @php
-                            $costoFinalUSD = $producto->costoBaseUSD +
-                                    ($producto->costoBaseUSD * $producto->traspasoPorcentaje) / 100 +
-                                    $producto->transporteUSD;
-                            $costoFinalUSD = number_format($costoFinalUSD, 2, '.', '')
+                            $costoFinalUSD =
+                                $producto->costoBaseUSD +
+                                ($producto->costoBaseUSD * $producto->traspasoPorcentaje) / 100 +
+                                $producto->transporteUSD;
+                            $costoFinalUSD = number_format($costoFinalUSD, 2, '.', '');
                         @endphp
                         <tr>
                             <td class="visually-hidden idProducto">{{ $producto->idProducto }}</td>
@@ -95,6 +96,40 @@
                     @endforeach
                 </tbody>
             </table>
+
+            <h2 class="text-info fw-bold"><i class="fa-solid fa-duotone fa-list-check"></i> RESUMEN</h2>
+
+            <table class="table table-bordered table-striped" id="resumen_productos">
+                <thead class="text-center">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio (USD)</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php
+                        $productos_agrupados = $venta->productos->groupBy(function ($producto) {
+                            return $producto->marca->nombreMarca . ' ' . $producto->nombreProducto;
+                        });
+                    @endphp
+                    @foreach ($productos_agrupados as $nombre => $productos)
+                        @php
+                            $precio_total = $productos->sum(function ($producto) {
+                                return $producto->pivot->precioUSD;
+                            });
+                            $cantidad = $productos->count();
+                        @endphp
+                        <tr class="table-primary" data-producto="{{ $nombre }}">
+                            <td>{{ $nombre }}</td>
+                            <td>{{ number_format($precio_total, 2, '.', '') }}</td>
+                            <td class="cantidad">{{ $cantidad }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            <h5 class="text-end">Cantidad total de productos: <span
+                    id="resumen_productos_cantidad_total">{{ $venta->productos->count() }}</span></h5>
 
             <h2 class="text-info fw-bold"><i class="fa-solid fa-duotone fa-credit-card"></i> PAGOS</h2>
 
@@ -125,10 +160,11 @@
                                 <td class="text-center text-primary fw-bold">{{ $loop->index + 1 }}.</td>
                                 <td class="visually-hidden idPagoVenta">{{ $pago->idPagoVenta }}</td>
                                 <td class="fechaPago">
-                                    <input type="date" class="form-control fechaPagoInput" 
-                                    value="{{ date('Y-m-d', strtotime($pago->fechaPago)) }}">
+                                    <input type="date" class="form-control fechaPagoInput"
+                                        value="{{ date('Y-m-d', strtotime($pago->fechaPago)) }}">
                                 </td>
-                                <td class="text-success fw-bold pagoUSD" {{ $pago->pagoUSD <= '0' ? 'contenteditable=true' : ''}}>{{ $pago->pagoUSD }}</td>
+                                <td class="text-success fw-bold pagoUSD"
+                                    {{ $pago->pagoUSD <= '0' ? 'contenteditable=true' : '' }}>{{ $pago->pagoUSD }}</td>
                                 <td class="bg-secondary">
                                     {{-- <button type="button" class="btn btn-danger btn-sm btn-remover" data-toggle="tooltip"
                                         title="Remover de la tabla">
@@ -142,9 +178,12 @@
             </div>
 
             <div class="mb-3 col-4">
-                <h5>Total: <span class="text-primary fw-bold" id="totalUSD">{{ number_format($venta->totalUSD, 2, '.', '') }}</span> USD</h5>
-                <h5>Pagos: <span class="text-success fw-bold" id="totalPagoUSD">{{ number_format($venta->pagos->sum('pagoUSD'), 2, '.', '') }}</span> USD</h5>
-                <h5>Saldo: <span class="text-warning fw-bold" id="saldoUSD">{{ number_format($venta->saldoUSD, 2, '.', '') }}</span> USD</h5>
+                <h5>Total: <span class="text-primary fw-bold"
+                        id="totalUSD">{{ number_format($venta->totalUSD, 2, '.', '') }}</span> USD</h5>
+                <h5>Pagos: <span class="text-success fw-bold"
+                        id="totalPagoUSD">{{ number_format($venta->pagos->sum('pagoUSD'), 2, '.', '') }}</span> USD</h5>
+                <h5>Saldo: <span class="text-warning fw-bold"
+                        id="saldoUSD">{{ number_format($venta->saldoUSD, 2, '.', '') }}</span> USD</h5>
             </div>
 
             <h2 class="text-danger fw-bold"><i class="fa-solid fa-duotone fa-credit-card"></i> ¿ELIMINARÁ LA VENTA?</h2>
@@ -153,8 +192,10 @@
                         class="text-danger">*</span></label>
                 <div class="input-group">
                     <input type="text" class="form-control" id="motivoEliminacion" name="motivoEliminacion"
-                        placeholder="Ingrese el motivo" value="{{ $venta->motivoEliminacion }}" required {{ $venta->estado == '0' ? 'disabled' : '' }}>
-                    <button class="btn btn-danger btn-eliminar-venta" type="button" id="btnEliminarVenta" {{ $venta->estado == '0' ? 'disabled' : '' }}>
+                        placeholder="Ingrese el motivo" value="{{ $venta->motivoEliminacion }}" required
+                        {{ $venta->estado == '0' ? 'disabled' : '' }}>
+                    <button class="btn btn-danger btn-eliminar-venta" type="button" id="btnEliminarVenta"
+                        {{ $venta->estado == '0' ? 'disabled' : '' }}>
                         <i class="fa-solid fa-duotone fa-cart-xmark"></i>
                     </button>
                 </div>
@@ -162,8 +203,8 @@
 
         </div>
         <div class="card-footer">
-            <button type="button" id="btnGuardarVenta" class="btn btn-primary" {{ $venta->estado == '0' ? 'disabled' : '' }}><i
-                    class="fa-solid fa-duotone fa-save"></i>
+            <button type="button" id="btnGuardarVenta" class="btn btn-primary"
+                {{ $venta->estado == '0' ? 'disabled' : '' }}><i class="fa-solid fa-duotone fa-save"></i>
                 Guardar cambios</button>
         </div>
     </div>
