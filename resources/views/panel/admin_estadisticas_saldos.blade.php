@@ -12,6 +12,7 @@
         <thead class="text-center">
             <tr>
                 <th>#</th>
+                <th>Empleado</th>
                 <th>Cliente</th>
                 <th>Celular</th>
                 <th>Procedencia</th>
@@ -23,6 +24,7 @@
             @foreach ($saldos_pendientes as $saldo_pendiente)
                 <tr>
                     <th class="text-center">{{ $loop->index + 1 }}.</th>
+                    <th>{{ $saldo_pendiente->nombreEmpleado }}</th>
                     <th>{{ $saldo_pendiente->nombreCliente }}</th>
                     <th>{{ $saldo_pendiente->celular }}</th>
                     <th>{{ $saldo_pendiente->procedencia }}</th>
@@ -33,12 +35,22 @@
         </tbody>
         <tfoot>
             <tr>
-                <th colspan="4" class="text-end">Total Saldos Pendientes (USD):</th>
+                <th colspan="5" class="text-end">Total Saldos Pendientes (USD):</th>
                 <th class="{{ $saldos_pendientes->sum('saldoPendiente') > 0 ? 'text-warning' : 'text-success' }}">
                     {{ number_format($saldos_pendientes->sum('saldoPendiente'), 2, '.', '') }}
                 </th>
                 <th></th>
             </tr>
+            <!-- Totales por empleado -->
+            @foreach ($saldos_pendientes->groupBy('nombreEmpleado') as $empleado => $saldos)
+                <tr>
+                    <th colspan="5" class="text-end text-muted">{{ $empleado }}:</th>
+                    <th class="{{ $saldos->sum('saldoPendiente') > 0 ? 'text-warning' : 'text-success' }}">
+                        {{ number_format($saldos->sum('saldoPendiente'), 2, '.', '') }}
+                    </th>
+                    <th></th>
+                </tr>
+            @endforeach
         </tfoot>
     </table>
 </div>

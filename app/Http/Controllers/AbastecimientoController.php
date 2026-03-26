@@ -87,6 +87,7 @@ class AbastecimientoController extends Controller
         $request->validate([
             'productos' => 'required|array|min:1',
             'productos.*.nombreProducto' => 'required|string|min:3|max:255',
+            'productos.*.color' => 'max:50',
             'productos.*.identificador' => 'required|string|min:3|max:20',
             'productos.*.codigoProducto' => 'required|string|min:3|max:20',
             'productos.*.costoBaseUSD' => 'required|numeric|min:0|max:99999.99',
@@ -107,6 +108,7 @@ class AbastecimientoController extends Controller
                 $p->idMarca = $producto['idMarca'];
                 $p->idAbastecimiento = $abastecimiento->idAbastecimiento;
                 $p->nombreProducto = $producto['nombreProducto'];
+                $p->color = $producto['color'];
                 $p->identificador = trim($producto['identificador']);
                 // El código del producto se genera concatenando el id del abastecimiento con el código ingresado por el usuario.
                 $p->codigoProducto = $abastecimiento->idAbastecimiento . '-' . $producto['codigoProducto'];
@@ -142,6 +144,7 @@ class AbastecimientoController extends Controller
             'productos.*.idEmpresa' => 'required|integer|exists:empresas,idEmpresa',
             'productos.*.idMarca' => 'required|integer|exists:marcas,idMarca',
             'productos.*.nombreProducto' => 'required|string|min:3|max:255',
+            'productos.*.color' => 'max:50',
             'productos.*.identificador' => 'required|string|min:3|max:20',
             'productos.*.costoBaseUSD' => 'required|numeric|min:0|max:99999.99',
             'productos.*.traspasoPorcentaje' => 'required|numeric|min:0|max:999.99',
@@ -163,6 +166,7 @@ class AbastecimientoController extends Controller
                     $p->idEmpresa = $producto['idEmpresa'];
                     $p->idMarca = $producto['idMarca'];
                     $p->nombreProducto = $producto['nombreProducto'];
+                    $p->color = $producto['color'];
                     $p->identificador = trim($producto['identificador']);
                     $p->costoBaseUSD = $producto['costoBaseUSD'];
                     $p->traspasoPorcentaje = $producto['traspasoPorcentaje'];

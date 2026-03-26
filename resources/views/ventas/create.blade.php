@@ -108,7 +108,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="pagoUSD" contenteditable="true">0.00</td>
+                            <td class="pagoUSD" contenteditable="true">0</td>
                             <td class="fechaPago">
                                 <input type="date" class="form-control fechaPagoInput" 
                                     value="{{ date('Y-m-d') }}">

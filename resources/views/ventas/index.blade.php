@@ -10,9 +10,28 @@
     <h2 class="text-info fw-bold">Lista de ventas</h2>
 
     <div class="card p-3 mb-3">
-        <p>Seleccione una opción para <i class="fa-solid fa-duotone fa-file-export"></i> exportar o <i
-                class="fa-solid fa-duotone fa-filter"></i> filtrar la tabla:</p>
-        <div id="dataTableExportButtonsContainer"></div>
+
+        <div class="card-body">
+            <p>Seleccione una opción para <i class="fa-solid fa-duotone fa-file-export"></i> exportar o <i
+                    class="fa-solid fa-duotone fa-filter"></i> filtrar la tabla:</p>
+            <div id="dataTableExportButtonsContainer"></div>
+            <br>
+            <form class="col-3" method="GET">
+                <div class="mb-3">
+                    <label for="fechaInicio" class="form-label">Fecha Inicio:</label>
+                    <input type="date" id="fechaInicio" name="fechaInicio" class="form-control"
+                        value="{{ $fechaInicio }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="fechaFin" class="form-label">Fecha Fin:</label>
+                    <input type="date" id="fechaFin" name="fechaFin" class="form-control" value="{{ $fechaFin }}">
+                </div>
+
+                <button id="form-ventas" type="submit" formaction="{{ route('ventas.index') }}"
+                    class="btn btn-primary btn-flat rounded"><i class="fa-solid fa-duotone fa-search"></i> Buscar</button>
+            </form>
+        </div>
     </div>
 
     <table class="table table-bordered table-striped" id="dataTable">
@@ -43,11 +62,20 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
+            $("#form-ventas").on("click", function(e) {
+                e.preventDefault();
+                $("#dataTable").DataTable().ajax.reload();
+            });
+
             $("#dataTable").DataTable({
                 processing: true,
                 ajax: {
                     url: "{{ route('ventas.listar') }}", // Ruta de Laravel
                     type: "GET",
+                    data: function(d) {
+                        d.fechaInicio = $("#fechaInicio").val();
+                        d.fechaFin = $("#fechaFin").val();
+                    },
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
@@ -83,7 +111,6 @@
                                 `
                             ).join("<br>");
                         },
-                        width: '100%'
                     },
                     {
                         data: "totalUSD",
@@ -170,6 +197,10 @@
                         }
                     }
                 ],
+                columnDefs: [{
+                    targets: [4],
+                    width: '800px',
+                }, ],
                 responsive: false,
                 lengthChange: true,
                 autoWidth: false,

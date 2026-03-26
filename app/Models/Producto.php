@@ -47,7 +47,9 @@ class Producto extends Model
 
     public function getAllProductos()
     {
-        return Producto::with(['empresa', 'marca', 'editor'])->orderBy('idProducto', 'ASC')->get();
+        return Producto::with(['empresa', 'marca', 'editor'])->orderBy('idProducto', 'ASC')
+        ->where('estado', '1')
+        ->get();
     }
 
     public function getProducto($idProducto)
@@ -83,4 +85,24 @@ class Producto extends Model
             ->orderBy('productos.nombreProducto', 'ASC')
             ->get();
     }
+
+    public function getProductosDisponiblesAgrupadosPorColor()
+    {
+        return Producto::select(
+            'productos.nombreProducto',
+            'productos.color',
+            'marcas.nombreMarca',
+            DB::raw('COUNT(productos.idProducto) as cantidad'),
+            DB::raw('SUM(productos.costoBaseUSD) as costoBaseUSD'),
+            DB::raw('ROUND(SUM(productos.costoBaseUSD + (productos.costoBaseUSD * productos.traspasoPorcentaje) / 100 + productos.transporteUSD), 2) as costoFinalUSD')
+        )
+            ->join('marcas', 'productos.idMarca', '=', 'marcas.idMarca')
+            ->where('productos.estado', 1)
+            ->groupBy('productos.nombreProducto', 'productos.color', 'marcas.nombreMarca')
+            ->orderBy('productos.nombreProducto', 'ASC')
+            ->orderBy('productos.color', 'ASC')
+            ->get();
+    }
+
+    
 }

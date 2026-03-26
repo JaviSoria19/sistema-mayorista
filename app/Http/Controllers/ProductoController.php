@@ -21,8 +21,9 @@ class ProductoController extends Controller
 
         $productos = (new Producto())->getAllProductosGroupByNombreProducto();
         $parametro = (new Parametro())->getParametro();
-        $productos_cantidades_disponibles = (new Producto())->getProductosDisponiblesAgrupados();
 
+        $productos_cantidades_disponibles = (new Producto())->getProductosDisponiblesAgrupados();
+        $productos_cantidades_disponibles_color = (new Producto())->getProductosDisponiblesAgrupadosPorColor();
         $abastecimientos = (new Abastecimiento())->getAllAbastecimientos();
         $empresas = (new Empresa())->getAllEmpresas();
         $marcas = (new Marca())->getAllMarcas();
@@ -31,6 +32,7 @@ class ProductoController extends Controller
             'headTitle' => 'GESTIÓN DE PRODUCTOS',
             'productos' => $productos,
             'productos_cantidades_disponibles' => $productos_cantidades_disponibles,
+            'productos_cantidades_disponibles_color' => $productos_cantidades_disponibles_color,
             'parametro' => $parametro,
             'empresas' => $empresas,
             'marcas' => $marcas,
@@ -85,6 +87,7 @@ class ProductoController extends Controller
         $producto->idMarca = $request->idMarca;
         $producto->idAbastecimiento = $request->idAbastecimiento;
         $producto->nombreProducto = strtoupper($request->nombreProducto);
+        $producto->color = strtoupper($request->color);
         $producto->identificador = trim($request->identificador);
         $producto->codigoProducto = $request->idAbastecimiento . '-' . $request->codigoProducto;
         $producto->costoBaseUSD = $request->costoBaseUSD;
@@ -109,6 +112,7 @@ class ProductoController extends Controller
 
         $producto = (new Producto())->getProducto($idProducto);
         $producto->nombreProducto = strtoupper($request->nombreProducto);
+        $producto->color = strtoupper($request->color);
         $producto->identificador = trim($request->identificador);
         $producto->costoBaseUSD = $request->costoBaseUSD;
         $producto->traspasoPorcentaje = $request->traspasoPorcentaje;

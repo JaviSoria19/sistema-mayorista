@@ -80,6 +80,11 @@
                         </datalist>
 
                         <div class="mb-3">
+                            <label for="color" class="form-label">Color</label>
+                            <input type="text" class="form-control" id="color" name="color" required>
+                        </div>
+
+                        <div class="mb-3">
                             <label for="identificador" class="form-label">Identificador (IMEI/S.N.) <span
                                     class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="identificador" name="identificador" required>
@@ -144,6 +149,7 @@
                                         <th>Empresa</th>
                                         <th>Marca</th>
                                         <th>Producto</th>
+                                        <th>Color</th>
                                         <th>Identificador</th>
                                         <th>Código</th>
                                         <th>Costo base (USD)</th>

@@ -14,14 +14,23 @@ use Carbon\Carbon;
 
 class VentaController extends Controller
 {
-    public function view_index()
+    public function view_index(Request $request)
     {
         if (!session('tieneAcceso')) {
             return redirect()->route('login');
         }
 
+        $fechaInicio = $request->fechaInicio ? $request->fechaInicio : date('Y-m-d', strtotime('-1 months'));
+        $fechaFin = $request->fechaFin ? $request->fechaFin : date('Y-m-d');
+
+        if ($fechaInicio > $fechaFin) {
+            return redirect()->route('ventas.index')->withErrors(['error' => 'La fecha de inicio ingresada (' . date('d/m/Y', strtotime($fechaInicio)) . ') no puede ser mayor a la fecha de fin (' . date('d/m/Y', strtotime($fechaFin)) . ').']);
+        }
+
         return view('ventas.index', [
             'headTitle' => 'GESTIÓN DE VENTAS',
+            'fechaInicio' => $fechaInicio,
+            'fechaFin' => $fechaFin,
         ]);
     }
 
@@ -142,13 +151,13 @@ class VentaController extends Controller
         ]);
     }
 
-    public function listarVentas()
+    public function listarVentas(Request $request)
     {
         if (!session('tieneAcceso')) {
             return response()->json(['success' => false, 'message' => 'No tiene acceso'], 403);
         }
 
-        $ventas = (new Venta())->getAllVentas();
+        $ventas = (new Venta())->getAllVentas($request->fechaInicio, $request->fechaFin);
 
         return response()->json([
             'data' => $ventas

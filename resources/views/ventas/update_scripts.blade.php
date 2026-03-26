@@ -220,12 +220,13 @@
                         .data.costoBaseUSD * producto.data.traspasoPorcentaje / 100) + parseFloat(
                         producto.data.transporteUSD);
                     let fila = `
-                        <tr>
+                        <tr class="table-success">
                             <td class="visually-hidden idProducto">${producto.data.idProducto}</td>
                             <td class="codigoProducto">${producto.data.codigoProducto}</td>
                             <td class="identificador">${producto.data.identificador}</td>
-                            <td class="nombreProducto">${producto.data.marca.nombreMarca} ${producto.data.nombreProducto}</td>
+                            <td class="nombreProducto">${producto.data.marca.nombreMarca} ${producto.data.nombreProducto} ${producto.data.color}</td>
                             <td class="costoFinalUSD">${costoFinalUSD.toFixed(2)}</td>
+                            <td class="precioAnterior"><span class="badge bg-success">NUEVO</span></td>
                             <td class="precioUSD" contenteditable="true">${producto.data.precioVentaUSD}</td>
                             <td>
                                 <button type="button" class="btn btn-danger btn-sm btn-remover" 
@@ -238,6 +239,14 @@
                     $("#productos tbody").append(fila);
                     actualizarTotalPagosSaldo();
                     actualizarResumen();
+
+                    Swal.fire({
+                        position: "top-end",
+                        title: `Producto con identificador ingresado:<br><b class="text-success">${producto.data.identificador}</b>`,
+                        showConfirmButton: false,
+                        timer: 1500,
+                        timerProgressBar: true,
+                    });
                 }
             });
 
@@ -702,6 +711,7 @@
         });
 
         // Aplicar hacia abajo cambios en celdas editables
+        /*
         $("#productos").on("blur", ".precioUSD", function() {
             const celda = $(this);
             const valor = celda.text().trim();
@@ -726,6 +736,7 @@
 
             actualizarTotalPagosSaldo();
         });
+        */
 
         function actualizarResumen() {
             let resumen = {};

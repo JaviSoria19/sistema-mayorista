@@ -64,6 +64,7 @@
                         <th>Identificador</th>
                         <th>Producto</th>
                         <th>C.F. (USD)</th>
+                        <th>Precio anterior (USD)</th>
                         <th>Precio (USD)</th>
                         <th>Remover</th>
                     </tr>
@@ -81,9 +82,10 @@
                             <td class="visually-hidden idProducto">{{ $producto->idProducto }}</td>
                             <td class="codigoProducto">{{ $producto->codigoProducto }}</td>
                             <td class="identificador">{{ $producto->identificador }}</td>
-                            <td class="nombreProducto">{{ $producto->marca->nombreMarca }} {{ $producto->nombreProducto }}
+                            <td class="nombreProducto">{{ $producto->marca->nombreMarca }} {{ $producto->nombreProducto }} {{ $producto->color }}
                             </td>
                             <td class="costoFinalUSD">{{ $costoFinalUSD }}</td>
+                            <td class="precioAnterior">{{ $producto->pivot->precioUSD }}</td>
                             <td class="precioUSD" contenteditable="true">{{ $producto->pivot->precioUSD }}</td>
                             <td>
                                 <button type="button" class="btn btn-danger btn-sm btn-remover" data-toggle="tooltip"
@@ -164,7 +166,7 @@
                                         value="{{ date('Y-m-d', strtotime($pago->fechaPago)) }}">
                                 </td>
                                 <td class="text-success fw-bold pagoUSD"
-                                    {{ $pago->pagoUSD <= '0' ? 'contenteditable=true' : '' }}>{{ $pago->pagoUSD }}</td>
+                                    {{ $pago->pagoUSD <= '0' ? 'contenteditable=true' : '' }}>{{ $pago->pagoUSD == '0.00' ? 0 : $pago->pagoUSD }}</td>
                                 <td class="bg-secondary">
                                     {{-- <button type="button" class="btn btn-danger btn-sm btn-remover" data-toggle="tooltip"
                                         title="Remover de la tabla">

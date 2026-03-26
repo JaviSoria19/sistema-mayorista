@@ -43,6 +43,7 @@
                 <th>Empresa</th>
                 <th>Marca</th>
                 <th>Producto</th>
+                <th>Color</th>
                 <th>Identificador</th>
                 <th>Código</th>
                 <th>Costo base (USD)</th>
@@ -100,6 +101,8 @@
                     </td>
                     <td class="fw-bold nombreProducto" {{ $producto->estado == 1 ? 'contenteditable=true' : '' }}>
                         {{ $producto->nombreProducto }}</td>
+                    <td class="fw-bold color" {{ $producto->estado == 1 ? 'contenteditable=true' : '' }}>
+                        {{ $producto->color }}</td>
                     <td class="fw-bold identificador" {{ $producto->estado == 1 ? 'contenteditable=true' : '' }}>
                         {{ $producto->identificador }}</td>
                     <td class="text-primary fw-bold codigoProducto">{{ $producto->codigoProducto }}</td>

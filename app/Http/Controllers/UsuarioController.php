@@ -6,6 +6,7 @@ use App\Http\Requests\UsuarioValidation;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use App\Models\Empleado;
+use App\Models\Parametro;
 use App\Models\Venta;
 
 class UsuarioController extends Controller
@@ -180,6 +181,9 @@ class UsuarioController extends Controller
             ]);
         }
         //Si el usuario y la contraseña son correctos, se crea la sesión y se redirige al panel de administración.
+
+        $parametro = (new Parametro())->getParametro();
+        
         session([
             'tieneAcceso' => true,
             'idUsuario' => $usuario->idUsuario,
@@ -187,6 +191,7 @@ class UsuarioController extends Controller
             'nombreUsuario' => $usuario->nombreUsuario,
             'temaPreferido' => $usuario->temaPreferido,
             'nombreEmpleado' => $usuario->empleado->nombreEmpleado,
+            'usarEtiquetadoraDYMO' => $parametro->paramUsarEtiquetadoraDYMO
         ]);
         return redirect()->route('dashboard');
     }

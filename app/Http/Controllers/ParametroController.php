@@ -34,8 +34,11 @@ class ParametroController extends Controller
         $parametro->paramPorcentajeTraspaso = $request->paramPorcentajeTraspaso;
         $parametro->paramTransporteUSD = $request->paramTransporteUSD;
         $parametro->paramPorcentajeLimiteDescuento = $request->paramPorcentajeLimiteDescuento;
+        $parametro->paramUsarEtiquetadoraDYMO = $request->paramUsarEtiquetadoraDYMO;
         $parametro->modificadoPor = session('idUsuario');
         $parametro->save();
+
+        session(['usarEtiquetadoraDYMO' => $parametro->paramUsarEtiquetadoraDYMO]);
 
         return response()->json([
             'success' => true,

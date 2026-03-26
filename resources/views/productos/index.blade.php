@@ -27,6 +27,7 @@
                 <th>Empresa</th>
                 <th>Marca</th>
                 <th>Producto</th>
+                <th>Color</th>
                 <th>Identificador</th>
                 <th>Código</th>
                 <th>Costo base (USD)</th>
@@ -35,6 +36,7 @@
                 <th>Costo transporte (USD)</th>
                 <th>Costo final (USD)</th>
                 <th>Precio de venta (USD)</th>
+                <th>Utilidad potencial (USD)</th>
                 <th>Bono empresa (USD)</th>
                 <th>Bono marca (USD)</th>
                 <th>Estado</th>
@@ -46,9 +48,24 @@
                 <th>Acciones</th>
             </tr>
         </thead>
+        <tfoot>
+            <tr>
+                <th colspan="8" class="text-end fw-bold">TOTALES:</th>
+                <th id="foot-costoBase"></th>
+                <th></th>
+                <th id="foot-costoTraspaso"></th>
+                <th id="foot-transporte"></th>
+                <th id="foot-costoFinal"></th>
+                <th id="foot-precioVenta"></th>
+                <th id="foot-utilidad"></th>
+                <th id="foot-bonoEmpresa"></th>
+                <th id="foot-bonoMarca"></th>
+                <th colspan="7"></th>
+            </tr>
+        </tfoot>
     </table>
 
-    <h2 class="text-info fw-bold mt-3">Lista de productos disponibles</h2>
+    <h2 class="text-info fw-bold mt-3">Lista de productos disponibles por color</h2>
 
     <div class="card p-3 mb-3">
         <p>Seleccione una opción para <i class="fa-solid fa-duotone fa-file-export"></i> exportar o <i
@@ -66,9 +83,9 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($productos_cantidades_disponibles as $producto)
+            @foreach ($productos_cantidades_disponibles_color as $producto)
                 <tr>
-                    <td>{{ $producto->nombreMarca . ' ' . $producto->nombreProducto }}</td>
+                    <td>{{ $producto->nombreMarca . ' ' . $producto->nombreProducto . ' ' . $producto->color }}</td>
                     <td>{{ $producto->cantidad }}</td>
                     <td class="text-success fw-bold">{{ number_format($producto->costoBaseUSD, 2, '.', '') }}</td>
                     <td class="text-warning fw-bold">{{ number_format($producto->costoFinalUSD, 2, '.', '') }}</td>
@@ -102,6 +119,57 @@
                     })
                     ->values();
             @endphp
+            @foreach ($productos_cantidades_disponibles_por_marcas as $grupo)
+                <tr class="table-info">
+                    <th class="text-end">Totales {{ $grupo['nombreMarca'] }}:</th>
+                    <th>{{ $grupo['cantidadTotal'] }}</th>
+                    <th class="text-success">
+                        {{ number_format($grupo['costoBaseTotalUSD'], 2, '.', '') }}</th>
+                    <th class="text-warning">
+                        {{ number_format($grupo['costoFinalTotalUSD'], 2, '.', '') }}</th>
+                </tr>
+            @endforeach
+        </tfoot>
+    </table>
+
+    <div class="mb-3"></div>
+
+    <h2 class="text-info fw-bold mt-3">Productos agrupados (sin color)</h2>
+
+    <div class="card p-3 mb-3">
+        <p>Seleccione una opción para <i class="fa-solid fa-duotone fa-file-export"></i> exportar o <i
+                class="fa-solid fa-duotone fa-filter"></i> filtrar la tabla:</p>
+        <div id="dataTableExportButtonsContainer3"></div>
+    </div>
+
+    <table class="table table-bordered table-striped" id="dataTable3">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Costo base (USD)</th>
+                <th>Costo final (USD)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($productos_cantidades_disponibles as $producto)
+                <tr>
+                    <td>{{ $producto->nombreMarca . ' ' . $producto->nombreProducto }}</td>
+                    <td>{{ $producto->cantidad }}</td>
+                    <td class="text-success fw-bold">{{ number_format($producto->costoBaseUSD, 2, '.', '') }}</td>
+                    <td class="text-warning fw-bold">{{ number_format($producto->costoFinalUSD, 2, '.', '') }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+        <tfoot>
+            <tr>
+                <th class="text-end">Totales:</th>
+                <th>{{ $productos_cantidades_disponibles->sum('cantidad') }}</th>
+                <th class="text-success">
+                    {{ number_format($productos_cantidades_disponibles->sum('costoBaseUSD'), 2, '.', '') }}</th>
+                <th class="text-warning">
+                    {{ number_format($productos_cantidades_disponibles->sum('costoFinalUSD'), 2, '.', '') }}</th>
+            </tr>
             @foreach ($productos_cantidades_disponibles_por_marcas as $grupo)
                 <tr class="table-info">
                     <th class="text-end">Totales {{ $grupo['nombreMarca'] }}:</th>
@@ -180,6 +248,11 @@
                                 <option>{{ $producto->nombreProducto }}</option>
                             @endforeach
                         </datalist>
+
+                        <div class="mb-3">
+                            <label for="color" class="form-label">Color</label>
+                            <input type="text" class="form-control" id="color" name="color" required>
+                        </div>
 
                         <div class="mb-3">
                             <label for="identificador" class="form-label">Identificador <span

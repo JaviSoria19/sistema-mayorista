@@ -32,6 +32,15 @@
                         <input type="number" class="form-control" id="paramPorcentajeLimiteDescuento" name="paramPorcentajeLimiteDescuento"
                             value="{{ $parametro->paramPorcentajeLimiteDescuento }}" required>
                     </div>
+
+                    <div class="mb-3">
+                        <label for="paramUsarEtiquetadoraDYMO" class="form-label">Usar etiquetadora DYMO: <span
+                                class="text-danger">*</span></label>
+                                <select class="form-select" name="paramUsarEtiquetadoraDYMO" id="paramUsarEtiquetadoraDYMO">
+                                    <option {{ $parametro->paramUsarEtiquetadoraDYMO === 'SI' ? 'selected' : '' }}>SI</option>
+                                    <option {{ $parametro->paramUsarEtiquetadoraDYMO === 'NO' ? 'selected' : '' }}>NO</option>
+                                </select>
+                    </div>
                 </form>
                 <p class="fw-bold">
                     <i class="fa-solid fa-duotone fa-circle-info"></i> Última modificación: <span

@@ -7,106 +7,111 @@
 <script src="{{ asset('/public/dependencies/dymo-connect-framework/dymo.connect.framework.full.js') }}"></script>
 <script>
     $(document).ready(function() {
-        // Verificar si el objeto dymo existe
-        if (typeof dymo === 'undefined') {
-            console.error("El objeto DYMO no está cargado. Verifica la ruta del script.");
-            return;
-        }
+        const usarEtiquetadoraDYMO = '{{ session('usarEtiquetadoraDYMO') }}';
 
-        // Inicialización con callback
-        dymo.label.framework.init(function() {
-            console.log("✓ Framework DYMO inicializado correctamente");
-
-            // Verificar ambiente con más detalle
-            const dymo_entorno = dymo.label.framework.checkEnvironment();
-            console.log("Framework instalado:", dymo_entorno.isFrameworkInstalled);
-            console.log("WebService presente:", dymo_entorno.isWebServicePresent);
-
-            // Verificar puerto del servicio
-            if (dymo_entorno.webServicePort) {
-                console.log("Puerto del WebService:", dymo_entorno.webServicePort);
-            }
-
-            // Validaciones de ambiente
-            if (!dymo_entorno.isFrameworkInstalled) {
-                Swal.fire({
-                    theme: 'auto',
-                    title: "¡Atención!",
-                    text: "Por favor instale DYMO Label Software (DLS) o DYMO Connect for Desktop (DCD)",
-                    icon: "error"
-                });
+        if (usarEtiquetadoraDYMO === 'SI') {
+            // Verificar si el objeto dymo existe
+            if (typeof dymo === 'undefined') {
+                console.error("El objeto DYMO no está cargado. Verifica la ruta del script.");
                 return;
             }
 
-            if (!dymo_entorno.isWebServicePresent) {
-                Swal.fire({
-                    theme: 'auto',
-                    title: "¡Atención!",
-                    html: `El servicio web DYMO no está corriendo.<br><br>
+            // Inicialización con callback
+            dymo.label.framework.init(function() {
+                console.log("✓ Framework DYMO inicializado correctamente");
+
+                // Verificar ambiente con más detalle
+                const dymo_entorno = dymo.label.framework.checkEnvironment();
+                console.log("Framework instalado:", dymo_entorno.isFrameworkInstalled);
+                console.log("WebService presente:", dymo_entorno.isWebServicePresent);
+
+                // Verificar puerto del servicio
+                if (dymo_entorno.webServicePort) {
+                    console.log("Puerto del WebService:", dymo_entorno.webServicePort);
+                }
+
+                // Validaciones de ambiente
+                if (!dymo_entorno.isFrameworkInstalled) {
+                    Swal.fire({
+                        theme: 'auto',
+                        title: "¡Atención!",
+                        text: "Por favor instale DYMO Label Software (DLS) o DYMO Connect for Desktop (DCD)",
+                        icon: "error"
+                    });
+                    return;
+                }
+
+                if (!dymo_entorno.isWebServicePresent) {
+                    Swal.fire({
+                        theme: 'auto',
+                        title: "¡Atención!",
+                        html: `El servicio web DYMO no está corriendo.<br><br>
                        <strong>Solución:</strong><br>
                        1. Abre DYMO Connect o DYMO Label Software<br>
                        2. Asegúrate de que el servicio esté activo<br>
                        3. Recarga esta página`,
-                    icon: "error"
-                });
-                return;
-            }
+                        icon: "error"
+                    });
+                    return;
+                }
 
-            // Intentar obtener impresoras con manejo de errores
-            try {
-                const dymo_printers = dymo.label.framework.getPrinters();
-                console.log(dymo_printers);
-                console.log("Número de impresoras encontradas:", dymo_printers.length);
+                // Intentar obtener impresoras con manejo de errores
+                try {
+                    const dymo_printers = dymo.label.framework.getPrinters();
+                    console.log(dymo_printers);
+                    console.log("Número de impresoras encontradas:", dymo_printers.length);
 
-                if (dymo_printers.length === 0) {
-                    console.warn("⚠ No se encontraron impresoras DYMO");
+                    if (dymo_printers.length === 0) {
+                        console.warn("⚠ No se encontraron impresoras DYMO");
 
-                    // Verificar si hay impresoras del sistema
-                    const allPrinters = dymo.label.framework.getPrinters();
-                    console.log("Todas las impresoras:", allPrinters);
+                        // Verificar si hay impresoras del sistema
+                        const allPrinters = dymo.label.framework.getPrinters();
+                        console.log("Todas las impresoras:", allPrinters);
 
-                    Swal.fire({
-                        theme: 'auto',
-                        title: "Sin impresoras DYMO",
-                        html: `No se detectaron impresoras DYMO conectadas.<br><br>
+                        Swal.fire({
+                            theme: 'auto',
+                            title: "Sin impresoras DYMO",
+                            html: `No se detectaron impresoras DYMO conectadas.<br><br>
                            <strong>Verifica:</strong><br>
                            • La impresora está encendida<br>
                            • El cable USB está conectado<br>
                            • Los drivers están instalados<br>
                            • Windows reconoce la impresora`,
-                        icon: "warning"
-                    });
-                } else {
-                    console.log("✓ Impresoras DYMO encontradas:");
-                    dymo_printers.forEach(function(printer, index) {
-                        console.log(`  ${index + 1}. ${printer.name}`);
-                        console.log(`     Modelo: ${printer.modelName}`);
-                        console.log(
-                            `     Estado: ${printer.isConnected ? '🟢 Conectada' : '🔴 Desconectada'}`
-                        );
-                        console.log(`     Local: ${printer.isLocal ? 'Sí' : 'No'}`);
-                        console.log(`     Twin Turbo: ${printer.isTwinTurbo ? 'Sí' : 'No'}`);
-                    });
+                            icon: "warning"
+                        });
+                    } else {
+                        console.log("✓ Impresoras DYMO encontradas:");
+                        dymo_printers.forEach(function(printer, index) {
+                            console.log(`  ${index + 1}. ${printer.name}`);
+                            console.log(`     Modelo: ${printer.modelName}`);
+                            console.log(
+                                `     Estado: ${printer.isConnected ? '🟢 Conectada' : '🔴 Desconectada'}`
+                            );
+                            console.log(`     Local: ${printer.isLocal ? 'Sí' : 'No'}`);
+                            console.log(
+                                `     Twin Turbo: ${printer.isTwinTurbo ? 'Sí' : 'No'}`);
+                        });
 
-                    // Guardar referencia a la primera impresora
-                    window.dymo_impresora = dymo_printers[0].name;
-                    console.log("✓ Impresora seleccionada:", window.dymo_impresora);
-                }
+                        // Guardar referencia a la primera impresora
+                        window.dymo_impresora = dymo_printers[0].name;
+                        console.log("✓ Impresora seleccionada:", window.dymo_impresora);
+                    }
 
-            } catch (error) {
-                console.error("❌ Error al obtener impresoras:", error);
-                console.error("Detalles del error:", error.message);
-                console.error("Stack:", error.stack);
+                } catch (error) {
+                    console.error("❌ Error al obtener impresoras:", error);
+                    console.error("Detalles del error:", error.message);
+                    console.error("Stack:", error.stack);
 
-                Swal.fire({
-                    theme: 'auto',
-                    title: "Error al detectar impresoras",
-                    html: `Ocurrió un error: <code>${error.message}</code><br><br>
+                    Swal.fire({
+                        theme: 'auto',
+                        title: "Error al detectar impresoras",
+                        html: `Ocurrió un error: <code>${error.message}</code><br><br>
                        Revisa la consola del navegador para más detalles.`,
-                    icon: "error"
-                });
-            }
-        });
+                        icon: "error"
+                    });
+                }
+            });
+        }
 
         // XML de etiqueta
         const dymo_labelXml =
@@ -186,6 +191,9 @@
                     data: "nombreProducto",
                 },
                 {
+                    data: "color",
+                },
+                {
                     data: "identificador",
                     render: function(data, type, row) {
                         return `<b class="text-danger">${data}</b>`;
@@ -230,6 +238,17 @@
                     data: "precioVentaUSD",
                     render: function(data, type, row) {
                         return `<b class="text-dark-aquamarine">${data}</b>`;
+                    }
+                },
+                {
+                    data: null,
+                    render: function(data, type, row) {
+                        let costoFinalUSD = parseFloat(row.costoBaseUSD) + parseFloat(row
+                            .costoBaseUSD * row.traspasoPorcentaje / 100) + parseFloat(row
+                            .transporteUSD);
+                        let utilidadPotencial = parseFloat(row.precioVentaUSD) - parseFloat(
+                            costoFinalUSD)
+                        return `<b class="text-info">${utilidadPotencial.toFixed(2)}</b>`;
                     }
                 },
                 {
@@ -315,6 +334,72 @@
                     }
                 }
             ],
+            footerCallback: function(row, data, start, end, display) {
+                let api = this.api();
+
+                // Función auxiliar para sumar columnas calculadas
+                const sumColumn = (colIndex) => {
+                    return api.column(colIndex, {
+                        page: 'all'
+                    }).data().reduce((acc, val) => {
+                        // Extraer número limpio desde HTML si es necesario
+                        let num = parseFloat(String(val).replace(/<[^>]+>/g, '')) || 0;
+                        return acc + num;
+                    }, 0);
+                };
+
+                // Sumar columnas calculadas manualmente desde los datos crudos
+                let totalCostoBase = 0;
+                let totalTraspaso = 0;
+                let totalTransporte = 0;
+                let totalCostoFinal = 0;
+                let totalPrecioVenta = 0;
+                let totalUtilidad = 0;
+                let totalBonoEmpresa = 0;
+                let totalBonoMarca = 0;
+
+                api.column(0, {
+                    page: 'all'
+                }).data(); // trigger load
+
+                // Iterar sobre todos los datos (no solo la página actual)
+                api.rows({
+                    page: 'all'
+                }).data().each(function(row) {
+                    let costoBase = parseFloat(row.costoBaseUSD) || 0;
+                    let traspasoPct = parseFloat(row.traspasoPorcentaje) || 0;
+                    let transporte = parseFloat(row.transporteUSD) || 0;
+                    let precioVenta = parseFloat(row.precioVentaUSD) || 0;
+                    let bonoEmpPct = parseFloat(row.empresa?.bonoEmpresaPorcentaje) || 0;
+                    let bonoMarcaPct = parseFloat(row.marca?.bonoMarcaPorcentaje) || 0;
+
+                    let traspaso = costoBase * traspasoPct / 100;
+                    let costoFinal = costoBase + traspaso + transporte;
+                    let utilidad = precioVenta - costoFinal;
+                    let bonoEmp = costoBase * bonoEmpPct / 100;
+                    let bonoMarca = costoBase * bonoMarcaPct / 100;
+
+                    totalCostoBase += costoBase;
+                    totalTraspaso += traspaso;
+                    totalTransporte += transporte;
+                    totalCostoFinal += costoFinal;
+                    totalPrecioVenta += precioVenta;
+                    totalUtilidad += utilidad;
+                    totalBonoEmpresa += bonoEmp;
+                    totalBonoMarca += bonoMarca;
+                });
+
+                const fmt = (val) => `<b>${val.toFixed(2)}</b>`;
+
+                $('#foot-costoBase').html(fmt(totalCostoBase));
+                $('#foot-costoTraspaso').html(fmt(totalTraspaso));
+                $('#foot-transporte').html(fmt(totalTransporte));
+                $('#foot-costoFinal').html(fmt(totalCostoFinal));
+                $('#foot-precioVenta').html(fmt(totalPrecioVenta));
+                $('#foot-utilidad').html(fmt(totalUtilidad));
+                $('#foot-bonoEmpresa').html(fmt(totalBonoEmpresa));
+                $('#foot-bonoMarca').html(fmt(totalBonoMarca));
+            },
             responsive: false,
             lengthChange: true,
             autoWidth: false,
@@ -358,12 +443,18 @@
             @include('datatables.dataTablesLanguageProperty')
         }).buttons().container().appendTo('#dataTableExportButtonsContainer2');
 
+        $("#dataTable3").DataTable({
+            @include('datatables.dataTablesGlobalProperties')
+            @include('datatables.dataTablesLanguageProperty')
+        }).buttons().container().appendTo('#dataTableExportButtonsContainer3');
+
         $(document).on('click', '.btn-crear', function() {
             $('#formCreateOrEdit input[name="idProducto"]').val(0);
             $('#formCreateOrEdit select[name="idEmpresa"]').val('').trigger('change');
             $('#formCreateOrEdit select[name="idMarca"]').val('').trigger('change');
             $('#formCreateOrEdit select[name="idAbastecimiento"]').val('').trigger('change');
             $('#formCreateOrEdit input[name="nombreProducto"]').val('');
+            $('#formCreateOrEdit input[name="color"]').val('');
             $('#formCreateOrEdit input[name="identificador"]').val('');
             $('#formCreateOrEdit input[name="codigoProducto"]').val('');
             $('#formCreateOrEdit input[name="costoBaseUSD"]').val(0);
@@ -393,6 +484,8 @@
                     .idAbastecimiento).trigger('change');
                 $('#formCreateOrEdit input[name="nombreProducto"]').val(producto.data
                     .nombreProducto);
+                $('#formCreateOrEdit input[name="color"]').val(producto.data
+                    .color);
                 $('#formCreateOrEdit input[name="identificador"]').val(producto.data
                     .identificador);
                 $('#formCreateOrEdit input[name="codigoProducto"]').val(producto.data
@@ -428,7 +521,16 @@
                 cancelButtonText: 'No, cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    DYMO_imprimirCodigoProducto(codigoProducto);
+                    if (usarEtiquetadoraDYMO === 'SI') {
+                        DYMO_imprimirCodigoProducto(codigoProducto);
+                    } else {
+                        Swal.fire({
+                            theme: 'auto',
+                            title: "No permitido",
+                            text: "Se ha deshabilitado el uso de la etiquetadora DYMO desde los parámetros del sistema.",
+                            icon: "warning"
+                        });
+                    }
                 }
             });
         });

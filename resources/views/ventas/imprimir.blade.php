@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
     <html lang="en">
 
     <head>
@@ -104,11 +104,12 @@
                         $producto->pivot->precioUSD;
                 });
 
-                $total = 0;
+                $totalUSD = 0;
+                $totalCantidad = 0;
             @endphp
 
             <div class="border border-info">
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered">
                     <thead class="text-info text-center">
                         <tr>
                             <th class="align-middle">#</th>
@@ -124,23 +125,50 @@
                                 $cantidad = $grupo->count();
                                 $precioUnitario = $grupo->first()->pivot->precioUSD;
                                 $subtotal = $cantidad * $precioUnitario;
-                                $total += $subtotal;
+                                $totalUSD += $subtotal;
+                                $totalCantidad += $cantidad;
                                 $producto = $grupo->first();
+
+                                //Si el número de la fila es par se le asigna una clase como 'table-striped' pero más oscuro
+                                $rowBackgroundColor = '';
+                                if ($loop->index % 2 == '1') {
+                                    $rowBackgroundColor = '#c7c7c7';
+                                }
+
+                                $colorDeMarca = '#000000';
+                                $colorDeMarca = match (true) {
+                                    str_contains($producto->marca->nombreMarca, 'APPLE') => '#555555',
+                                    str_contains($producto->marca->nombreMarca, 'ASUS') => '#00539B',
+                                    str_contains($producto->marca->nombreMarca, 'FREEYOND') => '#FF6600',
+                                    str_contains($producto->marca->nombreMarca, 'HONOR') => '#007BFF',
+                                    str_contains($producto->marca->nombreMarca, 'HUAWEI') => '#D81E06',
+                                    str_contains($producto->marca->nombreMarca, 'INFINIX') => '#00A651',
+                                    str_contains($producto->marca->nombreMarca, 'MEIZU') => '#00A4E4',
+                                    str_contains($producto->marca->nombreMarca, 'MOTOROLA') => '#5C2D91',
+                                    str_contains($producto->marca->nombreMarca, 'REALME') => '#FFC300',
+                                    str_contains($producto->marca->nombreMarca, 'SAMSUNG') => '#1428A0',
+                                    str_contains($producto->marca->nombreMarca, 'TECNO') => '#0088CC',
+                                    str_contains($producto->marca->nombreMarca, 'XIAOMI') => '#FF6900',
+                                    str_contains($producto->marca->nombreMarca, 'ZTE') => '#005BAC',
+                                    default => '#000000',
+                                };
                             @endphp
-                            <tr>
+                            <tr style="background-color: {{ $rowBackgroundColor }}">
                                 <td class="text-center"><b>{{ $loop->iteration }}.</b></td>
-                                <td>
-                                    {{-- <span class="text-info">{{ $producto->codigoProducto }}</span> --}}
-                                    {{ $producto->marca->nombreMarca }} {{ $producto->nombreProducto }}
+                                <td class="font-weight-bold {{str_contains($producto->marca->nombreMarca, 'REALME') ? 'bg-secondary' : '' }}" style="color: {{ $colorDeMarca }}">
+                                    {{ $producto->marca->nombreMarca }}
+                                    {{ $producto->nombreProducto }}
                                 </td>
                                 <td class="text-center">{{ $cantidad }}</td>
                                 <td class="text-right">{{ number_format($precioUnitario, 2) }}</td>
                                 <td class="text-right">{{ number_format($subtotal, 2) }}</td>
                             </tr>
                         @endforeach
-                        <tr>
-                            <td colspan="4" class="text-right">TOTAL (USD):</td>
-                            <td class="text-right font-weight-bold">{{ number_format($total, 2) }}</td>
+                        <tr class="font-weight-bold">
+                            <td colspan="2" class="text-right">TOTAL (UNIDADES):</td>
+                            <td class="text-center">{{ $totalCantidad }}</td>
+                            <td class="text-right">TOTAL (USD):</td>
+                            <td class="text-right">{{ number_format($totalUSD, 2) }}</td>
                         </tr>
                     </tbody>
                 </table>

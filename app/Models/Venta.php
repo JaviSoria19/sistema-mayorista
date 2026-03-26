@@ -58,9 +58,19 @@ class Venta extends Model
         return $this->belongsTo(Usuario::class, 'modificadoPor', 'idUsuario');
     }
 
-    public function getAllVentas()
+    public function getAllVentas($fechaInicio = null, $fechaFin = null)
     {
-        return Venta::with(['productos.marca', 'pagos', 'usuario', 'cliente', 'empleado', 'editor'])->orderBy('idVenta', 'ASC')->get();
+        $query = Venta::with(['productos.marca', 'pagos', 'usuario', 'cliente', 'empleado', 'editor'])
+            ->orderBy('idVenta', 'ASC');
+
+        if ($fechaInicio && $fechaFin) {
+            $query->whereBetween('fechaRegistro', [
+                $fechaInicio . ' 00:00:00',
+                $fechaFin . ' 23:59:59'
+            ]);
+        }
+
+        return $query->get();
     }
 
     public function getVentasPorEstadoYSaldo($estado, $saldoUSD_operador, $saldoUSD, $orden, $fechaInicio, $fechaFin)
@@ -122,6 +132,7 @@ class Venta extends Model
     public function dashboard_getClientesConSaldo()
     {
         return Venta::select(
+            'empleados.nombreEmpleado',
             'clientes.idCliente',
             'clientes.nombreCliente',
             'clientes.celular',
@@ -130,6 +141,7 @@ class Venta extends Model
             DB::raw('MIN(ventas.fechaRegistro) as fechaMasAntigua')
         )
             ->join('clientes', 'ventas.idCliente', '=', 'clientes.idCliente')
+            ->join('empleados', 'ventas.idEmpleado', '=', 'empleados.idEmpleado')
             ->where('ventas.estado', 1)
             ->where('ventas.saldoUSD', '>', 0)
             ->groupBy('clientes.idCliente', 'clientes.nombreCliente', 'clientes.celular')
