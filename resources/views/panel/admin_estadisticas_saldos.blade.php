@@ -65,6 +65,7 @@
     <table class="table table-bordered table-striped" id="dataTable2">
         <thead>
             <tr>
+                <th>Empleado</th>
                 <th>Cliente</th>
                 <th>Venta</th>
                 <th>Productos</th>
@@ -78,6 +79,7 @@
         <tbody>
             @foreach ($saldos_pendientes_detalles as $saldo_pendiente_detalle)
                 <tr>
+                    <td>{{ $saldo_pendiente_detalle->empleado->nombreEmpleado }}</td>
                     <td>{{ $saldo_pendiente_detalle->cliente->nombreCliente }}</td>
                     <td>{{ $saldo_pendiente_detalle->idVenta }}</td>
                     <td class="fw-bold">

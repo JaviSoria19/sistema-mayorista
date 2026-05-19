@@ -102,23 +102,55 @@ class VentaController extends Controller
             return redirect()->route('ventas.utilidades')->withErrors(['error' => 'La fecha de inicio ingresada (' . date('d/m/Y', strtotime($fechaInicio)) . ') no puede ser mayor a la fecha de fin (' . date('d/m/Y', strtotime($fechaFin)) . ').']);
         }
 
-        $ventas = (new Venta())->getVentasPorEstadoYSaldo('1', '<=', '0', 'DESC', $fechaInicio, $fechaFin);
+        $ventasSinSaldo = (new Venta())->getVentasPorEstadoYSaldo('1', '<=', '0', 'DESC', $fechaInicio, $fechaFin);
+        $ventasConSaldo = (new Venta())->getVentasPorEstadoYSaldo('1', '>', '0', 'DESC', $fechaInicio, $fechaFin);
 
-        $utilidadTotal = 0;
-        foreach ($ventas as $venta) {
+        $utilidadVentasSinSaldo = 0;
+        foreach ($ventasSinSaldo as $venta) {
             foreach ($venta->productos as $producto) {
                 $costoFinalUSD = $producto->costoBaseUSD +
                     ($producto->costoBaseUSD * $producto->traspasoPorcentaje) / 100 +
                     $producto->transporteUSD;
 
-                $utilidadTotal += $producto->pivot->precioUSD - $costoFinalUSD;
+                $utilidadVentasSinSaldo += $producto->pivot->precioUSD - $costoFinalUSD;
             }
         }
 
+        $utilidadVentasConSaldo = 0;
+        foreach ($ventasConSaldo as $venta) {
+            foreach ($venta->productos as $producto) {
+                $costoFinalUSD = $producto->costoBaseUSD +
+                    ($producto->costoBaseUSD * $producto->traspasoPorcentaje) / 100 +
+                    $producto->transporteUSD;
+
+                $utilidadVentasConSaldo += $producto->pivot->precioUSD - $costoFinalUSD;
+            }
+        }
+
+        $utilidadTotal = $utilidadVentasSinSaldo + $utilidadVentasConSaldo;
+
+        $cantidadVentas = count($ventasSinSaldo) + count($ventasConSaldo);
+
+        $productosRegistrados = DB::table('productos')
+            ->whereBetween('fechaRegistro', [$fechaInicio . ' 00:00:00', $fechaFin . ' 23:59:59'])
+            ->count();
+
+        $productosVendidos = DB::table('detalles_ventas as dv')
+            ->join('ventas as v', 'dv.idVenta', '=', 'v.idVenta')
+            ->where('v.estado', 1)
+            ->whereBetween('v.fechaRegistro', [$fechaInicio . ' 00:00:00', $fechaFin . ' 23:59:59'])
+            ->count('dv.idProducto');
+
         return view('ventas.reporte_utilidades', [
             'headTitle' => 'REPORTE UTILIDADES',
-            'ventas' => $ventas,
+            'ventasSinSaldo' => $ventasSinSaldo,
+            'ventasConSaldo' => $ventasConSaldo,
+            'utilidadVentasSinSaldo' => $utilidadVentasSinSaldo,
+            'utilidadVentasConSaldo' => $utilidadVentasConSaldo,
             'utilidadTotal' => $utilidadTotal,
+            'cantidadVentas' => $cantidadVentas,
+            'productosRegistrados' => $productosRegistrados,
+            'productosVendidos' => $productosVendidos,
             'fechaInicio' => $fechaInicio,
             'fechaFin' => $fechaFin,
         ]);
